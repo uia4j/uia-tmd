@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd>
+	<taskSpace>
+		<task name="human">
+			<source>TEST1</source>
+			<target>TEST2</target>
+			<sourceSelect>
+				<sql>SELECT id,first_name,birthday FROM human WHERE id=?</sql>
+				<where>
+					<column>id</column>
+				</where>
+			</sourceSelect>
+			<targetInsert>
+				<sql>INSERT INTO people(id,first_name,birthday) VALUES(?,?,?)</sql>
+				<delSql>DELETE FROM people WHERE id=?</delSql>
+				<delWhere>
+					<column>id</column>
+				</delWhere>
+			</targetInsert>
+			<nexts>
+				<plan name="human_account">
+					<sourceSelect>
+						<sql>SELECT id,human,account FROM human_acc WHERE human=?</sql>
+						<where>
+							<column source="id">human</column>
+						</where>
+					</sourceSelect>
+					<targetInsert>
+						<sql>INSERT INTO people_acc(id,people,account) VALUES(?,?,?)</sql>
+						<delSql>DELETE FROM people_acc WHERE id=?</delSql>
+						<delWhere>
+							<column>id</column>
+						</delWhere>
+					</targetInsert>
+				</plan>
+			</nexts>
+		</task>
+		<task name="human2pg">
+			<source>TEST1</source>
+			<target>TEST3</target>
+			<sourceSelect>
+				<sql>SELECT id,first_name,birthday FROM human WHERE id=?</sql>
+				<where>
+					<column>id</column>
+				</where>
+			</sourceSelect>
+			<targetInsert>
+				<sql>INSERT INTO human(id,first_name,birthday) VALUES(?,?,?)</sql>
+				<delSql>DELETE FROM human WHERE id=?</delSql>
+				<delWhere>
+					<column>id</column>
+				</delWhere>
+			</targetInsert>
+			<nexts>
+				<plan name="human_account">
+					<sourceSelect>
+						<sql>SELECT id,human,account FROM human_acc WHERE human=?</sql>
+						<where>
+							<column source="id">human</column>
+						</where>
+					</sourceSelect>
+					<targetInsert>
+						<sql>INSERT INTO human_acc(id,human,account) VALUES(?,?,?)</sql>
+						<delSql>DELETE FROM human_acc WHERE id=?</delSql>
+						<delWhere>
+							<column>id</column>
+						</delWhere>
+					</targetInsert>
+				</plan>
+			</nexts>
+		</task>
+	</taskSpace>
+	<databaseSpace>
+		<dbServer>
+			<id>TEST1</id>
+			<host>localhost</host>
+			<port>1433</port>
+			<dbName>mydb</dbName>
+			<user>sa</user>
+			<password>sqlAdm</password>
+			<dbType>MSSQL</dbType>
+		</dbServer>
+		<dbServer>
+			<id>TEST2</id>
+			<host>localhost</host>
+			<port>1433</port>
+			<dbName>mydb</dbName>
+			<user>sa</user>
+			<password>sqlAdm</password>
+			<dbType>MSSQL</dbType>
+		</dbServer>
+		<dbServer>
+			<id>TEST3</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>mydb</dbName>
+			<user>postgres</user>
+			<password>pgAdm</password>
+			<dbType>PGSQL</dbType>
+		</dbServer>
+	</databaseSpace>
+</tmd>

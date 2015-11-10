@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:uia="http://tmd.uia/model/xml"
+        targetNamespace="http://tmd.uia/model/xml"
+        elementFormDefault="qualified"
+        version="1.0">
+    
+    <element name="tmd" type="uia:TmdType" nillable="true" />
+    <complexType name="TmdType" mixed="false">
+        <sequence>
+            <element name="taskSpace" type="uia:TaskSpaceType"></element>
+            <element name="databaseSpace" type="uia:DatabaseSpaceType"></element>
+        </sequence>
+    </complexType>
+    
+     <!-- TaskSpace -->
+    <complexType name="TaskSpaceType">
+        <sequence>
+            <choice maxOccurs="unbounded">
+                <element name="task" type="uia:TaskType"></element>
+            </choice>
+        </sequence>
+    </complexType>
+	
+    <complexType name="TaskType">
+		<sequence>
+			<element name="source" type="string"></element>
+			<element name="target" type="string"></element>
+            <element name="sourceSelect" type="uia:SourceSelectType"></element>
+            <element name="targetInsert" type="uia:TargetInsertType"></element>
+			<element name="nexts">
+				<complexType>
+			        <sequence>
+						<element name="plan" type="uia:PlanType" maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
+		</sequence>
+        <attribute name="name" type="string" use="required" />
+    </complexType>
+
+    <complexType name="PlanType">
+		<sequence>
+            <element name="sourceSelect" type="uia:SourceSelectType"></element>
+            <element name="targetInsert" type="uia:TargetInsertType"></element>
+			<element name="nexts">
+				<complexType>
+			        <sequence>
+						<element name="plan" type="uia:PlanType" maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
+		</sequence>
+        <attribute name="name" type="string" use="required" />
+    </complexType>
+
+    <complexType name="SourceSelectType">
+        <sequence>
+            <element name="sql" type="string"></element>
+			<element name="where">
+				<complexType>
+			        <sequence>
+						<element name="column" type="uia:WhereType"  maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
+        </sequence>
+    </complexType>
+
+    <complexType name="TargetInsertType">
+        <sequence>
+            <element name="sql" type="string"></element>
+            <element name="delSql" type="string"></element>
+			<element name="delWhere">
+				<complexType>
+			        <sequence>
+						<element name="column" type="uia:WhereType"  maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
+        </sequence>
+    </complexType>
+    
+    <complexType name="WhereType">
+        <simpleContent>
+            <extension base="string">
+                <attribute name="source" type="string" />
+            </extension>
+        </simpleContent>
+    </complexType>
+	
+     <!-- DatabaseSpace -->
+    <complexType name="DatabaseSpaceType">
+        <sequence>
+            <choice maxOccurs="unbounded">
+                <element name="dbServer" type="uia:DbServerType"></element>
+            </choice>
+        </sequence>
+    </complexType>
+
+    <complexType name="DbServerType">
+        <sequence>
+            <element name="id" type="string"></element>
+            <element name="host" type="string"></element>
+            <element name="port" type="int"></element>
+            <element name="dbName" type="string"></element>
+            <element name="user" type="string"></element>
+            <element name="password" type="string"></element>
+            <element name="dbType" type="string"></element>
+        </sequence>
+    </complexType>
+	
+</schema>
