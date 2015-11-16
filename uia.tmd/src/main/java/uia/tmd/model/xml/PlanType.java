@@ -2,7 +2,7 @@
 // 此檔案是由 JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 所產生 
 // 請參閱 <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // 一旦重新編譯來源綱要, 對此檔案所做的任何修改都將會遺失. 
-// 產生時間: 2015.11.10 於 08:18:17 PM CST 
+// 產生時間: 2015.11.16 於 06:50:25 PM CST 
 //
 
 
@@ -27,8 +27,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="sourceSelect" type="{http://tmd.uia/model/xml}SourceSelectType"/>
- *         &lt;element name="targetInsert" type="{http://tmd.uia/model/xml}TargetInsertType"/>
+ *         &lt;element name="targetUpdate" type="{http://tmd.uia/model/xml}TargetUpdateType"/>
  *         &lt;element name="nexts">
  *           &lt;complexType>
  *             &lt;complexContent>
@@ -51,20 +52,47 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PlanType", propOrder = {
+    "description",
     "sourceSelect",
-    "targetInsert",
+    "targetUpdate",
     "nexts"
 })
 public class PlanType {
 
     @XmlElement(required = true)
+    protected String description;
+    @XmlElement(required = true)
     protected SourceSelectType sourceSelect;
     @XmlElement(required = true)
-    protected TargetInsertType targetInsert;
+    protected TargetUpdateType targetUpdate;
     @XmlElement(required = true)
     protected PlanType.Nexts nexts;
     @XmlAttribute(name = "name", required = true)
     protected String name;
+
+    /**
+     * 取得 description 特性的值.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * 設定 description 特性的值.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setDescription(String value) {
+        this.description = value;
+    }
 
     /**
      * 取得 sourceSelect 特性的值.
@@ -91,27 +119,27 @@ public class PlanType {
     }
 
     /**
-     * 取得 targetInsert 特性的值.
+     * 取得 targetUpdate 特性的值.
      * 
      * @return
      *     possible object is
-     *     {@link TargetInsertType }
+     *     {@link TargetUpdateType }
      *     
      */
-    public TargetInsertType getTargetInsert() {
-        return targetInsert;
+    public TargetUpdateType getTargetUpdate() {
+        return targetUpdate;
     }
 
     /**
-     * 設定 targetInsert 特性的值.
+     * 設定 targetUpdate 特性的值.
      * 
      * @param value
      *     allowed object is
-     *     {@link TargetInsertType }
+     *     {@link TargetUpdateType }
      *     
      */
-    public void setTargetInsert(TargetInsertType value) {
-        this.targetInsert = value;
+    public void setTargetUpdate(TargetUpdateType value) {
+        this.targetUpdate = value;
     }
 
     /**

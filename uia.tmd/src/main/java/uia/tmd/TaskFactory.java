@@ -30,8 +30,12 @@ public class TaskFactory {
         this.dbServers = new TreeMap<String, DbServerType>();
 
         TmdType tmd = TmdTypeHelper.load(file);
-        tmd.getTaskSpace().getTask().stream().forEach(t -> this.tasks.put(t.getName(), t));
-        tmd.getDatabaseSpace().getDbServer().stream().forEach(s -> this.dbServers.put(s.getId(), s));
+        for (TaskType task : tmd.getTaskSpace().getTask()) {
+            this.tasks.put(task.getName(), task);
+        }
+        for (DbServerType svr : tmd.getDatabaseSpace().getDbServer()) {
+            this.dbServers.put(svr.getId(), svr);
+        }
     }
 
     /**

@@ -2,7 +2,7 @@
 // 此檔案是由 JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 所產生 
 // 請參閱 <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // 一旦重新編譯來源綱要, 對此檔案所做的任何修改都將會遺失. 
-// 產生時間: 2015.11.10 於 08:18:17 PM CST 
+// 產生時間: 2015.11.16 於 06:50:25 PM CST 
 //
 
 
@@ -41,14 +41,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link TargetInsertType }
-     * 
-     */
-    public TargetInsertType createTargetInsertType() {
-        return new TargetInsertType();
-    }
-
-    /**
      * Create an instance of {@link SourceSelectType }
      * 
      */
@@ -73,6 +65,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link TargetUpdateType }
+     * 
+     */
+    public TargetUpdateType createTargetUpdateType() {
+        return new TargetUpdateType();
+    }
+
+    /**
      * Create an instance of {@link TmdType }
      * 
      */
@@ -81,19 +81,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link WhereType }
-     * 
-     */
-    public WhereType createWhereType() {
-        return new WhereType();
-    }
-
-    /**
      * Create an instance of {@link DbServerType }
      * 
      */
     public DbServerType createDbServerType() {
         return new DbServerType();
+    }
+
+    /**
+     * Create an instance of {@link ColumnType }
+     * 
+     */
+    public ColumnType createColumnType() {
+        return new ColumnType();
     }
 
     /**
@@ -113,11 +113,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link TargetInsertType.DelWhere }
+     * Create an instance of {@link SourceSelectType.Columns }
      * 
      */
-    public TargetInsertType.DelWhere createTargetInsertTypeDelWhere() {
-        return new TargetInsertType.DelWhere();
+    public SourceSelectType.Columns createSourceSelectTypeColumns() {
+        return new SourceSelectType.Columns();
     }
 
     /**
@@ -142,6 +142,22 @@ public class ObjectFactory {
      */
     public TaskType.Nexts createTaskTypeNexts() {
         return new TaskType.Nexts();
+    }
+
+    /**
+     * Create an instance of {@link TargetUpdateType.Columns }
+     * 
+     */
+    public TargetUpdateType.Columns createTargetUpdateTypeColumns() {
+        return new TargetUpdateType.Columns();
+    }
+
+    /**
+     * Create an instance of {@link TargetUpdateType.Where }
+     * 
+     */
+    public TargetUpdateType.Where createTargetUpdateTypeWhere() {
+        return new TargetUpdateType.Where();
     }
 
     /**

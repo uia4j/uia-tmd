@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd>
+	<taskSpace>
+		<task name="Z_TASK">
+			<source>WIP</source>
+			<target>WIPTEST</target>
+			<sourceSelect table="Z_TASK" delete="true">
+				<columns>
+					<column>SID</column>
+					<column>SITE</column>
+					<column>CATEGORY</column>
+					<column>TASK_NO</column>
+					<column>REVSION</column>
+					<column>STATUS</column>
+					<column>INSP_STATUS</column>
+					<column>SHOP_ORDER_BO</column>
+					<column>PARENT_SID</column>
+					<column>IS_CURRENT</column>
+					<column>TASK_DESCRIPTION</column>
+					<column>COMMENT</column>
+					<column>CREATE_USER</column>
+					<column>CREATED_DATE_TIME</column>
+					<column>MODIFY_USER</column>
+					<column>MODIFIED_DATE_TIME</column>
+				</columns>
+				<where>
+					<column>SID</column>
+				</where>
+			</sourceSelect>
+			<targetUpdate>
+				<columns />
+				<where>
+					<column>SID</column>
+				</where>
+			</targetUpdate>
+			<nexts>
+				<plan name="Z_TASK_ATTA">
+					<sourceSelect table="Z_TASK_ATTA" delete="true">
+						<columns>
+							<column>SID</column>
+							<column>SITE</column>
+							<column>TASK_SID</column>
+							<column>REF_TYPE</column>
+							<column>REF_OBJ</column>
+							<column>CREATE_USER</column>
+							<column>CREATED_DATE_TIME</column>
+							<column>MODIFY_USER</column>
+							<column>MODIFIED_DATE_TIME</column>
+						</columns>
+						<where>
+							<column source="SID">TASK_SID</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate>
+						<columns />
+						<where>
+							<column>SID</column>
+						</where>
+					</targetUpdate>
+				</plan>
+				<plan name="Z_TASK_BATCH">
+					<sourceSelect table="Z_TASK_BATCH" delete="true">
+						<columns>
+							<column>SID</column>
+							<column>SITE</column>
+							<column>TASK_SID</column>
+							<column>SEQUENCE</column>
+							<column>BOM_COMPONENT_BO</column>
+							<column>COMPONENT_GBO</column>
+							<column>BATCH</column>
+							<column>QTY</column>
+						</columns>
+						<where>
+							<column source="SID">TASK_SID</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate>
+						<columns />
+						<where>
+							<column>SID</column>
+						</where>
+					</targetUpdate>
+				</plan>
+				<plan name="Z_TASK_OBJ">
+					<sourceSelect table="Z_TASK_OBJ" delete="true">
+						<columns>
+							<column>SID</column>
+							<column>SITE</column>
+							<column>TASK_SID</column>
+							<column>REF_TYPE</column>
+							<column>REF_OBJ</column>
+							<column>DESCRIPTION</column>
+							<column>PARENT_SID</column>
+							<column>KEY_1</column>
+							<column>VALUE_1</column>
+							<column>KEY_2</column>
+							<column>VALUE_2</column>
+							<column>KEY_3</column>
+							<column>VALUE_3</column>
+							<column>KEY_4</column>
+							<column>VALUE_4</column>
+							<column>KEY_5</column>
+							<column>VALUE_5</column>
+							<column>CREATE_USER</column>
+							<column>CREATED_DATE_TIME</column>
+							<column>MODIFY_USER</column>
+							<column>MODIFIED_DATE_TIME</column>
+						</columns>
+						<where>
+							<column source="SID">TASK_SID</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate>
+						<columns />
+						<where>
+							<column>SID</column>
+						</where>
+					</targetUpdate>
+				</plan>
+				<plan name="Z_TASK_PRO">
+					<sourceSelect table="Z_TASK_PRO" delete="true">
+						<columns>
+							<column>SID</column>
+							<column>SITE</column>
+							<column>TASK_SID</column>
+							<column>TASK_OBJ_SID</column>
+							<column>REF_TYPE</column>
+							<column>REF_OBJ</column>
+							<column>DESCRIPTION</column>
+							<column>PARENT_SID</column>
+							<column>KEY_1</column>
+							<column>VALUE_1</column>
+							<column>KEY_2</column>
+							<column>VALUE_2</column>
+							<column>KEY_3</column>
+							<column>VALUE_3</column>
+							<column>KEY_4</column>
+							<column>VALUE_4</column>
+							<column>KEY_5</column>
+							<column>VALUE_5</column>
+							<column>CREATE_USER</column>
+							<column>CREATED_DATE_TIME</column>
+							<column>MODIFY_USER</column>
+							<column>MODIFIED_DATE_TIME</column>
+						</columns>
+						<where>
+							<column source="SID">TASK_SID</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate>
+						<columns />
+						<where>
+							<column>SID</column>
+						</where>
+					</targetUpdate>
+				</plan>
+			</nexts>
+		</task>
+	</taskSpace>
+	<databaseSpace>
+		<dbServer>
+			<id>WIP</id>
+			<host>localhost</host>
+			<port>1433</port>
+			<dbName>WIP</dbName>
+			<user>wip</user>
+			<password>wip</password>
+			<dbType>MSSQL</dbType>
+		</dbServer>
+		<dbServer>
+			<id>WIPTEST</id>
+			<host>localhost</host>
+			<port>1433</port>
+			<dbName>WIPTEST</dbName>
+			<user>wip</user>
+			<password>wip</password>
+			<dbType>MSSQL</dbType>
+		</dbServer>
+	</databaseSpace>
+</tmd>

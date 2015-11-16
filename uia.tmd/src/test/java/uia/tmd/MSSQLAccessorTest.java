@@ -1,6 +1,5 @@
 package uia.tmd;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +15,7 @@ public class MSSQLAccessorTest {
         accessor.disconnect();
 
         for (Map<String, Object> row : data) {
-            row.forEach((k, v) -> {
-                System.out.print(String.format("%s = %-25s", k, v));
-            });
-            System.out.println();
+            System.out.println(row);
         }
     }
 
@@ -32,7 +28,7 @@ public class MSSQLAccessorTest {
         List<Map<String, Object>> data = accessor.select("select * from human", null);
         // insert
         for (Map<String, Object> row : data) {
-            accessor.execueUpdate("INSERT INTO people(id,first_name,birthday) VALUES(?,?,?)", new ArrayList<Object>(row.values()));
+            accessor.execueUpdate("INSERT INTO people(id,first_name,birthday) VALUES(?,?,?)", row);
         }
 
         accessor.disconnect();

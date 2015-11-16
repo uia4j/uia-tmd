@@ -24,10 +24,11 @@
 	
     <complexType name="TaskType">
 		<sequence>
+			<element name="description" type="string"></element>
 			<element name="source" type="string"></element>
 			<element name="target" type="string"></element>
             <element name="sourceSelect" type="uia:SourceSelectType"></element>
-            <element name="targetInsert" type="uia:TargetInsertType"></element>
+            <element name="targetUpdate" type="uia:TargetUpdateType"></element>
 			<element name="nexts">
 				<complexType>
 			        <sequence>
@@ -41,8 +42,9 @@
 
     <complexType name="PlanType">
 		<sequence>
+			<element name="description" type="string"></element>
             <element name="sourceSelect" type="uia:SourceSelectType"></element>
-            <element name="targetInsert" type="uia:TargetInsertType"></element>
+            <element name="targetUpdate" type="uia:TargetUpdateType"></element>
 			<element name="nexts">
 				<complexType>
 			        <sequence>
@@ -56,32 +58,48 @@
 
     <complexType name="SourceSelectType">
         <sequence>
-            <element name="sql" type="string"></element>
+			<element name="description" type="string"></element>
+			<element name="columns">
+				<complexType>
+			        <sequence>
+						<element name="column" type="uia:ColumnType"  maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
 			<element name="where">
 				<complexType>
 			        <sequence>
-						<element name="column" type="uia:WhereType"  maxOccurs="unbounded"></element>
+						<element name="column" type="uia:ColumnType"  maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
         </sequence>
+        <attribute name="table" type="string" use="required" />
+        <attribute name="delete" type="boolean" default="false" />
     </complexType>
 
-    <complexType name="TargetInsertType">
+    <complexType name="TargetUpdateType">
         <sequence>
-            <element name="sql" type="string"></element>
-            <element name="delSql" type="string"></element>
-			<element name="delWhere">
+			<element name="description" type="string"></element>
+			<element name="columns">
 				<complexType>
 			        <sequence>
-						<element name="column" type="uia:WhereType"  maxOccurs="unbounded"></element>
+						<element name="column" type="uia:ColumnType"  maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
+			<element name="where">
+				<complexType>
+			        <sequence>
+						<element name="column" type="uia:ColumnType"  maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
         </sequence>
+        <attribute name="table" type="string" />
     </complexType>
     
-    <complexType name="WhereType">
+    <complexType name="ColumnType">
         <simpleContent>
             <extension base="string">
                 <attribute name="source" type="string" />

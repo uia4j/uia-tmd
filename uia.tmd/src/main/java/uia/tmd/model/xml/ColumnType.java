@@ -2,7 +2,7 @@
 // 此檔案是由 JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 所產生 
 // 請參閱 <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // 一旦重新編譯來源綱要, 對此檔案所做的任何修改都將會遺失. 
-// 產生時間: 2015.11.10 於 11:24:03 AM CST 
+// 產生時間: 2015.11.16 於 06:50:25 PM CST 
 //
 
 
@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlValue;
  * &lt;complexType name="ColumnType">
  *   &lt;simpleContent>
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
- *       &lt;attribute name="order" use="required" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="source" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/simpleContent>
  * &lt;/complexType>
@@ -40,8 +40,8 @@ public class ColumnType {
 
     @XmlValue
     protected String value;
-    @XmlAttribute(name = "order", required = true)
-    protected int order;
+    @XmlAttribute(name = "source")
+    protected String source;
 
     /**
      * 取得 value 特性的值.
@@ -68,19 +68,27 @@ public class ColumnType {
     }
 
     /**
-     * 取得 order 特性的值.
+     * 取得 source 特性的值.
      * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public int getOrder() {
-        return order;
+    public String getSource() {
+        return source;
     }
 
     /**
-     * 設定 order 特性的值.
+     * 設定 source 特性的值.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setOrder(int value) {
-        this.order = value;
+    public void setSource(String value) {
+        this.source = value;
     }
 
 }

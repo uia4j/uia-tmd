@@ -18,12 +18,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>SourceSelectType complex type 的 Java 類別.
+ * <p>TargetUpdateType complex type 的 Java 類別.
  * 
  * <p>下列綱要片段會指定此類別中包含的預期內容.
  * 
  * <pre>
- * &lt;complexType name="SourceSelectType">
+ * &lt;complexType name="TargetUpdateType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -51,8 +51,7 @@ import javax.xml.bind.annotation.XmlType;
  *           &lt;/complexType>
  *         &lt;/element>
  *       &lt;/sequence>
- *       &lt;attribute name="table" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="delete" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
+ *       &lt;attribute name="table" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -61,23 +60,21 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SourceSelectType", propOrder = {
+@XmlType(name = "TargetUpdateType", propOrder = {
     "description",
     "columns",
     "where"
 })
-public class SourceSelectType {
+public class TargetUpdateType {
 
     @XmlElement(required = true)
     protected String description;
     @XmlElement(required = true)
-    protected SourceSelectType.Columns columns;
+    protected TargetUpdateType.Columns columns;
     @XmlElement(required = true)
-    protected SourceSelectType.Where where;
-    @XmlAttribute(name = "table", required = true)
+    protected TargetUpdateType.Where where;
+    @XmlAttribute(name = "table")
     protected String table;
-    @XmlAttribute(name = "delete")
-    protected Boolean delete;
 
     /**
      * 取得 description 特性的值.
@@ -108,10 +105,10 @@ public class SourceSelectType {
      * 
      * @return
      *     possible object is
-     *     {@link SourceSelectType.Columns }
+     *     {@link TargetUpdateType.Columns }
      *     
      */
-    public SourceSelectType.Columns getColumns() {
+    public TargetUpdateType.Columns getColumns() {
         return columns;
     }
 
@@ -120,10 +117,10 @@ public class SourceSelectType {
      * 
      * @param value
      *     allowed object is
-     *     {@link SourceSelectType.Columns }
+     *     {@link TargetUpdateType.Columns }
      *     
      */
-    public void setColumns(SourceSelectType.Columns value) {
+    public void setColumns(TargetUpdateType.Columns value) {
         this.columns = value;
     }
 
@@ -132,10 +129,10 @@ public class SourceSelectType {
      * 
      * @return
      *     possible object is
-     *     {@link SourceSelectType.Where }
+     *     {@link TargetUpdateType.Where }
      *     
      */
-    public SourceSelectType.Where getWhere() {
+    public TargetUpdateType.Where getWhere() {
         return where;
     }
 
@@ -144,10 +141,10 @@ public class SourceSelectType {
      * 
      * @param value
      *     allowed object is
-     *     {@link SourceSelectType.Where }
+     *     {@link TargetUpdateType.Where }
      *     
      */
-    public void setWhere(SourceSelectType.Where value) {
+    public void setWhere(TargetUpdateType.Where value) {
         this.where = value;
     }
 
@@ -173,34 +170,6 @@ public class SourceSelectType {
      */
     public void setTable(String value) {
         this.table = value;
-    }
-
-    /**
-     * 取得 delete 特性的值.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isDelete() {
-        if (delete == null) {
-            return false;
-        } else {
-            return delete;
-        }
-    }
-
-    /**
-     * 設定 delete 特性的值.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setDelete(Boolean value) {
-        this.delete = value;
     }
 
 
