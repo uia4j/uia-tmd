@@ -6,9 +6,11 @@ import java.util.List;
 import org.junit.Test;
 
 import uia.tmd.model.xml.ColumnType;
+import uia.tmd.model.xml.CriteriaType;
 import uia.tmd.model.xml.DbServerType;
 import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.SourceSelectType;
+import uia.tmd.model.xml.TableType;
 import uia.tmd.model.xml.TargetUpdateType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
@@ -19,10 +21,11 @@ public class TmdTypeHelperTest {
     public void testSample() throws Exception {
         TmdType tmd = TmdTypeHelper.load(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
         for (TaskType t : tmd.getTaskSpace().getTask()) {
+            System.out.println("-------------------------------------------");
             System.out.println("source: " + t.getSource());
             System.out.println("target: " + t.getTarget());
+            System.out.println("task: " + t.getName());
 
-            System.out.println("task:" + t.getName());
             print(t.getSourceSelect());
             print(t.getTargetUpdate());
             if (t.getNexts() != null) {
@@ -33,6 +36,9 @@ public class TmdTypeHelperTest {
 
             System.out.println();
         }
+        for (TableType tt : tmd.getTableSpace().getTable()) {
+            System.out.println(tt.getName() + ", pk:" + tt.getPks().getPk());
+        }
 
         for (DbServerType svr : tmd.getDatabaseSpace().getDbServer()) {
             System.out.println(svr.getId() + ":" + svr.getHost());
@@ -42,6 +48,11 @@ public class TmdTypeHelperTest {
     private void print(PlanType plan) {
         System.out.println("");
         System.out.println("plan:" + plan.getName());
+        if (plan.getRule() != null) {
+            for (CriteriaType criteria : plan.getRule().getCriteria()) {
+                System.out.println("  " + criteria.getColumn() + "='" + criteria.getValue() + "'");
+            }
+        }
         print(plan.getSourceSelect());
         print(plan.getTargetUpdate());
         plan.getSourceSelect();
@@ -54,23 +65,21 @@ public class TmdTypeHelperTest {
 
     private void print(SourceSelectType ss) {
         System.out.println("  table: " + ss.getTable());
-        System.out.println("    columns: ");
-        print(ss.getColumns().getColumn());
-        System.out.println("    wehere: ");
+        System.out.println("    where: ");
         print(ss.getWhere().getColumn());
     }
 
     private void print(TargetUpdateType ts) {
-        System.out.println("  table:" + ts.getTable());
+        System.out.println("  table: " + ts.getTable());
         System.out.println("    columns: ");
-        print(ts.getColumns().getColumn());
-        System.out.println("    wehere: ");
-        print(ts.getWhere().getColumn());
+        if (ts.getColumns() != null) {
+            print(ts.getColumns().getColumn());
+        }
     }
 
     private void print(List<ColumnType> columns) {
         for (ColumnType c : columns) {
-            System.out.println("      " + c.getValue() + "(source=" + c.getSource() + ")");
+            System.out.println("      " + c.getValue() + "(source=" + c.getSource() + ") pk=" + c.isPk());
         }
     }
 }

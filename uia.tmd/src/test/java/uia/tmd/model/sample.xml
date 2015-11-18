@@ -1,91 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd>
 	<taskSpace>
-		<task name="human">
+		<task name="CASE1">
 			<source>MSSQL1</source>
 			<target>MSSQL2</target>
 			<sourceSelect table="human">
-				<columns>
-					<column>id</column>
-					<column>first_name</column>
-					<column>birthday</column>
-				</columns>
 				<where>
 					<column>id</column>
 				</where>
 			</sourceSelect>
-			<targetUpdate table="people">
-				<columns />
-				<where>
-					<column>id</column>
-				</where>
-			</targetUpdate>
+			<targetUpdate table="people" />
 			<nexts>
-				<plan name="human_account">
+				<plan name="account">
 					<sourceSelect table="human_acc">
-						<columns>
-							<column>id</column>
-							<column>human</column>
-							<column>account</column>
-						</columns>
 						<where>
 							<column source="id">human</column>
 						</where>
 					</sourceSelect>
 					<targetUpdate table="people_acc">
 						<columns>
-							<column>id</column>
+							<column pk="true">id</column>
 							<column source="human">people</column>
 							<column>account</column>
 						</columns>
-						<where>
-							<column>id</column>
-						</where>
 					</targetUpdate>
 				</plan>
 			</nexts>
 		</task>
-		<task name="human2pg">
+		<task name="CASE2">
 			<source>MSSQL1</source>
 			<target>PGSQL1</target>
 			<sourceSelect table="human">
-				<columns>
-					<column>id</column>
-					<column>first_name</column>
-					<column>birthday</column>
-				</columns>
 				<where>
 					<column>id</column>
 				</where>
 			</sourceSelect>
-			<targetUpdate table="human">
-				<columns />
-				<where>
-					<column>id</column>
-				</where>
-			</targetUpdate>
+			<targetUpdate />
 			<nexts>
-				<plan name="human_account">
+				<plan name="account">
 					<sourceSelect table="human_acc">
-						<columns>
-							<column>id</column>
-							<column>human</column>
-							<column>account</column>
-						</columns>
 						<where>
 							<column source="id">human</column>
 						</where>
 					</sourceSelect>
-					<targetUpdate table="human_acc">
-						<columns />
+					<targetUpdate />
+				</plan>
+			</nexts>
+		</task>
+		<task name="CASE3">
+			<source>PGSQL1</source>
+			<target>PGSQL2</target>
+			<sourceSelect table="human">
+				<where>
+					<column>id</column>
+				</where>
+			</sourceSelect>
+			<targetUpdate />
+			<nexts>
+				<plan name="account">
+					<sourceSelect table="human_acc">
 						<where>
-							<column>id</column>
+							<column source="id">human</column>
 						</where>
-					</targetUpdate>
+					</sourceSelect>
+					<targetUpdate />
+				</plan>
+				<plan name="TAIWAN">
+					<rule>
+						<criteria column="human_type" validate="startsWith">TW</criteria>
+					</rule>
+					<sourceSelect table="country_tw">
+						<where>
+							<column source="id">human</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate />
+				</plan>
+				<plan name="US">
+					<rule>
+						<criteria column="human_type">US</criteria>
+					</rule>
+					<sourceSelect table="country_us">
+						<where>
+							<column source="id">human</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate />
 				</plan>
 			</nexts>
 		</task>
 	</taskSpace>
+	<tableSpace />
 	<databaseSpace>
 		<dbServer>
 			<id>MSSQL1</id>
@@ -110,6 +115,15 @@
 			<host>localhost</host>
 			<port>5432</port>
 			<dbName>mydb</dbName>
+			<user>postgres</user>
+			<password>pgAdm</password>
+			<dbType>PGSQL</dbType>
+		</dbServer>
+		<dbServer>
+			<id>PGSQL2</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>mydb2</dbName>
 			<user>postgres</user>
 			<password>pgAdm</password>
 			<dbType>PGSQL</dbType>

@@ -1,8 +1,8 @@
 //
-// æ­¤æª”æ¡ˆæ˜¯ç”± JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 æ‰€ç”¢ç”Ÿ 
-// è«‹åƒé–± <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// ä¸€æ—¦é‡æ–°ç·¨è­¯ä¾†æºç¶±è¦, å°æ­¤æª”æ¡ˆæ‰€åšçš„ä»»ä½•ä¿®æ”¹éƒ½å°‡æœƒéºå¤±. 
-// ç”¢ç”Ÿæ™‚é–“: 2015.11.16 æ–¼ 06:50:25 PM CST 
+// ¦¹ÀÉ®×¬O¥Ñ JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 ©Ò²£¥Í 
+// ½Ğ°Ñ¾\ <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// ¤@¥¹­«·s½sÄ¶¨Ó·½ºõ­n, ¹ï¦¹ÀÉ®×©Ò°µªº¥ô¦ó­×§ï³£±N·|¿ò¥¢. 
+// ²£¥Í®É¶¡: 2015.11.17 ©ó 05:53:15 PM CST 
 //
 
 
@@ -18,15 +18,26 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>PlanType complex type çš„ Java é¡åˆ¥.
+ * <p>PlanType complex type ªº Java Ãş§O.
  * 
- * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
+ * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
  * 
  * <pre>
  * &lt;complexType name="PlanType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="rule">
+ *           &lt;complexType>
+ *             &lt;complexContent>
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                 &lt;sequence>
+ *                   &lt;element name="criteria" type="{http://tmd.uia/model/xml}CriteriaType" maxOccurs="unbounded"/>
+ *                 &lt;/sequence>
+ *               &lt;/restriction>
+ *             &lt;/complexContent>
+ *           &lt;/complexType>
+ *         &lt;/element>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="sourceSelect" type="{http://tmd.uia/model/xml}SourceSelectType"/>
  *         &lt;element name="targetUpdate" type="{http://tmd.uia/model/xml}TargetUpdateType"/>
@@ -52,6 +63,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PlanType", propOrder = {
+    "rule",
     "description",
     "sourceSelect",
     "targetUpdate",
@@ -59,6 +71,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class PlanType {
 
+    @XmlElement(required = true)
+    protected PlanType.Rule rule;
     @XmlElement(required = true)
     protected String description;
     @XmlElement(required = true)
@@ -71,7 +85,31 @@ public class PlanType {
     protected String name;
 
     /**
-     * å–å¾— description ç‰¹æ€§çš„å€¼.
+     * ¨ú±o rule ¯S©Êªº­È.
+     * 
+     * @return
+     *     possible object is
+     *     {@link PlanType.Rule }
+     *     
+     */
+    public PlanType.Rule getRule() {
+        return rule;
+    }
+
+    /**
+     * ³]©w rule ¯S©Êªº­È.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link PlanType.Rule }
+     *     
+     */
+    public void setRule(PlanType.Rule value) {
+        this.rule = value;
+    }
+
+    /**
+     * ¨ú±o description ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -83,7 +121,7 @@ public class PlanType {
     }
 
     /**
-     * è¨­å®š description ç‰¹æ€§çš„å€¼.
+     * ³]©w description ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -95,7 +133,7 @@ public class PlanType {
     }
 
     /**
-     * å–å¾— sourceSelect ç‰¹æ€§çš„å€¼.
+     * ¨ú±o sourceSelect ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -107,7 +145,7 @@ public class PlanType {
     }
 
     /**
-     * è¨­å®š sourceSelect ç‰¹æ€§çš„å€¼.
+     * ³]©w sourceSelect ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -119,7 +157,7 @@ public class PlanType {
     }
 
     /**
-     * å–å¾— targetUpdate ç‰¹æ€§çš„å€¼.
+     * ¨ú±o targetUpdate ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -131,7 +169,7 @@ public class PlanType {
     }
 
     /**
-     * è¨­å®š targetUpdate ç‰¹æ€§çš„å€¼.
+     * ³]©w targetUpdate ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -143,7 +181,7 @@ public class PlanType {
     }
 
     /**
-     * å–å¾— nexts ç‰¹æ€§çš„å€¼.
+     * ¨ú±o nexts ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -155,7 +193,7 @@ public class PlanType {
     }
 
     /**
-     * è¨­å®š nexts ç‰¹æ€§çš„å€¼.
+     * ³]©w nexts ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -167,7 +205,7 @@ public class PlanType {
     }
 
     /**
-     * å–å¾— name ç‰¹æ€§çš„å€¼.
+     * ¨ú±o name ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -179,7 +217,7 @@ public class PlanType {
     }
 
     /**
-     * è¨­å®š name ç‰¹æ€§çš„å€¼.
+     * ³]©w name ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -192,9 +230,9 @@ public class PlanType {
 
 
     /**
-     * <p>anonymous complex type çš„ Java é¡åˆ¥.
+     * <p>anonymous complex type ªº Java Ãş§O.
      * 
-     * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
+     * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
      * 
      * <pre>
      * &lt;complexType>
@@ -246,6 +284,66 @@ public class PlanType {
                 plan = new ArrayList<PlanType>();
             }
             return this.plan;
+        }
+
+    }
+
+
+    /**
+     * <p>anonymous complex type ªº Java Ãş§O.
+     * 
+     * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
+     * 
+     * <pre>
+     * &lt;complexType>
+     *   &lt;complexContent>
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *       &lt;sequence>
+     *         &lt;element name="criteria" type="{http://tmd.uia/model/xml}CriteriaType" maxOccurs="unbounded"/>
+     *       &lt;/sequence>
+     *     &lt;/restriction>
+     *   &lt;/complexContent>
+     * &lt;/complexType>
+     * </pre>
+     * 
+     * 
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "criteria"
+    })
+    public static class Rule {
+
+        @XmlElement(required = true)
+        protected List<CriteriaType> criteria;
+
+        /**
+         * Gets the value of the criteria property.
+         * 
+         * <p>
+         * This accessor method returns a reference to the live list,
+         * not a snapshot. Therefore any modification you make to the
+         * returned list will be present inside the JAXB object.
+         * This is why there is not a <CODE>set</CODE> method for the criteria property.
+         * 
+         * <p>
+         * For example, to add a new item, do as follows:
+         * <pre>
+         *    getCriteria().add(newItem);
+         * </pre>
+         * 
+         * 
+         * <p>
+         * Objects of the following type(s) are allowed in the list
+         * {@link CriteriaType }
+         * 
+         * 
+         */
+        public List<CriteriaType> getCriteria() {
+            if (criteria == null) {
+                criteria = new ArrayList<CriteriaType>();
+            }
+            return this.criteria;
         }
 
     }

@@ -1,8 +1,8 @@
 //
-// æ­¤æª”æ¡ˆæ˜¯ç”± JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 æ‰€ç”¢ç”Ÿ 
-// è«‹åƒé–± <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// ä¸€æ—¦é‡æ–°ç·¨è­¯ä¾†æºç¶±è¦, å°æ­¤æª”æ¡ˆæ‰€åšçš„ä»»ä½•ä¿®æ”¹éƒ½å°‡æœƒéºå¤±. 
-// ç”¢ç”Ÿæ™‚é–“: 2015.11.16 æ–¼ 06:50:25 PM CST 
+// ¦¹ÀÉ®×¬O¥Ñ JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 ©Ò²£¥Í 
+// ½Ğ°Ñ¾\ <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// ¤@¥¹­«·s½sÄ¶¨Ó·½ºõ­n, ¹ï¦¹ÀÉ®×©Ò°µªº¥ô¦ó­×§ï³£±N·|¿ò¥¢. 
+// ²£¥Í®É¶¡: 2015.11.17 ©ó 05:53:15 PM CST 
 //
 
 
@@ -15,9 +15,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>DbServerType complex type çš„ Java é¡åˆ¥.
+ * <p>DbServerType complex type ªº Java Ãş§O.
  * 
- * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
+ * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
  * 
  * <pre>
  * &lt;complexType name="DbServerType">
@@ -66,7 +66,7 @@ public class DbServerType {
     protected String dbType;
 
     /**
-     * å–å¾— id ç‰¹æ€§çš„å€¼.
+     * ¨ú±o id ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -78,7 +78,7 @@ public class DbServerType {
     }
 
     /**
-     * è¨­å®š id ç‰¹æ€§çš„å€¼.
+     * ³]©w id ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -90,7 +90,7 @@ public class DbServerType {
     }
 
     /**
-     * å–å¾— host ç‰¹æ€§çš„å€¼.
+     * ¨ú±o host ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -102,7 +102,7 @@ public class DbServerType {
     }
 
     /**
-     * è¨­å®š host ç‰¹æ€§çš„å€¼.
+     * ³]©w host ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -114,7 +114,7 @@ public class DbServerType {
     }
 
     /**
-     * å–å¾— port ç‰¹æ€§çš„å€¼.
+     * ¨ú±o port ¯S©Êªº­È.
      * 
      */
     public int getPort() {
@@ -122,7 +122,7 @@ public class DbServerType {
     }
 
     /**
-     * è¨­å®š port ç‰¹æ€§çš„å€¼.
+     * ³]©w port ¯S©Êªº­È.
      * 
      */
     public void setPort(int value) {
@@ -130,7 +130,7 @@ public class DbServerType {
     }
 
     /**
-     * å–å¾— dbName ç‰¹æ€§çš„å€¼.
+     * ¨ú±o dbName ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -142,7 +142,7 @@ public class DbServerType {
     }
 
     /**
-     * è¨­å®š dbName ç‰¹æ€§çš„å€¼.
+     * ³]©w dbName ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -154,7 +154,7 @@ public class DbServerType {
     }
 
     /**
-     * å–å¾— user ç‰¹æ€§çš„å€¼.
+     * ¨ú±o user ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -166,7 +166,7 @@ public class DbServerType {
     }
 
     /**
-     * è¨­å®š user ç‰¹æ€§çš„å€¼.
+     * ³]©w user ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -178,7 +178,7 @@ public class DbServerType {
     }
 
     /**
-     * å–å¾— password ç‰¹æ€§çš„å€¼.
+     * ¨ú±o password ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -190,7 +190,7 @@ public class DbServerType {
     }
 
     /**
-     * è¨­å®š password ç‰¹æ€§çš„å€¼.
+     * ³]©w password ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -202,7 +202,7 @@ public class DbServerType {
     }
 
     /**
-     * å–å¾— dbType ç‰¹æ€§çš„å€¼.
+     * ¨ú±o dbType ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -214,7 +214,7 @@ public class DbServerType {
     }
 
     /**
-     * è¨­å®š dbType ç‰¹æ€§çš„å€¼.
+     * ³]©w dbType ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is

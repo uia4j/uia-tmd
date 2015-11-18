@@ -18,29 +18,28 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>TargetUpdateType complex type 的 Java 類別.
+ * <p>TableType complex type 的 Java 類別.
  * 
  * <p>下列綱要片段會指定此類別中包含的預期內容.
  * 
  * <pre>
- * &lt;complexType name="TargetUpdateType">
+ * &lt;complexType name="TableType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="columns">
+ *         &lt;element name="pks">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="column" type="{http://tmd.uia/model/xml}ColumnType" maxOccurs="unbounded"/>
+ *                   &lt;element name="pk" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
  *           &lt;/complexType>
  *         &lt;/element>
  *       &lt;/sequence>
- *       &lt;attribute name="table" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -49,89 +48,62 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TargetUpdateType", propOrder = {
-    "description",
-    "columns"
+@XmlType(name = "TableType", propOrder = {
+    "pks"
 })
-public class TargetUpdateType {
+public class TableType {
 
     @XmlElement(required = true)
-    protected String description;
-    @XmlElement(required = true)
-    protected TargetUpdateType.Columns columns;
-    @XmlAttribute(name = "table")
-    protected String table;
+    protected TableType.Pks pks;
+    @XmlAttribute(name = "name")
+    protected String name;
 
     /**
-     * 取得 description 特性的值.
+     * 取得 pks 特性的值.
+     * 
+     * @return
+     *     possible object is
+     *     {@link TableType.Pks }
+     *     
+     */
+    public TableType.Pks getPks() {
+        return pks;
+    }
+
+    /**
+     * 設定 pks 特性的值.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link TableType.Pks }
+     *     
+     */
+    public void setPks(TableType.Pks value) {
+        this.pks = value;
+    }
+
+    /**
+     * 取得 name 特性的值.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
     /**
-     * 設定 description 特性的值.
+     * 設定 name 特性的值.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDescription(String value) {
-        this.description = value;
-    }
-
-    /**
-     * 取得 columns 特性的值.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TargetUpdateType.Columns }
-     *     
-     */
-    public TargetUpdateType.Columns getColumns() {
-        return columns;
-    }
-
-    /**
-     * 設定 columns 特性的值.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TargetUpdateType.Columns }
-     *     
-     */
-    public void setColumns(TargetUpdateType.Columns value) {
-        this.columns = value;
-    }
-
-    /**
-     * 取得 table 特性的值.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTable() {
-        return table;
-    }
-
-    /**
-     * 設定 table 特性的值.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTable(String value) {
-        this.table = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
 
@@ -145,7 +117,7 @@ public class TargetUpdateType {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="column" type="{http://tmd.uia/model/xml}ColumnType" maxOccurs="unbounded"/>
+     *         &lt;element name="pk" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -156,40 +128,40 @@ public class TargetUpdateType {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "column"
+        "pk"
     })
-    public static class Columns {
+    public static class Pks {
 
         @XmlElement(required = true)
-        protected List<ColumnType> column;
+        protected List<String> pk;
 
         /**
-         * Gets the value of the column property.
+         * Gets the value of the pk property.
          * 
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the column property.
+         * This is why there is not a <CODE>set</CODE> method for the pk property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getColumn().add(newItem);
+         *    getPk().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link ColumnType }
+         * {@link String }
          * 
          * 
          */
-        public List<ColumnType> getColumn() {
-            if (column == null) {
-                column = new ArrayList<ColumnType>();
+        public List<String> getPk() {
+            if (pk == null) {
+                pk = new ArrayList<String>();
             }
-            return this.column;
+            return this.pk;
         }
 
     }

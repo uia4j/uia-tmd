@@ -9,6 +9,7 @@
     <complexType name="TmdType" mixed="false">
         <sequence>
             <element name="taskSpace" type="uia:TaskSpaceType"></element>
+            <element name="tableSpace" type="uia:TableSpaceType"></element>
             <element name="databaseSpace" type="uia:DatabaseSpaceType"></element>
         </sequence>
     </complexType>
@@ -42,6 +43,13 @@
 
     <complexType name="PlanType">
 		<sequence>
+			<element name="rule">
+				<complexType>
+			        <sequence>
+						<element name="criteria" type="uia:CriteriaType" maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
 			<element name="description" type="string"></element>
             <element name="sourceSelect" type="uia:SourceSelectType"></element>
             <element name="targetUpdate" type="uia:TargetUpdateType"></element>
@@ -59,13 +67,6 @@
     <complexType name="SourceSelectType">
         <sequence>
 			<element name="description" type="string"></element>
-			<element name="columns">
-				<complexType>
-			        <sequence>
-						<element name="column" type="uia:ColumnType"  maxOccurs="unbounded"></element>
-			        </sequence>
-				</complexType>
-			</element>
 			<element name="where">
 				<complexType>
 			        <sequence>
@@ -84,14 +85,7 @@
 			<element name="columns">
 				<complexType>
 			        <sequence>
-						<element name="column" type="uia:ColumnType"  maxOccurs="unbounded"></element>
-			        </sequence>
-				</complexType>
-			</element>
-			<element name="where">
-				<complexType>
-			        <sequence>
-						<element name="column" type="uia:ColumnType"  maxOccurs="unbounded"></element>
+						<element name="column" type="uia:ColumnType" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
@@ -103,10 +97,42 @@
         <simpleContent>
             <extension base="string">
                 <attribute name="source" type="string" />
+                <attribute name="pk" type="boolean" default="false" />
             </extension>
         </simpleContent>
     </complexType>
+    
+    <complexType name="CriteriaType">
+        <simpleContent>
+            <extension base="string">
+                <attribute name="column" type="string" />
+                <attribute name="validate" type="string" default="equals" />
+            </extension>
+        </simpleContent>
+    </complexType>
+
 	
+     <!-- TableSpace -->
+    <complexType name="TableSpaceType">
+        <sequence>
+            <choice maxOccurs="unbounded">
+                <element name="table" type="uia:TableType"></element>
+            </choice>
+        </sequence>
+    </complexType>
+    <complexType name="TableType">
+        <sequence>
+			<element name="pks">
+				<complexType>
+			        <sequence>
+						<element name="pk" type="string" maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
+        </sequence>
+        <attribute name="name" type="string" />
+    </complexType>
+
      <!-- DatabaseSpace -->
     <complexType name="DatabaseSpaceType">
         <sequence>
@@ -115,7 +141,6 @@
             </choice>
         </sequence>
     </complexType>
-
     <complexType name="DbServerType">
         <sequence>
             <element name="id" type="string"></element>

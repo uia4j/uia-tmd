@@ -1,8 +1,8 @@
 //
-// æ­¤æª”æ¡ˆæ˜¯ç”± JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 æ‰€ç”¢ç”Ÿ 
-// è«‹åƒé–± <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// ä¸€æ—¦é‡æ–°ç·¨è­¯ä¾†æºç¶±è¦, å°æ­¤æª”æ¡ˆæ‰€åšçš„ä»»ä½•ä¿®æ”¹éƒ½å°‡æœƒéºå¤±. 
-// ç”¢ç”Ÿæ™‚é–“: 2015.11.16 æ–¼ 06:50:25 PM CST 
+// ¦¹ÀÉ®×¬O¥Ñ JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 ©Ò²£¥Í 
+// ½Ğ°Ñ¾\ <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// ¤@¥¹­«·s½sÄ¶¨Ó·½ºõ­n, ¹ï¦¹ÀÉ®×©Ò°µªº¥ô¦ó­×§ï³£±N·|¿ò¥¢. 
+// ²£¥Í®É¶¡: 2015.11.17 ©ó 05:53:15 PM CST 
 //
 
 
@@ -73,6 +73,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link TableType }
+     * 
+     */
+    public TableType createTableType() {
+        return new TableType();
+    }
+
+    /**
      * Create an instance of {@link TmdType }
      * 
      */
@@ -105,6 +113,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CriteriaType }
+     * 
+     */
+    public CriteriaType createCriteriaType() {
+        return new CriteriaType();
+    }
+
+    /**
+     * Create an instance of {@link TableSpaceType }
+     * 
+     */
+    public TableSpaceType createTableSpaceType() {
+        return new TableSpaceType();
+    }
+
+    /**
      * Create an instance of {@link DatabaseSpaceType }
      * 
      */
@@ -113,19 +137,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SourceSelectType.Columns }
-     * 
-     */
-    public SourceSelectType.Columns createSourceSelectTypeColumns() {
-        return new SourceSelectType.Columns();
-    }
-
-    /**
      * Create an instance of {@link SourceSelectType.Where }
      * 
      */
     public SourceSelectType.Where createSourceSelectTypeWhere() {
         return new SourceSelectType.Where();
+    }
+
+    /**
+     * Create an instance of {@link PlanType.Rule }
+     * 
+     */
+    public PlanType.Rule createPlanTypeRule() {
+        return new PlanType.Rule();
     }
 
     /**
@@ -153,11 +177,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link TargetUpdateType.Where }
+     * Create an instance of {@link TableType.Pks }
      * 
      */
-    public TargetUpdateType.Where createTargetUpdateTypeWhere() {
-        return new TargetUpdateType.Where();
+    public TableType.Pks createTableTypePks() {
+        return new TableType.Pks();
     }
 
     /**

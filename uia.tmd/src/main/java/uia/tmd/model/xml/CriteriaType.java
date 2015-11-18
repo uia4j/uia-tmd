@@ -16,16 +16,16 @@ import javax.xml.bind.annotation.XmlValue;
 
 
 /**
- * <p>ColumnType complex type 的 Java 類別.
+ * <p>CriteriaType complex type 的 Java 類別.
  * 
  * <p>下列綱要片段會指定此類別中包含的預期內容.
  * 
  * <pre>
- * &lt;complexType name="ColumnType">
+ * &lt;complexType name="CriteriaType">
  *   &lt;simpleContent>
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
- *       &lt;attribute name="source" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="pk" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
+ *       &lt;attribute name="column" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="validate" type="{http://www.w3.org/2001/XMLSchema}string" default="equals" />
  *     &lt;/extension>
  *   &lt;/simpleContent>
  * &lt;/complexType>
@@ -34,17 +34,17 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ColumnType", propOrder = {
+@XmlType(name = "CriteriaType", propOrder = {
     "value"
 })
-public class ColumnType {
+public class CriteriaType {
 
     @XmlValue
     protected String value;
-    @XmlAttribute(name = "source")
-    protected String source;
-    @XmlAttribute(name = "pk")
-    protected Boolean pk;
+    @XmlAttribute(name = "column")
+    protected String column;
+    @XmlAttribute(name = "validate")
+    protected String validate;
 
     /**
      * 取得 value 特性的值.
@@ -71,55 +71,55 @@ public class ColumnType {
     }
 
     /**
-     * 取得 source 特性的值.
+     * 取得 column 特性的值.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getSource() {
-        return source;
+    public String getColumn() {
+        return column;
     }
 
     /**
-     * 設定 source 特性的值.
+     * 設定 column 特性的值.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setSource(String value) {
-        this.source = value;
+    public void setColumn(String value) {
+        this.column = value;
     }
 
     /**
-     * 取得 pk 特性的值.
+     * 取得 validate 特性的值.
      * 
      * @return
      *     possible object is
-     *     {@link Boolean }
+     *     {@link String }
      *     
      */
-    public boolean isPk() {
-        if (pk == null) {
-            return false;
+    public String getValidate() {
+        if (validate == null) {
+            return "equals";
         } else {
-            return pk;
+            return validate;
         }
     }
 
     /**
-     * 設定 pk 特性的值.
+     * 設定 validate 特性的值.
      * 
      * @param value
      *     allowed object is
-     *     {@link Boolean }
+     *     {@link String }
      *     
      */
-    public void setPk(Boolean value) {
-        this.pk = value;
+    public void setValidate(String value) {
+        this.validate = value;
     }
 
 }

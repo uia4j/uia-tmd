@@ -5,158 +5,150 @@
 			<source>WIP</source>
 			<target>WIPTEST</target>
 			<sourceSelect table="Z_TASK" delete="true">
-				<columns>
-					<column>SID</column>
-					<column>SITE</column>
-					<column>CATEGORY</column>
-					<column>TASK_NO</column>
-					<column>REVSION</column>
-					<column>STATUS</column>
-					<column>INSP_STATUS</column>
-					<column>SHOP_ORDER_BO</column>
-					<column>PARENT_SID</column>
-					<column>IS_CURRENT</column>
-					<column>TASK_DESCRIPTION</column>
-					<column>COMMENT</column>
-					<column>CREATE_USER</column>
-					<column>CREATED_DATE_TIME</column>
-					<column>MODIFY_USER</column>
-					<column>MODIFIED_DATE_TIME</column>
-				</columns>
 				<where>
 					<column>SID</column>
 				</where>
 			</sourceSelect>
-			<targetUpdate>
-				<columns />
-				<where>
-					<column>SID</column>
-				</where>
-			</targetUpdate>
+			<targetUpdate />
 			<nexts>
 				<plan name="Z_TASK_ATTA">
 					<sourceSelect table="Z_TASK_ATTA" delete="true">
-						<columns>
-							<column>SID</column>
-							<column>SITE</column>
-							<column>TASK_SID</column>
-							<column>REF_TYPE</column>
-							<column>REF_OBJ</column>
-							<column>CREATE_USER</column>
-							<column>CREATED_DATE_TIME</column>
-							<column>MODIFY_USER</column>
-							<column>MODIFIED_DATE_TIME</column>
-						</columns>
 						<where>
 							<column source="SID">TASK_SID</column>
 						</where>
 					</sourceSelect>
-					<targetUpdate>
-						<columns />
-						<where>
-							<column>SID</column>
-						</where>
-					</targetUpdate>
+					<targetUpdate />
 				</plan>
 				<plan name="Z_TASK_BATCH">
 					<sourceSelect table="Z_TASK_BATCH" delete="true">
-						<columns>
-							<column>SID</column>
-							<column>SITE</column>
-							<column>TASK_SID</column>
-							<column>SEQUENCE</column>
-							<column>BOM_COMPONENT_BO</column>
-							<column>COMPONENT_GBO</column>
-							<column>BATCH</column>
-							<column>QTY</column>
-						</columns>
 						<where>
 							<column source="SID">TASK_SID</column>
 						</where>
 					</sourceSelect>
-					<targetUpdate>
-						<columns />
-						<where>
-							<column>SID</column>
-						</where>
-					</targetUpdate>
+					<targetUpdate />
 				</plan>
 				<plan name="Z_TASK_OBJ">
 					<sourceSelect table="Z_TASK_OBJ" delete="true">
-						<columns>
-							<column>SID</column>
-							<column>SITE</column>
-							<column>TASK_SID</column>
-							<column>REF_TYPE</column>
-							<column>REF_OBJ</column>
-							<column>DESCRIPTION</column>
-							<column>PARENT_SID</column>
-							<column>KEY_1</column>
-							<column>VALUE_1</column>
-							<column>KEY_2</column>
-							<column>VALUE_2</column>
-							<column>KEY_3</column>
-							<column>VALUE_3</column>
-							<column>KEY_4</column>
-							<column>VALUE_4</column>
-							<column>KEY_5</column>
-							<column>VALUE_5</column>
-							<column>CREATE_USER</column>
-							<column>CREATED_DATE_TIME</column>
-							<column>MODIFY_USER</column>
-							<column>MODIFIED_DATE_TIME</column>
-						</columns>
 						<where>
 							<column source="SID">TASK_SID</column>
 						</where>
 					</sourceSelect>
-					<targetUpdate>
-						<columns />
-						<where>
-							<column>SID</column>
-						</where>
-					</targetUpdate>
+					<targetUpdate />
 				</plan>
 				<plan name="Z_TASK_PRO">
 					<sourceSelect table="Z_TASK_PRO" delete="true">
-						<columns>
-							<column>SID</column>
-							<column>SITE</column>
-							<column>TASK_SID</column>
-							<column>TASK_OBJ_SID</column>
-							<column>REF_TYPE</column>
-							<column>REF_OBJ</column>
-							<column>DESCRIPTION</column>
-							<column>PARENT_SID</column>
-							<column>KEY_1</column>
-							<column>VALUE_1</column>
-							<column>KEY_2</column>
-							<column>VALUE_2</column>
-							<column>KEY_3</column>
-							<column>VALUE_3</column>
-							<column>KEY_4</column>
-							<column>VALUE_4</column>
-							<column>KEY_5</column>
-							<column>VALUE_5</column>
-							<column>CREATE_USER</column>
-							<column>CREATED_DATE_TIME</column>
-							<column>MODIFY_USER</column>
-							<column>MODIFIED_DATE_TIME</column>
-						</columns>
 						<where>
 							<column source="SID">TASK_SID</column>
 						</where>
 					</sourceSelect>
-					<targetUpdate>
-						<columns />
+					<targetUpdate />
+				</plan>
+			</nexts>
+		</task>
+		<task name="ShopOrder">
+			<source>WIP</source>
+			<target>WIPTEST</target>
+			<sourceSelect table="SHOP_ORDER" delete="true">
+				<where>
+					<column>HANDLE</column>
+				</where>
+			</sourceSelect>
+			<targetUpdate />
+			<nexts>
+				<plan name="SHOP_ORDER_INSPECTION_LOT">
+					<sourceSelect table="SHOP_ORDER_INSPECTION_LOT" delete="true">
 						<where>
-							<column>SID</column>
+							<column source="HANDLE">SHOP_ORDER_BO</column>
 						</where>
-					</targetUpdate>
+					</sourceSelect>
+					<targetUpdate />
+					<nexts>
+						<plan name="SHOP_ORDER_INSPECTION">
+							<sourceSelect table="SHOP_ORDER_INSPECTION" delete="true">
+								<where>
+									<column source="HANDLE">SHOP_ORDER_INSPECTION_LOT_BO</column>
+								</where>
+							</sourceSelect>
+							<targetUpdate />
+						</plan>
+					</nexts>
+				</plan>
+				<plan name="SHOP_ORDER_SCHEDULE">
+					<sourceSelect table="SHOP_ORDER_SCHEDULE" delete="true">
+						<where>
+							<column source="HANDLE">SHOP_ORDER_BO</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate />
+				</plan>
+				<plan name="SHOP_ORDER_SFC">
+					<sourceSelect table="SHOP_ORDER_SFC" delete="true">
+						<where>
+							<column source="HANDLE">SHOP_ORDER_BO</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate />
+				</plan>
+				<plan name="SHOP_ORDER_SFC_PLAN">
+					<sourceSelect table="SHOP_ORDER_SFC_PLAN" delete="true">
+						<where>
+							<column source="HANDLE">SHOP_ORDER_BO</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate />
+				</plan>
+				<plan name="SHOP_ORDER_SUBASSEMBLY">
+					<sourceSelect table="SHOP_ORDER_SUBASSEMBLY" delete="true">
+						<where>
+							<column source="HANDLE">SHOP_ORDER_PARENT_BO</column>
+						</where>
+					</sourceSelect>
+					<targetUpdate />
 				</plan>
 			</nexts>
 		</task>
 	</taskSpace>
+	<tableSpace>
+		<table name="Z_TASK">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="Z_TASK_ATTA">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="Z_TASK_BATCH">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="Z_TASK_OBJ">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="Z_TASK_PRO">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="SHOP_ORDER">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="SHOP_ORDER_INSP_RESULT">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="SHOP_ORDER_INSPECTION_LOT">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="SHOP_ORDER_SCHEDULE">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="SHOP_ORDER_SFC">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="SHOP_ORDER_SFC_PLAN">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="SHOP_ORDER_SFC_SUBASSEMBLY">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="SHOP_ORDER_SFC_SUBASSY_PEGGED">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+	</tableSpace>
 	<databaseSpace>
 		<dbServer>
 			<id>WIP</id>

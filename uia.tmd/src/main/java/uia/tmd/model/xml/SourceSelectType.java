@@ -1,8 +1,8 @@
 //
-// æ­¤æª”æ¡ˆæ˜¯ç”± JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 æ‰€ç”¢ç”Ÿ 
-// è«‹åƒé–± <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// ä¸€æ—¦é‡æ–°ç·¨è­¯ä¾†æºç¶±è¦, å°æ­¤æª”æ¡ˆæ‰€åšçš„ä»»ä½•ä¿®æ”¹éƒ½å°‡æœƒéºå¤±. 
-// ç”¢ç”Ÿæ™‚é–“: 2015.11.16 æ–¼ 06:50:25 PM CST 
+// ¦¹ÀÉ®×¬O¥Ñ JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 ©Ò²£¥Í 
+// ½Ğ°Ñ¾\ <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// ¤@¥¹­«·s½sÄ¶¨Ó·½ºõ­n, ¹ï¦¹ÀÉ®×©Ò°µªº¥ô¦ó­×§ï³£±N·|¿ò¥¢. 
+// ²£¥Í®É¶¡: 2015.11.17 ©ó 05:53:15 PM CST 
 //
 
 
@@ -18,9 +18,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>SourceSelectType complex type çš„ Java é¡åˆ¥.
+ * <p>SourceSelectType complex type ªº Java Ãş§O.
  * 
- * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
+ * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
  * 
  * <pre>
  * &lt;complexType name="SourceSelectType">
@@ -28,17 +28,6 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="columns">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;element name="column" type="{http://tmd.uia/model/xml}ColumnType" maxOccurs="unbounded"/>
- *                 &lt;/sequence>
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
  *         &lt;element name="where">
  *           &lt;complexType>
  *             &lt;complexContent>
@@ -63,15 +52,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SourceSelectType", propOrder = {
     "description",
-    "columns",
     "where"
 })
 public class SourceSelectType {
 
     @XmlElement(required = true)
     protected String description;
-    @XmlElement(required = true)
-    protected SourceSelectType.Columns columns;
     @XmlElement(required = true)
     protected SourceSelectType.Where where;
     @XmlAttribute(name = "table", required = true)
@@ -80,7 +66,7 @@ public class SourceSelectType {
     protected Boolean delete;
 
     /**
-     * å–å¾— description ç‰¹æ€§çš„å€¼.
+     * ¨ú±o description ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -92,7 +78,7 @@ public class SourceSelectType {
     }
 
     /**
-     * è¨­å®š description ç‰¹æ€§çš„å€¼.
+     * ³]©w description ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -104,31 +90,7 @@ public class SourceSelectType {
     }
 
     /**
-     * å–å¾— columns ç‰¹æ€§çš„å€¼.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SourceSelectType.Columns }
-     *     
-     */
-    public SourceSelectType.Columns getColumns() {
-        return columns;
-    }
-
-    /**
-     * è¨­å®š columns ç‰¹æ€§çš„å€¼.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SourceSelectType.Columns }
-     *     
-     */
-    public void setColumns(SourceSelectType.Columns value) {
-        this.columns = value;
-    }
-
-    /**
-     * å–å¾— where ç‰¹æ€§çš„å€¼.
+     * ¨ú±o where ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -140,7 +102,7 @@ public class SourceSelectType {
     }
 
     /**
-     * è¨­å®š where ç‰¹æ€§çš„å€¼.
+     * ³]©w where ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -152,7 +114,7 @@ public class SourceSelectType {
     }
 
     /**
-     * å–å¾— table ç‰¹æ€§çš„å€¼.
+     * ¨ú±o table ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -164,7 +126,7 @@ public class SourceSelectType {
     }
 
     /**
-     * è¨­å®š table ç‰¹æ€§çš„å€¼.
+     * ³]©w table ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -176,7 +138,7 @@ public class SourceSelectType {
     }
 
     /**
-     * å–å¾— delete ç‰¹æ€§çš„å€¼.
+     * ¨ú±o delete ¯S©Êªº­È.
      * 
      * @return
      *     possible object is
@@ -192,7 +154,7 @@ public class SourceSelectType {
     }
 
     /**
-     * è¨­å®š delete ç‰¹æ€§çš„å€¼.
+     * ³]©w delete ¯S©Êªº­È.
      * 
      * @param value
      *     allowed object is
@@ -205,69 +167,9 @@ public class SourceSelectType {
 
 
     /**
-     * <p>anonymous complex type çš„ Java é¡åˆ¥.
+     * <p>anonymous complex type ªº Java Ãş§O.
      * 
-     * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
-     * 
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="column" type="{http://tmd.uia/model/xml}ColumnType" maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     * 
-     * 
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "column"
-    })
-    public static class Columns {
-
-        @XmlElement(required = true)
-        protected List<ColumnType> column;
-
-        /**
-         * Gets the value of the column property.
-         * 
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the column property.
-         * 
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getColumn().add(newItem);
-         * </pre>
-         * 
-         * 
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link ColumnType }
-         * 
-         * 
-         */
-        public List<ColumnType> getColumn() {
-            if (column == null) {
-                column = new ArrayList<ColumnType>();
-            }
-            return this.column;
-        }
-
-    }
-
-
-    /**
-     * <p>anonymous complex type çš„ Java é¡åˆ¥.
-     * 
-     * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
+     * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
      * 
      * <pre>
      * &lt;complexType>

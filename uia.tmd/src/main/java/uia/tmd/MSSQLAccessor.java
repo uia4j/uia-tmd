@@ -3,8 +3,11 @@ package uia.tmd;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Map;
 
 import com.microsoft.sqlserver.jdbc.SQLServerConnection;
+
+import uia.tmd.model.xml.TableType;
 
 /**
  * MS SQL Server data accessor.
@@ -20,14 +23,8 @@ public class MSSQLAccessor extends DataAccessor {
 
     private SQLServerConnection conn;
 
-    /**
-     * Constructor.
-     * @param host Host name or ip.
-     * @param port Port number.
-     * @param dbName Database name.
-     * @throws Exception Initial failure.
-     */
-    public MSSQLAccessor(String host, int port, String dbName) throws Exception {
+    MSSQLAccessor(Map<String, TableType> tables, String host, int port, String dbName) throws Exception {
+        super(tables);
         this.connString = String.format(CONN, host, port, dbName);
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
     }

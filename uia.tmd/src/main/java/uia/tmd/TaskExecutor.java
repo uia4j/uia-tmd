@@ -8,6 +8,7 @@ import java.util.Map;
 
 import uia.tmd.TaskExecutorListener.TaskExecutorEvent;
 import uia.tmd.model.xml.ColumnType;
+import uia.tmd.model.xml.CriteriaType;
 import uia.tmd.model.xml.DbServerType;
 import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.SourceSelectType;
@@ -24,6 +25,8 @@ public class TaskExecutor {
 
     private final ArrayList<TaskExecutorListener> listeners;
 
+    private final TaskFactory factory;
+
     private final TaskType task;
 
     private final DbServerType source;
@@ -38,19 +41,23 @@ public class TaskExecutor {
      * Constructor.
      *
      * @param task Task definition.
-     * @param source Source.
-     * @param target Target.
+     * @param factory Task factory.
      * @throws Exception
      */
-    TaskExecutor(TaskType task, DbServerType source, DbServerType target) throws Exception {
-        this.listeners = new ArrayList<TaskExecutorListener>();
+    TaskExecutor(TaskType task, TaskFactory factory) throws Exception {
         this.task = task;
-        this.source = source;
-        this.target = target;
-        this.sourceAccessor = createMSSQL(this.source);
-        this.targetAccessor = createMSSQL(this.target);
+        this.factory = factory;
+        this.source = this.factory.dbServers.get(task.getSource());
+        this.target = this.factory.dbServers.get(task.getTarget());
+        this.sourceAccessor = createMSSQL(this.source, factory);
+        this.targetAccessor = createMSSQL(this.target, factory);
+        this.listeners = new ArrayList<TaskExecutorListener>();
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void addListener(TaskExecutorListener listener) {
         this.listeners.add(listener);
     }
@@ -58,6 +65,7 @@ public class TaskExecutor {
     /**
      * Run this task.
      * @param whereValues Criteria used to select data from database.
+     * @return Result.
      * @throws SQLException SQL exception.
      */
     public boolean run(Map<String, Object> whereValues) throws SQLException {
@@ -70,24 +78,32 @@ public class TaskExecutor {
             SourceSelectType sourceSelect = this.task.getSourceSelect();
             TargetUpdateType targetUpdate = this.task.getTargetUpdate();
 
-            // select
-            statement = DataAccessor.sqlSelect(sourceSelect.getTable(), sourceSelect.getColumns().getColumn(), sourceSelect.getWhere().getColumn());
+            // source: select
+            List<ColumnType> sourceColumns = this.sourceAccessor.prepareColumns(sourceSelect.getTable());
+            statement = DataAccessor.sqlSelect(sourceSelect.getTable(), sourceColumns, sourceSelect.getWhere().getColumn());
             statementParams = prepare(whereValues, sourceSelect.getWhere().getColumn());
-            List<Map<String, Object>> table = this.sourceAccessor.select(statement, statementParams);
-            raiseSourceSelected(this.source.getId(), this.task.getName(), statement, statementParams, table.size());
+            List<Map<String, Object>> sourceResult = this.sourceAccessor.select(statement, statementParams);
+            raiseSourceSelected(this.source.getId(), this.task.getName(), statement, statementParams, sourceResult.size());
 
-            // delete & insert
-            for (Map<String, Object> row : table) {
+            // target: delete & insert
+            for (Map<String, Object> row : sourceResult) {
                 String tableName = targetUpdate.getTable() == null ? sourceSelect.getTable() : targetUpdate.getTable();
+                List<ColumnType> targetColumns = null;
+                if (targetUpdate.getColumns() == null || targetUpdate.getColumns().getColumn().size() == 0) {
+                    targetColumns = sourceColumns;
+                }
+                else {
+                    targetColumns = this.targetAccessor.prepareColumns(targetUpdate.getTable());
+                }
+                List<ColumnType> pk = findPK(targetColumns);
 
-                statement = DataAccessor.sqlDelete(tableName, targetUpdate.getWhere().getColumn());
-                statementParams = prepare(row, targetUpdate.getWhere().getColumn());
+                statement = DataAccessor.sqlDelete(tableName, pk);
+                statementParams = prepare(row, pk);
                 int count = this.targetAccessor.execueUpdate(statement, statementParams);
                 raiseTargetDeleted(this.target.getId(), this.task.getName(), statement, statementParams, count);
 
-                List<ColumnType> columns = targetUpdate.getColumns() == null || targetUpdate.getColumns().getColumn().size() == 0 ? sourceSelect.getColumns().getColumn() : targetUpdate.getColumns().getColumn();
-                statement = DataAccessor.sqlInsert(tableName, columns);
-                statementParams = prepareValues(row, columns);
+                statement = DataAccessor.sqlInsert(tableName, targetColumns);
+                statementParams = prepareValues(row, targetColumns);
                 this.targetAccessor.execueUpdate(statement, statementParams);
                 raiseTargetInserted(this.target.getId(), this.task.getName(), statement, statementParams);
 
@@ -119,24 +135,52 @@ public class TaskExecutor {
             SourceSelectType sourceSelect = plan.getSourceSelect();
             TargetUpdateType targetUpdate = plan.getTargetUpdate();
 
-            // select
-            statement = DataAccessor.sqlSelect(sourceSelect.getTable(), sourceSelect.getColumns().getColumn(), sourceSelect.getWhere().getColumn());
+            if (plan.getRule() != null && plan.getRule().getCriteria() != null && plan.getRule().getCriteria().size() > 0) {
+                for (CriteriaType criteria : plan.getRule().getCriteria()) {
+                    Object v = master.get(criteria.getColumn());
+                    if (v == null) {
+                        return true;
+                    }
+
+                    boolean accept = true;
+                    if (criteria.getValidate().equalsIgnoreCase("STARTSWITH")) {
+                        accept = v.toString().startsWith(criteria.getValue());
+                    }
+                    else {
+                        accept = v.toString().equals(criteria.getValue());
+                    }
+                    if (!accept) {
+                        return true;
+                    }
+                }
+            }
+
+            // source: select
+            List<ColumnType> sourceColumns = this.sourceAccessor.prepareColumns(sourceSelect.getTable());
+            statement = DataAccessor.sqlSelect(sourceSelect.getTable(), sourceColumns, sourceSelect.getWhere().getColumn());
             statementParams = prepare(master, sourceSelect.getWhere().getColumn());
             List<Map<String, Object>> sourceTable = this.sourceAccessor.select(statement, statementParams);
             raiseSourceSelected(this.source.getId(), plan.getName(), statement, statementParams, sourceTable.size());
 
-            // delete & insert
+            // target: delete & insert
             for (Map<String, Object> row : sourceTable) {
                 String tableName = targetUpdate.getTable() == null ? sourceSelect.getTable() : targetUpdate.getTable();
+                List<ColumnType> targetColumns = null;
+                if (targetUpdate.getColumns() == null || targetUpdate.getColumns().getColumn().size() == 0) {
+                    targetColumns = sourceColumns;
+                }
+                else {
+                    targetColumns = this.targetAccessor.prepareColumns(targetUpdate.getTable());
+                }
+                List<ColumnType> pk = findPK(targetColumns);
 
-                statement = DataAccessor.sqlDelete(tableName, targetUpdate.getWhere().getColumn());
-                statementParams = prepare(row, targetUpdate.getWhere().getColumn());
+                statement = DataAccessor.sqlDelete(tableName, pk);
+                statementParams = prepare(row, pk);
                 int count = this.targetAccessor.execueUpdate(statement, statementParams);
                 raiseTargetDeleted(this.target.getId(), plan.getName(), statement, statementParams, count);
 
-                List<ColumnType> columns = targetUpdate.getColumns() == null || targetUpdate.getColumns().getColumn().size() == 0 ? sourceSelect.getColumns().getColumn() : targetUpdate.getColumns().getColumn();
-                statement = DataAccessor.sqlInsert(tableName, columns);
-                statementParams = prepareValues(row, columns);
+                statement = DataAccessor.sqlInsert(tableName, targetColumns);
+                statementParams = prepareValues(row, targetColumns);
                 this.targetAccessor.execueUpdate(statement, statementParams);
                 raiseTargetInserted(this.target.getId(), plan.getName(), statement, statementParams);
 
@@ -157,12 +201,12 @@ public class TaskExecutor {
         }
     }
 
-    private DataAccessor createMSSQL(DbServerType dbServer) throws Exception {
+    private DataAccessor createMSSQL(DbServerType dbServer, TaskFactory factory) throws Exception {
         if ("MSSQL".equalsIgnoreCase(dbServer.getDbType())) {
-            return new MSSQLAccessor(dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
+            return new MSSQLAccessor(factory.tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
         }
         else if ("PGSQL".equalsIgnoreCase(dbServer.getDbType())) {
-            return new PGSQLAccessor(dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
+            return new PGSQLAccessor(factory.tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
         }
 
         return null;
@@ -188,6 +232,16 @@ public class TaskExecutor {
             }
         }
         return result;
+    }
+
+    private List<ColumnType> findPK(List<ColumnType> columns) {
+        ArrayList<ColumnType> pk = new ArrayList<ColumnType>();
+        for (ColumnType column : columns) {
+            if (column.isPk()) {
+                pk.add(column);
+            }
+        }
+        return pk;
     }
 
     private void raiseSourceSelected(String db, String jobName, String sql, Map<String, Object> values, int count) {

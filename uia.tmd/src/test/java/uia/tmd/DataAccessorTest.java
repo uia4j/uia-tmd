@@ -1,24 +1,45 @@
 package uia.tmd;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
-import uia.tmd.model.TmdTypeHelper;
-import uia.tmd.model.TmdTypeHelperTest;
-import uia.tmd.model.xml.SourceSelectType;
-import uia.tmd.model.xml.TargetUpdateType;
-import uia.tmd.model.xml.TmdType;
+import uia.tmd.model.xml.ColumnType;
 
 public class DataAccessorTest {
 
     @Test
     public void testSQL() throws Exception {
-        TmdType tmd = TmdTypeHelper.load(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
-        SourceSelectType st = tmd.getTaskSpace().getTask().get(0).getSourceSelect();
-        TargetUpdateType tt = tmd.getTaskSpace().getTask().get(0).getTargetUpdate();
-        System.out.println(DataAccessor.sqlSelect(st.getTable(), st.getColumns().getColumn(), st.getWhere().getColumn()));
-        System.out.println(DataAccessor.sqlDelete(tt.getTable(), tt.getWhere().getColumn()));
-        System.out.println(DataAccessor.sqlInsert(tt.getTable(), st.getColumns().getColumn()));
+        System.out.println(DataAccessor.sqlSelect("human", prepareColumns(), prepareWhere()));
+        System.out.println(DataAccessor.sqlInsert("human", prepareColumns()));
+        System.out.println(DataAccessor.sqlDelete("human", prepareColumns()));
+    }
+
+    private List<ColumnType> prepareColumns() {
+        ArrayList<ColumnType> cts = new ArrayList<ColumnType>();
+
+        ColumnType f1 = new ColumnType();
+        f1.setValue("id");
+        f1.setPk(true);
+        cts.add(f1);
+
+        ColumnType f2 = new ColumnType();
+        f2.setValue("first_name");
+        f2.setPk(false);
+        cts.add(f2);
+
+        return cts;
+    }
+
+    private List<ColumnType> prepareWhere() {
+        ArrayList<ColumnType> cts = new ArrayList<ColumnType>();
+
+        ColumnType f1 = new ColumnType();
+        f1.setValue("id");
+        f1.setPk(true);
+        cts.add(f1);
+
+        return cts;
     }
 }

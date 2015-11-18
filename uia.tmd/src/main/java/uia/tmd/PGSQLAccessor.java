@@ -3,6 +3,9 @@ package uia.tmd;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Map;
+
+import uia.tmd.model.xml.TableType;
 
 /**
  * PostgreSQL data accessor.
@@ -25,7 +28,8 @@ public class PGSQLAccessor extends DataAccessor {
      * @param dbName Database name.
      * @throws Exception Initial failure.
      */
-    public PGSQLAccessor(String host, int port, String dbName) throws Exception {
+    PGSQLAccessor(Map<String, TableType> tables, String host, int port, String dbName) throws Exception {
+        super(tables);
         this.connString = String.format(CONN, host, port, dbName);
         System.out.println(this.connString);
         Class.forName("org.postgresql.Driver");

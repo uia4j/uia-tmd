@@ -12,26 +12,26 @@ import uia.tmd.model.TmdTypeHelperTest;
 public class TaskFactoryTest implements TaskExecutorListener {
 
     @Test
-    public void testHuman() throws URISyntaxException, Exception {
+    public void testCase1() throws URISyntaxException, Exception {
         TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
 
-        TaskExecutor executor = factory.createExecutor("human");
+        TaskExecutor executor = factory.createExecutor("CASE1");
         executor.addListener(this);
 
         TreeMap<String, Object> where = new TreeMap<String, Object>();
-        where.put("id", "1");
+        where.put("id", 1);
         System.out.println("Execute:" + executor.run(where));
     }
 
     @Test
-    public void testHuman2pg() throws URISyntaxException, Exception {
+    public void testCase2() throws URISyntaxException, Exception {
         TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
 
-        TaskExecutor executor = factory.createExecutor("human2pg");
+        TaskExecutor executor = factory.createExecutor("CASE2");
         executor.addListener(this);
 
         TreeMap<String, Object> where = new TreeMap<String, Object>();
-        where.put("id", "1");
+        where.put("id", 1);
         System.out.println("Execute:" + executor.run(where));
     }
 

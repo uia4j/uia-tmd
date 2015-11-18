@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import uia.tmd.model.xml.ColumnType;
+import uia.tmd.model.xml.TableType;
 
 /**
  * Database accessor.
@@ -18,6 +20,15 @@ import uia.tmd.model.xml.ColumnType;
  *
  */
 public abstract class DataAccessor {
+
+    private Map<String, TableType> tables;
+
+    private TreeMap<String, List<ColumnType>> tableColumns;
+
+    DataAccessor(Map<String, TableType> tables) {
+        this.tables = tables;
+        this.tableColumns = new TreeMap<String, List<ColumnType>>();
+    }
 
     /**
      * Get connection.
@@ -112,7 +123,7 @@ public abstract class DataAccessor {
      * Insert, update or delete data.
      * @param sql SQL statement.
      * @param parameters Values of parameters with ordering.
-     * @return Count of updated recored.
+     * @return Count of updated records.
      * @throws SQLException SQL exception.
      */
     public int execueUpdate(String sql, Map<String, Object> parameters) throws SQLException {
@@ -137,7 +148,6 @@ public abstract class DataAccessor {
      * Insert, update or delete data.
      * @param sql SQL statement.
      * @param table Values of parameters with ordering.
-     * @return Count of updated recored.
      * @throws SQLException SQL exception.
      */
     public void execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
@@ -165,12 +175,47 @@ public abstract class DataAccessor {
         ps.close();
     }
 
-    /**
-     *
-     * @param table
-     * @param columns
-     * @return
-     */
+    List<ColumnType> prepareColumns(String tableName) throws SQLException {
+        List<ColumnType> cts = this.tableColumns.get(tableName);
+        if (cts != null) {
+            return cts;
+        }
+        cts = new ArrayList<ColumnType>();
+
+        Connection conn = getConnection();
+        TableType tt = this.tables.get(tableName);
+
+        // primary key
+        List<String> pk;
+        if (tt != null && tt.getPks() != null && tt.getPks().getPk().size() > 0) {
+            pk = tt.getPks().getPk();
+        }
+        else {
+            pk = new ArrayList<String>();
+            ResultSet rs = conn.getMetaData().getPrimaryKeys(null, null, tableName);
+            while (rs.next()) {
+                pk.add(rs.getString("COLUMN_NAME"));
+            }
+            rs.close();
+        }
+
+        ResultSet rs = conn.getMetaData().getColumns(null, null, tableName, null);
+        while (rs.next()) {
+            if (tableName.equalsIgnoreCase(rs.getString("TABLE_NAME"))) {
+                String columnName = rs.getString("COLUMN_NAME");
+                ColumnType ct = new ColumnType();
+                ct.setPk(pk.contains(columnName));
+                ct.setValue(columnName);
+                cts.add(ct);
+            }
+        }
+        rs.close();
+
+        this.tableColumns.put(tableName, cts);
+
+        return cts;
+    }
+
     static String sqlInsert(String table, List<ColumnType> columns) {
         if (columns.size() == 0) {
             return null;
@@ -185,13 +230,6 @@ public abstract class DataAccessor {
 
     }
 
-    /**
-     *
-     * @param table
-     * @param columns
-     * @param where
-     * @return
-     */
     static String sqlSelect(String table, List<ColumnType> columns, List<ColumnType> where) {
         // fields
         StringBuilder sb1 = new StringBuilder(columns.get(0).getValue());
@@ -207,12 +245,6 @@ public abstract class DataAccessor {
         return String.format("SELECT %s FROM %s WHERE %s", sb1, table, sb2);
     }
 
-    /**
-     *
-     * @param table
-     * @param where
-     * @return
-     */
     static String sqlDelete(String table, List<ColumnType> where) {
         // where
         StringBuilder sb2 = new StringBuilder(where.get(0).getValue()).append("=?");
