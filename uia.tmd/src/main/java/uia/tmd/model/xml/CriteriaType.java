@@ -1,8 +1,8 @@
 //
-// ¦¹ÀÉ®×¬O¥Ñ JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 ©Ò²£¥Í 
-// ½Ğ°Ñ¾\ <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// ¤@¥¹­«·s½sÄ¶¨Ó·½ºõ­n, ¹ï¦¹ÀÉ®×©Ò°µªº¥ô¦ó­×§ï³£±N·|¿ò¥¢. 
-// ²£¥Í®É¶¡: 2015.11.17 ©ó 05:53:15 PM CST 
+// æ­¤æª”æ¡ˆæ˜¯ç”± JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 æ‰€ç”¢ç”Ÿ 
+// è«‹åƒé–± <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// ä¸€æ—¦é‡æ–°ç·¨è­¯ä¾†æºç¶±è¦, å°æ­¤æª”æ¡ˆæ‰€åšçš„ä»»ä½•ä¿®æ”¹éƒ½å°‡æœƒéºå¤±. 
+// ç”¢ç”Ÿæ™‚é–“: 2015.11.18 æ–¼ 10:45:18 PM CST 
 //
 
 
@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlValue;
 
 
 /**
- * <p>CriteriaType complex type ªº Java Ãş§O.
+ * <p>CriteriaType complex type çš„ Java é¡åˆ¥.
  * 
- * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
+ * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
  * 
  * <pre>
  * &lt;complexType name="CriteriaType">
@@ -47,7 +47,7 @@ public class CriteriaType {
     protected String validate;
 
     /**
-     * ¨ú±o value ¯S©Êªº­È.
+     * å–å¾— value ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -59,7 +59,7 @@ public class CriteriaType {
     }
 
     /**
-     * ³]©w value ¯S©Êªº­È.
+     * è¨­å®š value ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -71,7 +71,7 @@ public class CriteriaType {
     }
 
     /**
-     * ¨ú±o column ¯S©Êªº­È.
+     * å–å¾— column ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -83,7 +83,7 @@ public class CriteriaType {
     }
 
     /**
-     * ³]©w column ¯S©Êªº­È.
+     * è¨­å®š column ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -95,7 +95,7 @@ public class CriteriaType {
     }
 
     /**
-     * ¨ú±o validate ¯S©Êªº­È.
+     * å–å¾— validate ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -111,7 +111,7 @@ public class CriteriaType {
     }
 
     /**
-     * ³]©w validate ¯S©Êªº­È.
+     * è¨­å®š validate ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is

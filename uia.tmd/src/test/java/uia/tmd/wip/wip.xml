@@ -1,128 +1,184 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd>
+	<executorSpace>
+		<executor name="ShopOrder" source="WIP" target="WIPTEST" task="ShopOrder" />
+		<executor name="ZTask" source="WIP" target="WIPTEST" task="ZTask" />
+	</executorSpace>
 	<taskSpace>
-		<task name="Z_TASK">
-			<source>WIP</source>
-			<target>WIPTEST</target>
-			<sourceSelect table="Z_TASK" delete="true">
-				<where>
-					<column>SID</column>
-				</where>
-			</sourceSelect>
+		<task name="BOM">
+			<sourceSelect table="BOM" />
 			<targetUpdate />
 			<nexts>
-				<plan name="Z_TASK_ATTA">
-					<sourceSelect table="Z_TASK_ATTA" delete="true">
-						<where>
-							<column source="SID">TASK_SID</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+				<plan name="BOMComponent">
+					<join>
+						<column source="HANDLE">BOM_BO</column>
+					</join>
 				</plan>
-				<plan name="Z_TASK_BATCH">
-					<sourceSelect table="Z_TASK_BATCH" delete="true">
-						<where>
-							<column source="SID">TASK_SID</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+			</nexts>
+		</task>
+		<task name="BOMComponent">
+			<sourceSelect table="BOM_COMPONENT" />
+			<targetUpdate />
+			<nexts>
+				<plan name="Item">
+					<rule>
+						<criteria column="COMPONENT_GBO" validate="startsWith">ItemBO</criteria>
+					</rule>
+					<join>
+						<column source="COMPONENT_GBO">HANDLE</column>
+					</join>
 				</plan>
-				<plan name="Z_TASK_OBJ">
-					<sourceSelect table="Z_TASK_OBJ" delete="true">
-						<where>
-							<column source="SID">TASK_SID</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+			</nexts>
+		</task>
+		<task name="Item">
+			<sourceSelect table="ITEM" />
+			<targetUpdate />
+			<nexts>
+				<plan name="BOM">
+					<join>
+						<column source="BOM_BO">HANDLE</column>
+					</join>
 				</plan>
-				<plan name="Z_TASK_PRO">
-					<sourceSelect table="Z_TASK_PRO" delete="true">
-						<where>
-							<column source="SID">TASK_SID</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+			</nexts>
+		</task>
+		<task name="Router">
+			<sourceSelect table="ROUTER" />
+			<targetUpdate />
+			<nexts>
+				<plan name="Status">
+					<join>
+						<column source="STATUS_BO">HANDLE</column>
+					</join>
 				</plan>
 			</nexts>
 		</task>
 		<task name="ShopOrder">
-			<source>WIP</source>
-			<target>WIPTEST</target>
-			<sourceSelect table="SHOP_ORDER" delete="true">
-				<where>
-					<column>HANDLE</column>
-				</where>
-			</sourceSelect>
+			<sourceSelect table="SHOP_ORDER" />
 			<targetUpdate />
 			<nexts>
-				<plan name="SHOP_ORDER_INSPECTION_LOT">
-					<sourceSelect table="SHOP_ORDER_INSPECTION_LOT" delete="true">
-						<where>
-							<column source="HANDLE">SHOP_ORDER_BO</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
-					<nexts>
-						<plan name="SHOP_ORDER_INSPECTION">
-							<sourceSelect table="SHOP_ORDER_INSPECTION" delete="true">
-								<where>
-									<column source="HANDLE">SHOP_ORDER_INSPECTION_LOT_BO</column>
-								</where>
-							</sourceSelect>
-							<targetUpdate />
-						</plan>
-					</nexts>
+				<plan name="BOM">
+					<join>
+						<column source="BOM_BO">HANDLE</column>
+					</join>
 				</plan>
-				<plan name="SHOP_ORDER_SCHEDULE">
-					<sourceSelect table="SHOP_ORDER_SCHEDULE" delete="true">
-						<where>
-							<column source="HANDLE">SHOP_ORDER_BO</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+				<plan name="Item">
+					<join>
+						<column source="ITEM_BO">HANDLE</column>
+					</join>
 				</plan>
-				<plan name="SHOP_ORDER_SFC">
-					<sourceSelect table="SHOP_ORDER_SFC" delete="true">
-						<where>
-							<column source="HANDLE">SHOP_ORDER_BO</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+				<plan name="Router">
+					<join>
+						<column source="ROUTER_BO">HANDLE</column>
+					</join>
 				</plan>
-				<plan name="SHOP_ORDER_SFC_PLAN">
-					<sourceSelect table="SHOP_ORDER_SFC_PLAN" delete="true">
-						<where>
-							<column source="HANDLE">SHOP_ORDER_BO</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+				<plan name="ShopOrderInspectionLot">
+					<join>
+						<column source="HANDLE">SHOP_ORDER_BO</column>
+					</join>
 				</plan>
-				<plan name="SHOP_ORDER_SUBASSEMBLY">
-					<sourceSelect table="SHOP_ORDER_SUBASSEMBLY" delete="true">
-						<where>
-							<column source="HANDLE">SHOP_ORDER_PARENT_BO</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+				<plan name="ShopOrderSFC">
+					<join>
+						<column source="HANDLE">SHOP_ORDER_BO</column>
+					</join>
+				</plan>
+				<plan name="ShopOrderSFCPlan">
+					<join>
+						<column source="HANDLE">SHOP_ORDER_BO</column>
+					</join>
+				</plan>
+				<plan name="Status">
+					<join>
+						<column source="STATUS_BO">HANDLE</column>
+					</join>
 				</plan>
 			</nexts>
 		</task>
+		<task name="ShopOrderInspection">
+			<sourceSelect table="SHOP_ORDER_INSPECTION" />
+			<targetUpdate />
+		</task>
+		<task name="ShopOrderInspectionLot">
+			<sourceSelect table="SHOP_ORDER_INSPECTION_LOT" />
+			<targetUpdate />
+			<nexts>
+				<plan name="ShopOrderInspection">
+					<join>
+						<column source="HANDLE">SHOP_ORDER_INSPECTION_LOT_BO</column>
+					</join>
+				</plan>
+			</nexts>
+		</task>
+		<task name="ShopOrderSchedule">
+			<sourceSelect table="SHOP_ORDER_SCHEDULE"  />
+			<targetUpdate />
+		</task>
+		<task name="ShopOrderSFC">
+			<sourceSelect table="SHOP_ORDER_SFC" />
+			<targetUpdate />
+		</task>
+		<task name="ShopOrderSFCPlan">
+			<sourceSelect table="SHOP_ORDER_SFC_PLAN" />
+			<targetUpdate />
+		</task>
+		<task name="Status">
+			<sourceSelect table="STATUS" />
+			<targetUpdate />
+		</task>
+		<task name="ZTask">
+			<sourceSelect table="Z_TASK" />
+			<targetUpdate />
+			<nexts>
+				<plan name="ZTaskATTA">
+					<join>
+						<column source="SID">TASK_SID</column>
+					</join>
+				</plan>
+				<plan name="ZTaskBatch">
+					<join>
+						<column source="SID">TASK_SID</column>
+					</join>
+				</plan>
+				<plan name="ZTaskObj">
+					<join>
+						<column source="SID">TASK_SID</column>
+					</join>
+				</plan>
+				<plan name="ZTaskPro">
+					<join>
+						<column source="SID">TASK_SID</column>
+					</join>
+				</plan>
+			</nexts>
+		</task>
+		<task name="ZTaskATTA">
+			<sourceSelect table="Z_TASK_ATTA" />
+			<targetUpdate />
+		</task>
+		<task name="ZTaskBatch">
+			<sourceSelect table="Z_TASK_BATCH" />
+			<targetUpdate />
+		</task>
+		<task name="ZTaskObj">
+			<sourceSelect table="Z_TASK_OBJ" />
+			<targetUpdate />
+		</task>
+		<task name="ZTaskPro">
+			<sourceSelect table="Z_TASK_PRO" />
+			<targetUpdate />
+		</task>
 	</taskSpace>
 	<tableSpace>
-		<table name="Z_TASK">
-			<pks><pk>SID</pk></pks>
+		<table name="BOM">
+			<pks><pk>HANDLE</pk></pks>
 		</table>
-		<table name="Z_TASK_ATTA">
-			<pks><pk>SID</pk></pks>
+		<table name="BOM_COMPONENT">
+			<pks><pk>HANDLE</pk></pks>
 		</table>
-		<table name="Z_TASK_BATCH">
-			<pks><pk>SID</pk></pks>
+		<table name="ITEM">
+			<pks><pk>HANDLE</pk></pks>
 		</table>
-		<table name="Z_TASK_OBJ">
-			<pks><pk>SID</pk></pks>
-		</table>
-		<table name="Z_TASK_PRO">
-			<pks><pk>SID</pk></pks>
+		<table name="ROUTER">
+			<pks><pk>HANDLE</pk></pks>
 		</table>
 		<table name="SHOP_ORDER">
 			<pks><pk>HANDLE</pk></pks>
@@ -147,6 +203,24 @@
 		</table>
 		<table name="SHOP_ORDER_SFC_SUBASSY_PEGGED">
 			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="STATUS">
+			<pks><pk>HANDLE</pk></pks>
+		</table>
+		<table name="Z_TASK">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="Z_TASK_ATTA">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="Z_TASK_BATCH">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="Z_TASK_OBJ">
+			<pks><pk>SID</pk></pks>
+		</table>
+		<table name="Z_TASK_PRO">
+			<pks><pk>SID</pk></pks>
 		</table>
 	</tableSpace>
 	<databaseSpace>

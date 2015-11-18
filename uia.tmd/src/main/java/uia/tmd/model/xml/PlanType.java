@@ -1,8 +1,8 @@
 //
-// ¦¹ÀÉ®×¬O¥Ñ JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 ©Ò²£¥Í 
-// ½Ğ°Ñ¾\ <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// ¤@¥¹­«·s½sÄ¶¨Ó·½ºõ­n, ¹ï¦¹ÀÉ®×©Ò°µªº¥ô¦ó­×§ï³£±N·|¿ò¥¢. 
-// ²£¥Í®É¶¡: 2015.11.17 ©ó 05:53:15 PM CST 
+// æ­¤æª”æ¡ˆæ˜¯ç”± JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 æ‰€ç”¢ç”Ÿ 
+// è«‹åƒé–± <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// ä¸€æ—¦é‡æ–°ç·¨è­¯ä¾†æºç¶±è¦, å°æ­¤æª”æ¡ˆæ‰€åšçš„ä»»ä½•ä¿®æ”¹éƒ½å°‡æœƒéºå¤±. 
+// ç”¢ç”Ÿæ™‚é–“: 2015.11.18 æ–¼ 10:45:18 PM CST 
 //
 
 
@@ -18,9 +18,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>PlanType complex type ªº Java Ãş§O.
+ * <p>PlanType complex type çš„ Java é¡åˆ¥.
  * 
- * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
+ * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
  * 
  * <pre>
  * &lt;complexType name="PlanType">
@@ -38,15 +38,12 @@ import javax.xml.bind.annotation.XmlType;
  *             &lt;/complexContent>
  *           &lt;/complexType>
  *         &lt;/element>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="sourceSelect" type="{http://tmd.uia/model/xml}SourceSelectType"/>
- *         &lt;element name="targetUpdate" type="{http://tmd.uia/model/xml}TargetUpdateType"/>
- *         &lt;element name="nexts">
+ *         &lt;element name="join">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="plan" type="{http://tmd.uia/model/xml}PlanType" maxOccurs="unbounded"/>
+ *                   &lt;element name="column" type="{http://tmd.uia/model/xml}ColumnType" maxOccurs="unbounded"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
@@ -64,28 +61,19 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PlanType", propOrder = {
     "rule",
-    "description",
-    "sourceSelect",
-    "targetUpdate",
-    "nexts"
+    "join"
 })
 public class PlanType {
 
     @XmlElement(required = true)
     protected PlanType.Rule rule;
     @XmlElement(required = true)
-    protected String description;
-    @XmlElement(required = true)
-    protected SourceSelectType sourceSelect;
-    @XmlElement(required = true)
-    protected TargetUpdateType targetUpdate;
-    @XmlElement(required = true)
-    protected PlanType.Nexts nexts;
+    protected PlanType.Join join;
     @XmlAttribute(name = "name", required = true)
     protected String name;
 
     /**
-     * ¨ú±o rule ¯S©Êªº­È.
+     * å–å¾— rule ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -97,7 +85,7 @@ public class PlanType {
     }
 
     /**
-     * ³]©w rule ¯S©Êªº­È.
+     * è¨­å®š rule ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -109,103 +97,31 @@ public class PlanType {
     }
 
     /**
-     * ¨ú±o description ¯S©Êªº­È.
+     * å–å¾— join ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link PlanType.Join }
      *     
      */
-    public String getDescription() {
-        return description;
+    public PlanType.Join getJoin() {
+        return join;
     }
 
     /**
-     * ³]©w description ¯S©Êªº­È.
+     * è¨­å®š join ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link PlanType.Join }
      *     
      */
-    public void setDescription(String value) {
-        this.description = value;
+    public void setJoin(PlanType.Join value) {
+        this.join = value;
     }
 
     /**
-     * ¨ú±o sourceSelect ¯S©Êªº­È.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SourceSelectType }
-     *     
-     */
-    public SourceSelectType getSourceSelect() {
-        return sourceSelect;
-    }
-
-    /**
-     * ³]©w sourceSelect ¯S©Êªº­È.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SourceSelectType }
-     *     
-     */
-    public void setSourceSelect(SourceSelectType value) {
-        this.sourceSelect = value;
-    }
-
-    /**
-     * ¨ú±o targetUpdate ¯S©Êªº­È.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TargetUpdateType }
-     *     
-     */
-    public TargetUpdateType getTargetUpdate() {
-        return targetUpdate;
-    }
-
-    /**
-     * ³]©w targetUpdate ¯S©Êªº­È.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TargetUpdateType }
-     *     
-     */
-    public void setTargetUpdate(TargetUpdateType value) {
-        this.targetUpdate = value;
-    }
-
-    /**
-     * ¨ú±o nexts ¯S©Êªº­È.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PlanType.Nexts }
-     *     
-     */
-    public PlanType.Nexts getNexts() {
-        return nexts;
-    }
-
-    /**
-     * ³]©w nexts ¯S©Êªº­È.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PlanType.Nexts }
-     *     
-     */
-    public void setNexts(PlanType.Nexts value) {
-        this.nexts = value;
-    }
-
-    /**
-     * ¨ú±o name ¯S©Êªº­È.
+     * å–å¾— name ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -217,7 +133,7 @@ public class PlanType {
     }
 
     /**
-     * ³]©w name ¯S©Êªº­È.
+     * è¨­å®š name ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -230,16 +146,16 @@ public class PlanType {
 
 
     /**
-     * <p>anonymous complex type ªº Java Ãş§O.
+     * <p>anonymous complex type çš„ Java é¡åˆ¥.
      * 
-     * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
+     * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
      * 
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="plan" type="{http://tmd.uia/model/xml}PlanType" maxOccurs="unbounded"/>
+     *         &lt;element name="column" type="{http://tmd.uia/model/xml}ColumnType" maxOccurs="unbounded"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -250,49 +166,49 @@ public class PlanType {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "plan"
+        "column"
     })
-    public static class Nexts {
+    public static class Join {
 
         @XmlElement(required = true)
-        protected List<PlanType> plan;
+        protected List<ColumnType> column;
 
         /**
-         * Gets the value of the plan property.
+         * Gets the value of the column property.
          * 
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the plan property.
+         * This is why there is not a <CODE>set</CODE> method for the column property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
-         *    getPlan().add(newItem);
+         *    getColumn().add(newItem);
          * </pre>
          * 
          * 
          * <p>
          * Objects of the following type(s) are allowed in the list
-         * {@link PlanType }
+         * {@link ColumnType }
          * 
          * 
          */
-        public List<PlanType> getPlan() {
-            if (plan == null) {
-                plan = new ArrayList<PlanType>();
+        public List<ColumnType> getColumn() {
+            if (column == null) {
+                column = new ArrayList<ColumnType>();
             }
-            return this.plan;
+            return this.column;
         }
 
     }
 
 
     /**
-     * <p>anonymous complex type ªº Java Ãş§O.
+     * <p>anonymous complex type çš„ Java é¡åˆ¥.
      * 
-     * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
+     * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
      * 
      * <pre>
      * &lt;complexType>

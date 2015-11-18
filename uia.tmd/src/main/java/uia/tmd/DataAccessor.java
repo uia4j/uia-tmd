@@ -230,16 +230,16 @@ public abstract class DataAccessor {
 
     }
 
-    static String sqlSelect(String table, List<ColumnType> columns, List<ColumnType> where) {
+    static String sqlSelect(String table, List<ColumnType> columns, String[] where) {
         // fields
         StringBuilder sb1 = new StringBuilder(columns.get(0).getValue());
         for (int i = 1, n = columns.size(); i < n; i++) {
             sb1.append(",").append(columns.get(i).getValue());
         }
         // where
-        StringBuilder sb2 = new StringBuilder(where.get(0).getValue()).append("=?");
-        for (int i = 1, n = where.size(); i < n; i++) {
-            sb2.append(" AND ").append(where.get(i).getValue()).append("=?");
+        StringBuilder sb2 = new StringBuilder(where[0]).append("=?");
+        for (int i = 1, n = where.length; i < n; i++) {
+            sb2.append(" AND ").append(where[i]).append("=?");
         }
 
         return String.format("SELECT %s FROM %s WHERE %s", sb1, table, sb2);

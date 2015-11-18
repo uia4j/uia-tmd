@@ -1,93 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd>
+	<executorSpace>
+		<executor name="CASE1" source="MSSQL1" target="MSSQL1" task="CASE1" />
+		<executor name="CASE2" source="MSSQL1" target="MSSQL1" task="CASE2" />
+		<executor name="CASE3" source="MSSQL1" target="MSSQL1" task="CASE3" />
+	</executorSpace>
 	<taskSpace>
 		<task name="CASE1">
-			<source>MSSQL1</source>
-			<target>MSSQL2</target>
-			<sourceSelect table="human">
-				<where>
-					<column>id</column>
-				</where>
-			</sourceSelect>
+			<sourceSelect table="human" />
 			<targetUpdate table="people" />
 			<nexts>
-				<plan name="account">
-					<sourceSelect table="human_acc">
-						<where>
-							<column source="id">human</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate table="people_acc">
-						<columns>
-							<column pk="true">id</column>
-							<column source="human">people</column>
-							<column>account</column>
-						</columns>
-					</targetUpdate>
+				<plan name="CASE11">
+					<join>
+						<column source="id">human</column>
+					</join>
 				</plan>
 			</nexts>
+		</task>
+		<task name="CASE11">
+			<sourceSelect table="human_acc" />
+			<targetUpdate table="people_acc">
+				<columns>
+					<column>id</column>
+					<column source="human">people</column>
+					<column>account</column>
+				</columns>
+			</targetUpdate>
 		</task>
 		<task name="CASE2">
-			<source>MSSQL1</source>
-			<target>PGSQL1</target>
-			<sourceSelect table="human">
-				<where>
-					<column>id</column>
-				</where>
-			</sourceSelect>
+			<sourceSelect table="human" />
+			<targetUpdate />
+		</task>
+		<task name="CASE3">
+			<sourceSelect table="human" />
 			<targetUpdate />
 			<nexts>
-				<plan name="account">
-					<sourceSelect table="human_acc">
-						<where>
-							<column source="id">human</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
+				<plan name="CASE31">
+					<join>
+						<column source="id">human</column>
+					</join>
+				</plan>
+				<plan name="CASE_TW">
+					<rule>
+						<criteria column="human_type" validate="equals">TW</criteria>
+					</rule>
+					<join>
+						<column source="id">human</column>
+					</join>
+				</plan>
+				<plan name="CASE_US">
+					<rule>
+						<criteria column="human_type" validate="equals">TW</criteria>
+					</rule>
+					<join>
+						<column source="id">human</column>
+					</join>
 				</plan>
 			</nexts>
 		</task>
-		<task name="CASE3">
-			<source>PGSQL1</source>
-			<target>PGSQL2</target>
-			<sourceSelect table="human">
-				<where>
-					<column>id</column>
-				</where>
-			</sourceSelect>
+		<task name="CASE31">
+			<sourceSelect table="human_acc" />
 			<targetUpdate />
-			<nexts>
-				<plan name="account">
-					<sourceSelect table="human_acc">
-						<where>
-							<column source="id">human</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
-				</plan>
-				<plan name="TAIWAN">
-					<rule>
-						<criteria column="human_type" validate="startsWith">TW</criteria>
-					</rule>
-					<sourceSelect table="country_tw">
-						<where>
-							<column source="id">human</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
-				</plan>
-				<plan name="US">
-					<rule>
-						<criteria column="human_type">US</criteria>
-					</rule>
-					<sourceSelect table="country_us">
-						<where>
-							<column source="id">human</column>
-						</where>
-					</sourceSelect>
-					<targetUpdate />
-				</plan>
-			</nexts>
+		</task>
+		<task name="CASE_TW">
+			<sourceSelect table="country_tw" />
+			<targetUpdate />
+		</task>
+		<task name="CASE_US">
+			<sourceSelect table="country_us" />
+			<targetUpdate />
 		</task>
 	</taskSpace>
 	<tableSpace />
@@ -102,20 +83,11 @@
 			<dbType>MSSQL</dbType>
 		</dbServer>
 		<dbServer>
-			<id>MSSQL2</id>
-			<host>localhost</host>
-			<port>1433</port>
-			<dbName>mydb</dbName>
-			<user>sa</user>
-			<password>sqlAdm</password>
-			<dbType>MSSQL</dbType>
-		</dbServer>
-		<dbServer>
 			<id>PGSQL1</id>
 			<host>localhost</host>
 			<port>5432</port>
 			<dbName>mydb</dbName>
-			<user>postgres</user>
+			<user>postgre</user>
 			<password>pgAdm</password>
 			<dbType>PGSQL</dbType>
 		</dbServer>
@@ -124,7 +96,7 @@
 			<host>localhost</host>
 			<port>5432</port>
 			<dbName>mydb2</dbName>
-			<user>postgres</user>
+			<user>postgre</user>
 			<password>pgAdm</password>
 			<dbType>PGSQL</dbType>
 		</dbServer>

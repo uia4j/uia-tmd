@@ -19,12 +19,12 @@ public class WIPTest implements TaskExecutorListener {
     public void testZTask() throws URISyntaxException, Exception {
         TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("wip.xml").toURI()));
 
-        TaskExecutor executor = factory.createExecutor("Z_TASK");
+        TaskExecutor executor = factory.createExecutor("ZTask");
         executor.addListener(this);
 
         TreeMap<String, Object> where = new TreeMap<String, Object>();
         where.put("SID", "0905f3c2-4fe5-48dc-9f55-c3819e31f6ac");
-        System.out.println("Execute:" + executor.run(where));
+        System.out.println(String.format("Execute:%s(%s)", executor.run(where), this.rc));
     }
 
     @Test
@@ -36,8 +36,8 @@ public class WIPTest implements TaskExecutorListener {
 
         TreeMap<String, Object> where = new TreeMap<String, Object>();
         where.put("HANDLE", "ShopOrderBO:1600,20150928-CFZ-001");
-        System.out.println("Execute:" + executor.run(where));
-        System.out.println(this.rc);
+        // where.put("HANDLE", "ShopOrderBO:D001,PACK_SO_20150826001");
+        System.out.println(String.format("Execute:%s(%s)", executor.run(where), this.rc));
     }
 
     @Override

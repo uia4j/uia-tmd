@@ -8,10 +8,26 @@
     <element name="tmd" type="uia:TmdType" nillable="true" />
     <complexType name="TmdType" mixed="false">
         <sequence>
+            <element name="executorSpace" type="uia:ExecutorSpaceType"></element>
             <element name="taskSpace" type="uia:TaskSpaceType"></element>
             <element name="tableSpace" type="uia:TableSpaceType"></element>
             <element name="databaseSpace" type="uia:DatabaseSpaceType"></element>
         </sequence>
+    </complexType>
+    
+     <!-- ExecutorSpace -->
+    <complexType name="ExecutorSpaceType">
+        <sequence>
+            <choice maxOccurs="unbounded">
+                <element name="executor" type="uia:ExecutorType"></element>
+            </choice>
+        </sequence>
+    </complexType>
+    <complexType name="ExecutorType">
+        <attribute name="name" type="string" />
+        <attribute name="source" type="string" />
+        <attribute name="target" type="string" />
+        <attribute name="task" type="string" />
     </complexType>
     
      <!-- TaskSpace -->
@@ -22,12 +38,8 @@
             </choice>
         </sequence>
     </complexType>
-	
     <complexType name="TaskType">
 		<sequence>
-			<element name="description" type="string"></element>
-			<element name="source" type="string"></element>
-			<element name="target" type="string"></element>
             <element name="sourceSelect" type="uia:SourceSelectType"></element>
             <element name="targetUpdate" type="uia:TargetUpdateType"></element>
 			<element name="nexts">
@@ -40,7 +52,6 @@
 		</sequence>
         <attribute name="name" type="string" use="required" />
     </complexType>
-
     <complexType name="PlanType">
 		<sequence>
 			<element name="rule">
@@ -50,23 +61,18 @@
 			        </sequence>
 				</complexType>
 			</element>
-			<element name="description" type="string"></element>
-            <element name="sourceSelect" type="uia:SourceSelectType"></element>
-            <element name="targetUpdate" type="uia:TargetUpdateType"></element>
-			<element name="nexts">
+			<element name="join">
 				<complexType>
 			        <sequence>
-						<element name="plan" type="uia:PlanType" maxOccurs="unbounded"></element>
+						<element name="column" type="uia:ColumnType" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
 		</sequence>
         <attribute name="name" type="string" use="required" />
     </complexType>
-
     <complexType name="SourceSelectType">
         <sequence>
-			<element name="description" type="string"></element>
 			<element name="where">
 				<complexType>
 			        <sequence>
@@ -78,10 +84,8 @@
         <attribute name="table" type="string" use="required" />
         <attribute name="delete" type="boolean" default="false" />
     </complexType>
-
     <complexType name="TargetUpdateType">
         <sequence>
-			<element name="description" type="string"></element>
 			<element name="columns">
 				<complexType>
 			        <sequence>
@@ -92,7 +96,6 @@
         </sequence>
         <attribute name="table" type="string" />
     </complexType>
-    
     <complexType name="ColumnType">
         <simpleContent>
             <extension base="string">
@@ -101,7 +104,6 @@
             </extension>
         </simpleContent>
     </complexType>
-    
     <complexType name="CriteriaType">
         <simpleContent>
             <extension base="string">
@@ -111,7 +113,6 @@
         </simpleContent>
     </complexType>
 
-	
      <!-- TableSpace -->
     <complexType name="TableSpaceType">
         <sequence>

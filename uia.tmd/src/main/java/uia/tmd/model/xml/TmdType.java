@@ -1,8 +1,8 @@
 //
-// ¦¹ÀÉ®×¬O¥Ñ JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 ©Ò²£¥Í 
-// ½Ğ°Ñ¾\ <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// ¤@¥¹­«·s½sÄ¶¨Ó·½ºõ­n, ¹ï¦¹ÀÉ®×©Ò°µªº¥ô¦ó­×§ï³£±N·|¿ò¥¢. 
-// ²£¥Í®É¶¡: 2015.11.17 ©ó 05:53:15 PM CST 
+// æ­¤æª”æ¡ˆæ˜¯ç”± JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 æ‰€ç”¢ç”Ÿ 
+// è«‹åƒé–± <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// ä¸€æ—¦é‡æ–°ç·¨è­¯ä¾†æºç¶±è¦, å°æ­¤æª”æ¡ˆæ‰€åšçš„ä»»ä½•ä¿®æ”¹éƒ½å°‡æœƒéºå¤±. 
+// ç”¢ç”Ÿæ™‚é–“: 2015.11.18 æ–¼ 10:45:18 PM CST 
 //
 
 
@@ -15,15 +15,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>TmdType complex type ªº Java Ãş§O.
+ * <p>TmdType complex type çš„ Java é¡åˆ¥.
  * 
- * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
+ * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
  * 
  * <pre>
  * &lt;complexType name="TmdType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="executorSpace" type="{http://tmd.uia/model/xml}ExecutorSpaceType"/>
  *         &lt;element name="taskSpace" type="{http://tmd.uia/model/xml}TaskSpaceType"/>
  *         &lt;element name="tableSpace" type="{http://tmd.uia/model/xml}TableSpaceType"/>
  *         &lt;element name="databaseSpace" type="{http://tmd.uia/model/xml}DatabaseSpaceType"/>
@@ -37,12 +38,15 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TmdType", propOrder = {
+    "executorSpace",
     "taskSpace",
     "tableSpace",
     "databaseSpace"
 })
 public class TmdType {
 
+    @XmlElement(required = true)
+    protected ExecutorSpaceType executorSpace;
     @XmlElement(required = true)
     protected TaskSpaceType taskSpace;
     @XmlElement(required = true)
@@ -51,7 +55,31 @@ public class TmdType {
     protected DatabaseSpaceType databaseSpace;
 
     /**
-     * ¨ú±o taskSpace ¯S©Êªº­È.
+     * å–å¾— executorSpace ç‰¹æ€§çš„å€¼.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ExecutorSpaceType }
+     *     
+     */
+    public ExecutorSpaceType getExecutorSpace() {
+        return executorSpace;
+    }
+
+    /**
+     * è¨­å®š executorSpace ç‰¹æ€§çš„å€¼.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ExecutorSpaceType }
+     *     
+     */
+    public void setExecutorSpace(ExecutorSpaceType value) {
+        this.executorSpace = value;
+    }
+
+    /**
+     * å–å¾— taskSpace ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -63,7 +91,7 @@ public class TmdType {
     }
 
     /**
-     * ³]©w taskSpace ¯S©Êªº­È.
+     * è¨­å®š taskSpace ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -75,7 +103,7 @@ public class TmdType {
     }
 
     /**
-     * ¨ú±o tableSpace ¯S©Êªº­È.
+     * å–å¾— tableSpace ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -87,7 +115,7 @@ public class TmdType {
     }
 
     /**
-     * ³]©w tableSpace ¯S©Êªº­È.
+     * è¨­å®š tableSpace ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -99,7 +127,7 @@ public class TmdType {
     }
 
     /**
-     * ¨ú±o databaseSpace ¯S©Êªº­È.
+     * å–å¾— databaseSpace ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -111,7 +139,7 @@ public class TmdType {
     }
 
     /**
-     * ³]©w databaseSpace ¯S©Êªº­È.
+     * è¨­å®š databaseSpace ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is

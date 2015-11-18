@@ -22,8 +22,6 @@ public class TmdTypeHelperTest {
         TmdType tmd = TmdTypeHelper.load(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
         for (TaskType t : tmd.getTaskSpace().getTask()) {
             System.out.println("-------------------------------------------");
-            System.out.println("source: " + t.getSource());
-            System.out.println("target: " + t.getTarget());
             System.out.println("task: " + t.getName());
 
             print(t.getSourceSelect());
@@ -50,15 +48,10 @@ public class TmdTypeHelperTest {
         System.out.println("plan:" + plan.getName());
         if (plan.getRule() != null) {
             for (CriteriaType criteria : plan.getRule().getCriteria()) {
-                System.out.println("  " + criteria.getColumn() + "='" + criteria.getValue() + "'");
+                System.out.println("  criteria: " + criteria.getColumn() + "='" + criteria.getValue() + "'");
             }
-        }
-        print(plan.getSourceSelect());
-        print(plan.getTargetUpdate());
-        plan.getSourceSelect();
-        if (plan.getNexts() != null) {
-            for (PlanType p : plan.getNexts().getPlan()) {
-                print(p);
+            for (ColumnType column : plan.getJoin().getColumn()) {
+                System.out.println("  column: " + column.getValue());
             }
         }
     }
@@ -66,7 +59,9 @@ public class TmdTypeHelperTest {
     private void print(SourceSelectType ss) {
         System.out.println("  table: " + ss.getTable());
         System.out.println("    where: ");
-        print(ss.getWhere().getColumn());
+        if (ss.getWhere() != null) {
+            print(ss.getWhere().getColumn());
+        }
     }
 
     private void print(TargetUpdateType ts) {

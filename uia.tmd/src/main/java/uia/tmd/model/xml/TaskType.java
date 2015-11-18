@@ -1,8 +1,8 @@
 //
-// ¦¹ÀÉ®×¬O¥Ñ JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 ©Ò²£¥Í 
-// ½Ğ°Ñ¾\ <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// ¤@¥¹­«·s½sÄ¶¨Ó·½ºõ­n, ¹ï¦¹ÀÉ®×©Ò°µªº¥ô¦ó­×§ï³£±N·|¿ò¥¢. 
-// ²£¥Í®É¶¡: 2015.11.17 ©ó 05:53:15 PM CST 
+// æ­¤æª”æ¡ˆæ˜¯ç”± JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.8-b130911.1802 æ‰€ç”¢ç”Ÿ 
+// è«‹åƒé–± <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+// ä¸€æ—¦é‡æ–°ç·¨è­¯ä¾†æºç¶±è¦, å°æ­¤æª”æ¡ˆæ‰€åšçš„ä»»ä½•ä¿®æ”¹éƒ½å°‡æœƒéºå¤±. 
+// ç”¢ç”Ÿæ™‚é–“: 2015.11.18 æ–¼ 10:45:18 PM CST 
 //
 
 
@@ -18,18 +18,15 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>TaskType complex type ªº Java Ãş§O.
+ * <p>TaskType complex type çš„ Java é¡åˆ¥.
  * 
- * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
+ * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
  * 
  * <pre>
  * &lt;complexType name="TaskType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="source" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="target" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="sourceSelect" type="{http://tmd.uia/model/xml}SourceSelectType"/>
  *         &lt;element name="targetUpdate" type="{http://tmd.uia/model/xml}TargetUpdateType"/>
  *         &lt;element name="nexts">
@@ -54,21 +51,12 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaskType", propOrder = {
-    "description",
-    "source",
-    "target",
     "sourceSelect",
     "targetUpdate",
     "nexts"
 })
 public class TaskType {
 
-    @XmlElement(required = true)
-    protected String description;
-    @XmlElement(required = true)
-    protected String source;
-    @XmlElement(required = true)
-    protected String target;
     @XmlElement(required = true)
     protected SourceSelectType sourceSelect;
     @XmlElement(required = true)
@@ -79,79 +67,7 @@ public class TaskType {
     protected String name;
 
     /**
-     * ¨ú±o description ¯S©Êªº­È.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * ³]©w description ¯S©Êªº­È.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDescription(String value) {
-        this.description = value;
-    }
-
-    /**
-     * ¨ú±o source ¯S©Êªº­È.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSource() {
-        return source;
-    }
-
-    /**
-     * ³]©w source ¯S©Êªº­È.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSource(String value) {
-        this.source = value;
-    }
-
-    /**
-     * ¨ú±o target ¯S©Êªº­È.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTarget() {
-        return target;
-    }
-
-    /**
-     * ³]©w target ¯S©Êªº­È.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTarget(String value) {
-        this.target = value;
-    }
-
-    /**
-     * ¨ú±o sourceSelect ¯S©Êªº­È.
+     * å–å¾— sourceSelect ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -163,7 +79,7 @@ public class TaskType {
     }
 
     /**
-     * ³]©w sourceSelect ¯S©Êªº­È.
+     * è¨­å®š sourceSelect ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -175,7 +91,7 @@ public class TaskType {
     }
 
     /**
-     * ¨ú±o targetUpdate ¯S©Êªº­È.
+     * å–å¾— targetUpdate ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -187,7 +103,7 @@ public class TaskType {
     }
 
     /**
-     * ³]©w targetUpdate ¯S©Êªº­È.
+     * è¨­å®š targetUpdate ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -199,7 +115,7 @@ public class TaskType {
     }
 
     /**
-     * ¨ú±o nexts ¯S©Êªº­È.
+     * å–å¾— nexts ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -211,7 +127,7 @@ public class TaskType {
     }
 
     /**
-     * ³]©w nexts ¯S©Êªº­È.
+     * è¨­å®š nexts ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -223,7 +139,7 @@ public class TaskType {
     }
 
     /**
-     * ¨ú±o name ¯S©Êªº­È.
+     * å–å¾— name ç‰¹æ€§çš„å€¼.
      * 
      * @return
      *     possible object is
@@ -235,7 +151,7 @@ public class TaskType {
     }
 
     /**
-     * ³]©w name ¯S©Êªº­È.
+     * è¨­å®š name ç‰¹æ€§çš„å€¼.
      * 
      * @param value
      *     allowed object is
@@ -248,9 +164,9 @@ public class TaskType {
 
 
     /**
-     * <p>anonymous complex type ªº Java Ãş§O.
+     * <p>anonymous complex type çš„ Java é¡åˆ¥.
      * 
-     * <p>¤U¦Cºõ­n¤ù¬q·|«ü©w¦¹Ãş§O¤¤¥]§tªº¹w´Á¤º®e.
+     * <p>ä¸‹åˆ—ç¶±è¦ç‰‡æ®µæœƒæŒ‡å®šæ­¤é¡åˆ¥ä¸­åŒ…å«çš„é æœŸå…§å®¹.
      * 
      * <pre>
      * &lt;complexType>
