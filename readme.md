@@ -1,7 +1,4 @@
-Tutorial:
-* [Chinese](tutorial_tw.md)
-* English
+Topic Maintenance Definition
+============================
 
-XML design:
-* [Chinese](xmldesign_tw.md)
-* English
+[Chinese](readme_tw.md)
