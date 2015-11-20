@@ -187,8 +187,8 @@ public abstract class DataAccessor {
 
         // primary key
         List<String> pk;
-        if (tt != null && tt.getPks() != null && tt.getPks().getPk().size() > 0) {
-            pk = tt.getPks().getPk();
+        if (tt != null && tt.getPk() != null && tt.getPk().getName().size() > 0) {
+            pk = tt.getPk().getName();
         }
         else {
             pk = new ArrayList<String>();

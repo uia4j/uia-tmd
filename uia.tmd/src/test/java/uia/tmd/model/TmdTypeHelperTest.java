@@ -35,7 +35,7 @@ public class TmdTypeHelperTest {
             System.out.println();
         }
         for (TableType tt : tmd.getTableSpace().getTable()) {
-            System.out.println(tt.getName() + ", pk:" + tt.getPks().getPk());
+            System.out.println(tt.getName() + ", pk:" + tt.getPk().getName());
         }
 
         for (DbServerType svr : tmd.getDatabaseSpace().getDbServer()) {
@@ -58,14 +58,24 @@ public class TmdTypeHelperTest {
 
     private void print(SourceSelectType ss) {
         System.out.println("  table: " + ss.getTable());
-        System.out.println("    where: ");
-        if (ss.getWhere() != null) {
-            print(ss.getWhere().getColumn());
+        System.out.print("    pk: ");
+        if (ss.getPk() != null) {
+            for (String name : ss.getPk().getName()) {
+                System.out.print(name + ",");
+            }
         }
+        System.out.println();
     }
 
     private void print(TargetUpdateType ts) {
         System.out.println("  table: " + ts.getTable());
+        System.out.print("    pk: ");
+        if (ts.getPk() != null) {
+            for (String name : ts.getPk().getName()) {
+                System.out.print(name + ",");
+            }
+        }
+        System.out.println();
         System.out.println("    columns: ");
         if (ts.getColumns() != null) {
             print(ts.getColumns().getColumn());

@@ -73,19 +73,26 @@
     </complexType>
     <complexType name="SourceSelectType">
         <sequence>
-			<element name="where">
+			<element name="pk">
 				<complexType>
 			        <sequence>
-						<element name="column" type="uia:ColumnType"  maxOccurs="unbounded"></element>
+						<element name="name" type="string" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
         </sequence>
         <attribute name="table" type="string" use="required" />
-        <attribute name="delete" type="boolean" default="false" />
+        <attribute name="memo" type="string" />
     </complexType>
     <complexType name="TargetUpdateType">
         <sequence>
+			<element name="pk">
+				<complexType>
+			        <sequence>
+						<element name="name" type="string" maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
 			<element name="columns">
 				<complexType>
 			        <sequence>
@@ -123,10 +130,10 @@
     </complexType>
     <complexType name="TableType">
         <sequence>
-			<element name="pks">
+			<element name="pk">
 				<complexType>
 			        <sequence>
-						<element name="pk" type="string" maxOccurs="unbounded"></element>
+						<element name="name" type="string" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
