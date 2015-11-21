@@ -1,27 +1,27 @@
-# 範例說明
+# Example
 
-假定系統中有兩個表格，紀錄員工與出勤紀錄。結構與關連如下：
+Suggest that there are two tables in system. One is about employee, another is about manhour of employee. Structure and relation of tables are below:
 ### table: employee
-* id - 主鍵。
+* id - Primary key.
 
 ### table: employee_manhour
-* id - 主鍵。
-* employee - 外鍵，關聯至 employee.id。
+* id - Primary key.
+* employee - foreign key to id of employee.
 
-當員工退休時，系統要將其資料從資料庫 "local1" 搬移到 "local2"。
+When one employee retires，system need to move his personal data from "local1" database to "local2".
 
-# 設計
+# Design
 
 ## XML
 
-* 定義 "Retire" Executor，執行工作 "job1"，"job1" 會將 employee 的資料從 local1 搬移到 local2。
+* Define "Retire" executor to run "job1" which move data of employee from "local1" to "local2".
 ```
 <executorSpace>
     <executor name="Retire" source="local1" target="local2" task="job1" />
 </executorSpace>
 ```
 
-* 定義 "job1" 處理 employee 表格，並設定 "job2" 緊接在 "job1" 後。"job1" 和 "job2" 間的關聯是 employee.id=employee_human.employee。
+* Define "job1" task to handle table of employee, and plan "job2" to be next task. The relation between "job1" and "job2" is employee.id=emmployee_manhour.employee
 ```
 <task name="job1">
     <sourceSelect table="employee" />
@@ -36,7 +36,7 @@
 </task>
 ```
 
-* 定義 "job2" 處理 employee_manhour 表格。
+* Define "job2" task to handle table of employee_manhour.
 ```
 <task name="job2">
     <sourceSelect table="employee_manhour" />
@@ -44,7 +44,7 @@
 </task>
 ```
 
-* 定義 "local1" & "local2" 資料庫。
+* Define data sources of "local1" & "local2"
 ```
 <dbServer>
     <id>local1</id>
@@ -66,7 +66,7 @@
 </dbServer>
 ```
 
-完整的 XML:
+Full XML:
 
 ```
 
@@ -88,7 +88,7 @@
             </nexts>
         </task>
         <task name="job2">
-            <sourceSelect table="employeeManhour" />
+            <sourceSelect table="employee_manhour" />
             <targetUpdate />
         </task>
     </taskSpace>
@@ -117,14 +117,15 @@
 ```
 
 ## java code
-當一個員工退休時，系統建立一個 "Retire" 執行個體來完成上述的工作。
-員工的編號是 0098712，是表格 employee 的主鍵值，所以執行條件為 id="0098712"
+When one retires, system creates "Retire" executor to finish the job describes above.
+The id is "0098712" which is value of primary key of employee, so the criteria is id="0098712".
+
 ```
 TaskFactory factory = new TaskFactory(new File("sample.xml"));
 TaskExecutor executor = factory.createExecutor("Retire");
 
 TreeMap<String, Object> where = new TreeMap<String, Object>();
-where.put("ID", "0098712");
+where.put("id", "0098712");
 
 executor.run();
 ```
