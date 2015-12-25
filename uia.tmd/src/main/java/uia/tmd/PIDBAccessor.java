@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
-
-import com.microsoft.sqlserver.jdbc.SQLServerConnection;
+import java.util.Properties;
 
 import uia.tmd.model.xml.TableType;
 
@@ -15,19 +14,19 @@ import uia.tmd.model.xml.TableType;
  * @author Kyle K. Lin
  *
  */
-public class MSSQLAccessor extends DataAccessor {
+public class PIDBAccessor extends DataAccessor {
 
-    private static final String CONN = "jdbc:sqlserver://%s:%s;databaseName=%s;";
+    private static final String CONN = "jdbc:pisql://%s/Data Source=%s;Integrated Security=SSPI;";
 
     private final String connString;
 
-    private SQLServerConnection conn;
+    private Connection conn;
 
-    MSSQLAccessor(Map<String, TableType> tables, String host, int port, String dbName) throws Exception {
+    PIDBAccessor(Map<String, TableType> tables, String host, int port, String dbName) throws Exception {
         super(tables);
-        this.connString = String.format(CONN, host, port, dbName);
+        this.connString = String.format(CONN, host, dbName);
         System.out.println(this.connString);
-        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        Class.forName("com.osisoft.jdbc.Driver").newInstance();
     }
 
     @Override
@@ -37,7 +36,11 @@ public class MSSQLAccessor extends DataAccessor {
 
     @Override
     public void connect(String user, String password) throws SQLException {
-        this.conn = (SQLServerConnection) DriverManager.getConnection(this.connString, user, password);
+        Properties plist = new Properties();
+        plist.put("DCA", "SAVE");
+        plist.put("user", user);
+        plist.put("password", password);
+        this.conn = DriverManager.getConnection(this.connString, plist);
     }
 
     @Override

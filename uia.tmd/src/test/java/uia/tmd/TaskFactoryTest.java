@@ -38,19 +38,19 @@ public class TaskFactoryTest implements TaskExecutorListener {
     @Override
     public void sourceSelected(TaskExecutorEvent evt, int count) {
         System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql + ", count=" + count);
-        System.out.println("    " + evt.values);
+        System.out.println("    " + evt.criteria);
     }
 
     @Override
     public void targetDeleted(TaskExecutorEvent evt, int count) {
         System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql + ", count=" + count);
-        System.out.println("    " + evt.values);
+        System.out.println("    " + evt.criteria);
     }
 
     @Override
     public void targetInserted(TaskExecutorEvent evt) {
         System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql);
-        System.out.println("    " + evt.values);
+        System.out.println("    " + evt.criteria);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package uia.tmd;
 
 import java.io.File;
+import java.util.Set;
 import java.util.TreeMap;
 
 import uia.tmd.model.TmdTypeHelper;
@@ -50,6 +51,10 @@ public class TaskFactory {
         for (DbServerType svr : tmd.getDatabaseSpace().getDbServer()) {
             this.dbServers.put(svr.getId(), svr);
         }
+    }
+
+    public Set<String> getExecutorNames() {
+        return this.executors.keySet();
     }
 
     /**

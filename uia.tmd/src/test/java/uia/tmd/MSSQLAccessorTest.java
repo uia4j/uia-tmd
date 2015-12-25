@@ -15,7 +15,7 @@ public class MSSQLAccessorTest {
     public void testSelect() throws Exception {
         MSSQLAccessor accessor = new MSSQLAccessor(new TreeMap<String, TableType>(), "localhost", 1433, "mydb");
         accessor.connect("sa", "sqlAdm");
-        List<Map<String, Object>> data = accessor.select("select * from human", null);
+        List<Map<String, Object>> data = accessor.select("select * from human", (Map<String, Object>) null);
         accessor.disconnect();
 
         for (Map<String, Object> row : data) {
@@ -29,7 +29,7 @@ public class MSSQLAccessorTest {
         accessor.connect("sa", "sqlAdm");
 
         // select
-        List<Map<String, Object>> data = accessor.select("select * from human", null);
+        List<Map<String, Object>> data = accessor.select("select * from human", (Map<String, Object>) null);
         // insert
         for (Map<String, Object> row : data) {
             accessor.execueUpdate("INSERT INTO people(id,first_name,birthday) VALUES(?,?,?)", row);
@@ -40,9 +40,9 @@ public class MSSQLAccessorTest {
 
     @Test
     public void testPrepareColumns() throws Exception {
-        MSSQLAccessor accessor = new MSSQLAccessor(new TreeMap<String, TableType>(), "localhost", 1433, "wiptest");
+        MSSQLAccessor accessor = new MSSQLAccessor(new TreeMap<String, TableType>(), "localhost", 1433, "pidb");
         accessor.connect("sa", "sqlAdm");
-        List<ColumnType> cts = accessor.prepareColumns("SHOP_ORDER");
+        List<ColumnType> cts = accessor.prepareColumns("picomp2");
         for (ColumnType ct : cts) {
             System.out.println(ct.getValue());
         }

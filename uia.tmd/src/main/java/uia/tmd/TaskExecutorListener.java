@@ -2,6 +2,7 @@ package uia.tmd;
 
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.TreeMap;
 
 public interface TaskExecutorListener {
 
@@ -21,13 +22,23 @@ public interface TaskExecutorListener {
 
         public final String sql;
 
-        public final Map<String, Object> values;
+        public final Map<String, Object> criteria;
 
-        public TaskExecutorEvent(String db, String jobName, String sql, Map<String, Object> values) {
+        public TaskExecutorEvent(String db, String jobName, String sql, Where[] wheres) {
             this.db = db;
             this.jobName = jobName;
             this.sql = sql;
-            this.values = values;
+            this.criteria = new TreeMap<String, Object>();
+            for (Where where : wheres) {
+                this.criteria.put(where.getParamName(), where.getParamValue());
+            }
+        }
+
+        public TaskExecutorEvent(String db, String jobName, String sql, Map<String, Object> criteriaValues) {
+            this.db = db;
+            this.jobName = jobName;
+            this.sql = sql;
+            this.criteria = criteriaValues;
         }
     }
 }

@@ -11,13 +11,13 @@ import uia.tmd.TaskExecutor;
 import uia.tmd.TaskExecutorListener;
 import uia.tmd.TaskFactory;
 
-public class WIPTest implements TaskExecutorListener {
+public class PITest implements TaskExecutorListener {
 
     private int rc;
 
     @Test
     public void testZTask() throws URISyntaxException, Exception {
-        TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("wip.xml").toURI()));
+        TaskFactory factory = new TaskFactory(new File(PITest.class.getResource("wip.xml").toURI()));
 
         TaskExecutor executor = factory.createExecutor("ZTask");
         executor.addListener(this);
@@ -29,7 +29,7 @@ public class WIPTest implements TaskExecutorListener {
 
     @Test
     public void testShopOrder() throws URISyntaxException, Exception {
-        TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("wip.xml").toURI()));
+        TaskFactory factory = new TaskFactory(new File(PITest.class.getResource("wip.xml").toURI()));
 
         TaskExecutor executor = factory.createExecutor("ShopOrder");
         executor.addListener(this);

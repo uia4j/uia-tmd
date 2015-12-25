@@ -14,14 +14,14 @@ When one employee retires，system need to move his personal data from "local1" 
 
 ## XML
 
-* Define "Retire" executor to run "job1" which move data of employee from "local1" to "local2".
+* Define "Retire" executor to run "job1" which moves data of employee from "local1" to "local2".
 ```
 <executorSpace>
     <executor name="Retire" source="local1" target="local2" task="job1" />
 </executorSpace>
 ```
 
-* Define "job1" task to handle table of employee, and plan "job2" to be next task. The relation between "job1" and "job2" is employee.id=emmployee_manhour.employee
+* Define "job1" task to handle table of employee, and make "job2" to be next task. The relation between "job1" and "job2" is employee.id=employee_manhour.employee
 ```
 <task name="job1">
     <sourceSelect table="employee" />
@@ -117,8 +117,9 @@ Full XML:
 ```
 
 ## java code
-When one retires, system creates "Retire" executor to finish the job describes above.
-The id is "0098712" which is value of primary key of employee, so the criteria is id="0098712".
+When one whose id is 0098712 retires, system creates "Retire" executor to finish the job describes above.
+
+"Retire" exeuctes "job1", and "job1" handles table of employee which primary key is id, so the criteria is id="0098712".
 
 ```
 TaskFactory factory = new TaskFactory(new File("sample.xml"));
@@ -127,5 +128,5 @@ TaskExecutor executor = factory.createExecutor("Retire");
 TreeMap<String, Object> where = new TreeMap<String, Object>();
 where.put("id", "0098712");
 
-executor.run();
+executor.run(where);
 ```

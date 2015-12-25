@@ -7,3 +7,4 @@
 
 - [使用範例](tutorial_tw.md)
 - [XML 設計概要](xmldesign_tw.md)
+- [XML 快速建立](xmlquick_tw.md)

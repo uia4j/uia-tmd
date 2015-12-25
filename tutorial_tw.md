@@ -21,7 +21,7 @@
 </executorSpace>
 ```
 
-* 定義 "job1" 處理 employee 表格，並設定 "job2" 緊接在 "job1" 後。"job1" 和 "job2" 間的關聯是 employee.id=employee_human.employee。
+* 定義 "job1" 處理 employee 表格，並設定 "job2" 緊接在 "job1" 後。"job1" 和 "job2" 間的關聯是 employee.id=employee_manhour.employee。
 ```
 <task name="job1">
     <sourceSelect table="employee" />
@@ -88,7 +88,7 @@
             </nexts>
         </task>
         <task name="job2">
-            <sourceSelect table="employeeManhour" />
+            <sourceSelect table="employee_manhour" />
             <targetUpdate />
         </task>
     </taskSpace>
@@ -117,8 +117,8 @@
 ```
 
 ## java code
-當一個員工退休時，系統建立一個 "Retire" 執行個體來完成上述的工作。
-員工的編號是 0098712，是表格 employee 的主鍵值，所以執行條件為 id="0098712"
+當一個編號為 0098712 的員工退休時，系統建立一個 "Retire" 執行個體來完成上述的工作。
+Retire 會執行 "job1"，而 "job1" 處理的表格 employee 主鍵為 id，所以執行條件為 id="0098712"。
 ```
 TaskFactory factory = new TaskFactory(new File("sample.xml"));
 TaskExecutor executor = factory.createExecutor("Retire");
@@ -126,5 +126,5 @@ TaskExecutor executor = factory.createExecutor("Retire");
 TreeMap<String, Object> where = new TreeMap<String, Object>();
 where.put("ID", "0098712");
 
-executor.run();
+executor.run(where);
 ```

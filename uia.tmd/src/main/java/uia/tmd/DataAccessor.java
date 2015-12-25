@@ -85,6 +85,42 @@ public abstract class DataAccessor {
     /**
      * Select data.
      * @param sql SQL statement.
+     * @param wheres Values of parameters with ordering.
+     * @return Result. Order of keys is same as selected columns.
+     * @throws SQLException SQL exception.
+     */
+    public List<Map<String, Object>> select(String sql, Where[] wheres) throws SQLException {
+        ArrayList<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
+
+        // parameters
+        PreparedStatement ps = getConnection().prepareStatement(sql);
+        if (wheres != null) {
+            int index = 1;
+            for (Where where : wheres) {
+                index = where.addParameters(ps, index);
+            }
+        }
+
+        // select
+        ResultSet rs = ps.executeQuery();
+        int cnt = rs.getMetaData().getColumnCount();
+        while (rs.next()) {
+            LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
+            for (int i = 0; i < cnt; i++) {
+                row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
+            }
+            table.add(row);
+        }
+
+        rs.close();
+        ps.close();
+
+        return table;
+    }
+
+    /**
+     * Select data.
+     * @param sql SQL statement.
      * @param parameters Values of parameters with ordering.
      * @return Result. Order of keys is same as selected columns.
      * @throws SQLException SQL exception.
@@ -230,6 +266,26 @@ public abstract class DataAccessor {
 
     }
 
+    static String sqlSelect(String table, List<ColumnType> columns, Where[] where) {
+        // fields
+        StringBuilder sb1 = new StringBuilder(columns.get(0).getValue());
+        for (int i = 1, n = columns.size(); i < n; i++) {
+            sb1.append(",").append(columns.get(i).getValue());
+        }
+        // where
+        if (where.length > 0) {
+            StringBuilder sb2 = new StringBuilder(where[0].sql());
+            for (int i = 1, n = where.length; i < n; i++) {
+                sb2.append(" AND ").append(where[i].sql());
+            }
+            return String.format("SELECT %s FROM %s WHERE %s", sb1, table, sb2);
+        }
+        else {
+            return String.format("SELECT %s FROM %s", sb1, table);
+        }
+
+    }
+
     static String sqlSelect(String table, List<ColumnType> columns, String[] where) {
         // fields
         StringBuilder sb1 = new StringBuilder(columns.get(0).getValue());
@@ -237,12 +293,17 @@ public abstract class DataAccessor {
             sb1.append(",").append(columns.get(i).getValue());
         }
         // where
-        StringBuilder sb2 = new StringBuilder(where[0]).append("=?");
-        for (int i = 1, n = where.length; i < n; i++) {
-            sb2.append(" AND ").append(where[i]).append("=?");
+        if (where.length > 0) {
+            StringBuilder sb2 = new StringBuilder(where[0]).append("=?");
+            for (int i = 1, n = where.length; i < n; i++) {
+                sb2.append(" AND ").append(where[i]).append("=?");
+            }
+            return String.format("SELECT %s FROM %s WHERE %s", sb1, table, sb2);
+        }
+        else {
+            return String.format("SELECT %s FROM %s", sb1, table);
         }
 
-        return String.format("SELECT %s FROM %s WHERE %s", sb1, table, sb2);
     }
 
     static String sqlDelete(String table, List<ColumnType> where) {
