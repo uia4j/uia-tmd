@@ -12,6 +12,18 @@ import uia.tmd.model.xml.TableType;
 public class MSSQLAccessorTest {
 
     @Test
+    public void testListTables() throws Exception {
+        MSSQLAccessor accessor = new MSSQLAccessor(new TreeMap<String, TableType>(), "localhost", 1433, "wip");
+        accessor.connect("wip", "wip");
+        List<String> data = accessor.listTables();
+        accessor.disconnect();
+
+        for (String t : data) {
+            System.out.println(t);
+        }
+    }
+
+    @Test
     public void testSelect() throws Exception {
         MSSQLAccessor accessor = new MSSQLAccessor(new TreeMap<String, TableType>(), "localhost", 1433, "mydb");
         accessor.connect("sa", "sqlAdm");

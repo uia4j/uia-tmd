@@ -1,17 +1,11 @@
 package uia.tmd;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import uia.tmd.model.xml.ColumnType;
-import uia.tmd.model.xml.TableType;
 
 /**
  * Database accessor.
@@ -19,16 +13,7 @@ import uia.tmd.model.xml.TableType;
  * @author Kyle K. Lin
  *
  */
-public abstract class DataAccessor {
-
-    private Map<String, TableType> tables;
-
-    private TreeMap<String, List<ColumnType>> tableColumns;
-
-    DataAccessor(Map<String, TableType> tables) {
-        this.tables = tables;
-        this.tableColumns = new TreeMap<String, List<ColumnType>>();
-    }
+public interface DataAccessor {
 
     /**
      * Get connection.
@@ -54,33 +39,27 @@ public abstract class DataAccessor {
      * Switch to manual commit. Use commit() to commit statements.
      * @throws SQLException SQL exception.
      */
-    public void beingTx() throws SQLException {
-        getConnection().setAutoCommit(true);
-    }
+    public void beingTx() throws SQLException;
 
     /**
      * Switch to auto commit.
      * @throws SQLException SQL exception.
      */
-    public void endTx() throws SQLException {
-        getConnection().setAutoCommit(false);
-    }
+    public void endTx() throws SQLException;
 
     /**
      * Commit.
      * @throws SQLException SQL exception.
      */
-    public void commit() throws SQLException {
-        getConnection().commit();
-    }
+    public void commit() throws SQLException;
 
     /**
      * Rollback.
      * @throws SQLException SQL exception.
      */
-    public void rollback() throws SQLException {
-        getConnection().rollback();
-    }
+    public void rollback() throws SQLException;
+
+    public List<String> listTables() throws SQLException;
 
     /**
      * Select data.
@@ -89,34 +68,7 @@ public abstract class DataAccessor {
      * @return Result. Order of keys is same as selected columns.
      * @throws SQLException SQL exception.
      */
-    public List<Map<String, Object>> select(String sql, Where[] wheres) throws SQLException {
-        ArrayList<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
-
-        // parameters
-        PreparedStatement ps = getConnection().prepareStatement(sql);
-        if (wheres != null) {
-            int index = 1;
-            for (Where where : wheres) {
-                index = where.addParameters(ps, index);
-            }
-        }
-
-        // select
-        ResultSet rs = ps.executeQuery();
-        int cnt = rs.getMetaData().getColumnCount();
-        while (rs.next()) {
-            LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
-            for (int i = 0; i < cnt; i++) {
-                row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
-            }
-            table.add(row);
-        }
-
-        rs.close();
-        ps.close();
-
-        return table;
-    }
+    public List<Map<String, Object>> select(String sql, Where[] wheres) throws SQLException;
 
     /**
      * Select data.
@@ -125,35 +77,7 @@ public abstract class DataAccessor {
      * @return Result. Order of keys is same as selected columns.
      * @throws SQLException SQL exception.
      */
-    public List<Map<String, Object>> select(String sql, Map<String, Object> parameters) throws SQLException {
-        ArrayList<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
-
-        // parameters
-        PreparedStatement ps = getConnection().prepareStatement(sql);
-        if (parameters != null) {
-            int i = 1;
-            for (Map.Entry<String, Object> e : parameters.entrySet()) {
-                ps.setObject(i, e.getValue());
-                i++;
-            }
-        }
-
-        // select
-        ResultSet rs = ps.executeQuery();
-        int cnt = rs.getMetaData().getColumnCount();
-        while (rs.next()) {
-            LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
-            for (int i = 0; i < cnt; i++) {
-                row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
-            }
-            table.add(row);
-        }
-
-        rs.close();
-        ps.close();
-
-        return table;
-    }
+    public List<Map<String, Object>> select(String sql, Map<String, Object> parameters) throws SQLException;
 
     /**
      * Insert, update or delete data.
@@ -162,23 +86,7 @@ public abstract class DataAccessor {
      * @return Count of updated records.
      * @throws SQLException SQL exception.
      */
-    public int execueUpdate(String sql, Map<String, Object> parameters) throws SQLException {
-        if (parameters == null) {
-            return 0;
-        }
-
-        PreparedStatement ps = getConnection().prepareStatement(sql);
-        int i = 1;
-        for (Map.Entry<String, Object> e : parameters.entrySet()) {
-            ps.setObject(i, e.getValue());
-            i++;
-        }
-
-        int rc = ps.executeUpdate();
-        ps.close();
-
-        return rc;
-    }
+    public int execueUpdate(String sql, Map<String, Object> parameters) throws SQLException;
 
     /**
      * Insert, update or delete data.
@@ -186,133 +94,14 @@ public abstract class DataAccessor {
      * @param table Values of parameters with ordering.
      * @throws SQLException SQL exception.
      */
-    public void execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
-        if (table == null || table.size() == 0) {
-            return;
-        }
+    public void execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException;
 
-        int batchSize = 100;
-        int count = 0;
-        PreparedStatement ps = getConnection().prepareStatement(sql);
-        for (Map<String, Object> parameters : table) {
-            int i = 1;
-            for (Map.Entry<String, Object> e : parameters.entrySet()) {
-                ps.setObject(i, e.getValue());
-                i++;
-            }
-            ps.addBatch();
+    /**
+     *
+     * @param tableName
+     * @return
+     * @throws SQLException
+     */
+    public List<ColumnType> prepareColumns(String tableName) throws SQLException;
 
-            if (++count % batchSize == 0) {
-                ps.executeBatch();
-            }
-        }
-
-        ps.executeBatch();
-        ps.close();
-    }
-
-    List<ColumnType> prepareColumns(String tableName) throws SQLException {
-        List<ColumnType> cts = this.tableColumns.get(tableName);
-        if (cts != null) {
-            return cts;
-        }
-        cts = new ArrayList<ColumnType>();
-
-        Connection conn = getConnection();
-        TableType tt = this.tables.get(tableName);
-
-        // primary key
-        List<String> pk;
-        if (tt != null && tt.getPk() != null && tt.getPk().getName().size() > 0) {
-            pk = tt.getPk().getName();
-        }
-        else {
-            pk = new ArrayList<String>();
-            ResultSet rs = conn.getMetaData().getPrimaryKeys(null, null, tableName);
-            while (rs.next()) {
-                pk.add(rs.getString("COLUMN_NAME"));
-            }
-            rs.close();
-        }
-
-        ResultSet rs = conn.getMetaData().getColumns(null, null, tableName, null);
-        while (rs.next()) {
-            if (tableName.equalsIgnoreCase(rs.getString("TABLE_NAME"))) {
-                String columnName = rs.getString("COLUMN_NAME");
-                ColumnType ct = new ColumnType();
-                ct.setPk(pk.contains(columnName));
-                ct.setValue(columnName);
-                cts.add(ct);
-            }
-        }
-        rs.close();
-
-        this.tableColumns.put(tableName, cts);
-
-        return cts;
-    }
-
-    static String sqlInsert(String table, List<ColumnType> columns) {
-        if (columns.size() == 0) {
-            return null;
-        }
-        StringBuilder sb1 = new StringBuilder(columns.get(0).getValue());
-        StringBuilder sb2 = new StringBuilder("?");
-        for (int i = 1, n = columns.size(); i < n; i++) {
-            sb1.append(",").append(columns.get(i).getValue());
-            sb2.append(",?");
-        }
-        return String.format("INSERT INTO %s(%s) VALUES(%s)", table, sb1, sb2);
-
-    }
-
-    static String sqlSelect(String table, List<ColumnType> columns, Where[] where) {
-        // fields
-        StringBuilder sb1 = new StringBuilder(columns.get(0).getValue());
-        for (int i = 1, n = columns.size(); i < n; i++) {
-            sb1.append(",").append(columns.get(i).getValue());
-        }
-        // where
-        if (where.length > 0) {
-            StringBuilder sb2 = new StringBuilder(where[0].sql());
-            for (int i = 1, n = where.length; i < n; i++) {
-                sb2.append(" AND ").append(where[i].sql());
-            }
-            return String.format("SELECT %s FROM %s WHERE %s", sb1, table, sb2);
-        }
-        else {
-            return String.format("SELECT %s FROM %s", sb1, table);
-        }
-
-    }
-
-    static String sqlSelect(String table, List<ColumnType> columns, String[] where) {
-        // fields
-        StringBuilder sb1 = new StringBuilder(columns.get(0).getValue());
-        for (int i = 1, n = columns.size(); i < n; i++) {
-            sb1.append(",").append(columns.get(i).getValue());
-        }
-        // where
-        if (where.length > 0) {
-            StringBuilder sb2 = new StringBuilder(where[0]).append("=?");
-            for (int i = 1, n = where.length; i < n; i++) {
-                sb2.append(" AND ").append(where[i]).append("=?");
-            }
-            return String.format("SELECT %s FROM %s WHERE %s", sb1, table, sb2);
-        }
-        else {
-            return String.format("SELECT %s FROM %s", sb1, table);
-        }
-
-    }
-
-    static String sqlDelete(String table, List<ColumnType> where) {
-        // where
-        StringBuilder sb2 = new StringBuilder(where.get(0).getValue()).append("=?");
-        for (int i = 1, n = where.size(); i < n; i++) {
-            sb2.append(" AND ").append(where.get(i).getValue()).append("=?");
-        }
-
-        return String.format("DELETE FROM %s WHERE %s", table, sb2);
-    }
 }

@@ -36,26 +36,38 @@ public class TaskFactoryTest implements TaskExecutorListener {
     }
 
     @Override
-    public void sourceSelected(TaskExecutorEvent evt, int count) {
-        System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql + ", count=" + count);
+    public void sourceSelected(TaskExecutor executor, TaskExecutorEvent evt) {
+        System.out.println(evt.task.getName() + "> source>" + evt.sql + ", count=" + evt.count);
         System.out.println("    " + evt.criteria);
     }
 
     @Override
-    public void targetDeleted(TaskExecutorEvent evt, int count) {
-        System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql + ", count=" + count);
+    public void sourceDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
+        System.out.println(evt.task.getName() + "> source>" + evt.sql + ", count=" + evt.count);
         System.out.println("    " + evt.criteria);
     }
 
     @Override
-    public void targetInserted(TaskExecutorEvent evt) {
-        System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql);
+    public void targetDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
+        System.out.println(evt.task.getName() + "> target> " + evt.sql + ", count=" + evt.count);
         System.out.println("    " + evt.criteria);
     }
 
     @Override
-    public void executeFailure(TaskExecutorEvent evt, SQLException ex) {
-        System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql);
+    public void targetInserted(TaskExecutor executor, TaskExecutorEvent evt) {
+        System.out.println(evt.task.getName() + "> target>" + evt.sql);
+        System.out.println("    " + evt.criteria);
+    }
+
+    @Override
+    public void executeFailure(TaskExecutor executor, TaskExecutorEvent evt, SQLException ex) {
+        System.out.println(evt.task.getName() + "> " + evt.sql);
         ex.printStackTrace();
+    }
+
+    @Override
+    public void done(TaskExecutor executor) {
+        // TODO Auto-generated method stub
+
     }
 }

@@ -14,7 +14,7 @@ import uia.tmd.model.xml.TableType;
  * @author Kyle K. Lin
  *
  */
-public class PIDBAccessor extends DataAccessor {
+public class PIDBAccessor extends AbstractDataAccessor {
 
     private static final String CONN = "jdbc:pisql://%s/Data Source=%s;Integrated Security=SSPI;";
 

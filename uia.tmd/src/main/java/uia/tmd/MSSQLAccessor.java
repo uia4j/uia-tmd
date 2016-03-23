@@ -15,7 +15,7 @@ import uia.tmd.model.xml.TableType;
  * @author Kyle K. Lin
  *
  */
-public class MSSQLAccessor extends DataAccessor {
+public class MSSQLAccessor extends AbstractDataAccessor {
 
     private static final String CONN = "jdbc:sqlserver://%s:%s;databaseName=%s;";
 
@@ -26,7 +26,6 @@ public class MSSQLAccessor extends DataAccessor {
     MSSQLAccessor(Map<String, TableType> tables, String host, int port, String dbName) throws Exception {
         super(tables);
         this.connString = String.format(CONN, host, port, dbName);
-        System.out.println(this.connString);
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
     }
 

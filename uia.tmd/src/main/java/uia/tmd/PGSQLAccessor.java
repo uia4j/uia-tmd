@@ -13,7 +13,7 @@ import uia.tmd.model.xml.TableType;
  * @author Kyle K. Lin
  *
  */
-public class PGSQLAccessor extends DataAccessor {
+public class PGSQLAccessor extends AbstractDataAccessor {
 
     private static final String CONN = "jdbc:postgresql://%s:%s/%s";
 

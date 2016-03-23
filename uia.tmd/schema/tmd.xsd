@@ -42,7 +42,7 @@
 		<sequence>
             <element name="sourceSelect" type="uia:SourceSelectType"></element>
             <element name="targetUpdate" type="uia:TargetUpdateType"></element>
-			<element name="nexts">
+			<element name="next">
 				<complexType>
 			        <sequence>
 						<element name="plan" type="uia:PlanType" maxOccurs="unbounded"></element>
@@ -69,7 +69,7 @@
 				</complexType>
 			</element>
 		</sequence>
-        <attribute name="name" type="string" use="required" />
+        <attribute name="taskName" type="string" use="required" />
     </complexType>
     <complexType name="SourceSelectType">
         <sequence>
@@ -82,7 +82,7 @@
 			</element>
         </sequence>
         <attribute name="table" type="string" use="required" />
-        <attribute name="memo" type="string" />
+        <attribute name="deleted" type="boolean" default="false" />
     </complexType>
     <complexType name="TargetUpdateType">
         <sequence>

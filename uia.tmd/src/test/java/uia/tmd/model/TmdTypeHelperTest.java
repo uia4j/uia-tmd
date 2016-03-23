@@ -26,8 +26,8 @@ public class TmdTypeHelperTest {
 
             print(t.getSourceSelect());
             print(t.getTargetUpdate());
-            if (t.getNexts() != null) {
-                for (PlanType p : t.getNexts().getPlan()) {
+            if (t.getNext() != null) {
+                for (PlanType p : t.getNext().getPlan()) {
                     print(p);
                 }
             }
@@ -45,7 +45,7 @@ public class TmdTypeHelperTest {
 
     private void print(PlanType plan) {
         System.out.println("");
-        System.out.println("plan:" + plan.getName());
+        System.out.println("plan:" + plan.getTaskName());
         if (plan.getRule() != null) {
             for (CriteriaType criteria : plan.getRule().getCriteria()) {
                 System.out.println("  criteria: " + criteria.getColumn() + "='" + criteria.getValue() + "'");

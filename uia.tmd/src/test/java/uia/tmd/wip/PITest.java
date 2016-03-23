@@ -41,28 +41,40 @@ public class PITest implements TaskExecutorListener {
     }
 
     @Override
-    public void sourceSelected(TaskExecutorEvent evt, int count) {
+    public void sourceSelected(TaskExecutor executor, TaskExecutorEvent evt) {
         this.rc++;
-        System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql + ", count=" + count);
+        System.out.println(evt.task.getName() + "> " + evt.sql + ", count=" + evt.count);
         System.out.println("      " + evt.criteria);
     }
 
     @Override
-    public void targetDeleted(TaskExecutorEvent evt, int count) {
-        this.rc++;
-        System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql + ", count=" + count);
+    public void sourceDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
+        System.out.println(evt.task.getName() + "> " + evt.sql + ", count=" + evt.count);
         System.out.println("      " + evt.criteria);
     }
 
     @Override
-    public void targetInserted(TaskExecutorEvent evt) {
+    public void targetDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
         this.rc++;
-        System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql);
+        System.out.println(evt.task.getName() + "> " + evt.sql + ", count=" + evt.count);
+        System.out.println("      " + evt.criteria);
     }
 
     @Override
-    public void executeFailure(TaskExecutorEvent evt, SQLException ex) {
-        System.out.println(evt.jobName + "> " + evt.db + "> " + evt.sql);
+    public void targetInserted(TaskExecutor executor, TaskExecutorEvent evt) {
+        this.rc++;
+        System.out.println(evt.task.getName() + "> " + evt.sql);
+    }
+
+    @Override
+    public void executeFailure(TaskExecutor executor, TaskExecutorEvent evt, SQLException ex) {
+        System.out.println(evt.task.getName() + "> " + evt.sql);
         ex.printStackTrace();
+    }
+
+    @Override
+    public void done(TaskExecutor executor) {
+        // TODO Auto-generated method stub
+
     }
 }

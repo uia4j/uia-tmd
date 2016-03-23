@@ -9,20 +9,20 @@
 			<sourceSelect table="BOM">
 			</sourceSelect>
 			<targetUpdate />
-			<nexts>
-				<plan name="BOMComponent">
+			<next>
+				<plan taskName="BOMComponent">
 					<join>
 						<column source="HANDLE">BOM_BO</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="BOMComponent">
 			<sourceSelect table="BOM_COMPONENT">
 			</sourceSelect>
 			<targetUpdate />
-			<nexts>
-				<plan name="Item">
+			<next>
+				<plan taskName="Item">
 					<rule>
 						<criteria column="COMPONENT_GBO" validate="startsWith">ItemBO</criteria>
 					</rule>
@@ -30,74 +30,74 @@
 						<column source="COMPONENT_GBO">HANDLE</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="Item">
 			<sourceSelect table="ITEM">
 			</sourceSelect>
 			<targetUpdate />
-			<nexts>
-				<plan name="BOM">
+			<next>
+				<plan taskName="BOM">
 					<join>
 						<column source="BOM_BO">HANDLE</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="Router">
 			<sourceSelect table="ROUTER">
 			</sourceSelect>
 			<targetUpdate />
-			<nexts>
-				<plan name="Status">
+			<next>
+				<plan taskName="Status">
 					<join>
 						<column source="STATUS_BO">HANDLE</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="ShopOrder">
-			<sourceSelect table="SHOP_ORDER" memo="update">
+			<sourceSelect table="SHOP_ORDER">
 				<mark column=""></mark>
 			</sourceSelect>
 			<targetUpdate />
-			<nexts>
-				<plan name="BOM">
+			<next>
+				<plan taskName="BOM">
 					<join>
 						<column source="BOM_BO">HANDLE</column>
 					</join>
 				</plan>
-				<plan name="Item">
+				<plan taskName="Item">
 					<join>
 						<column source="ITEM_BO">HANDLE</column>
 					</join>
 				</plan>
-				<plan name="Router">
+				<plan taskName="Router">
 					<join>
 						<column source="ROUTER_BO">HANDLE</column>
 					</join>
 				</plan>
-				<plan name="ShopOrderInspectionLot">
+				<plan taskName="ShopOrderInspectionLot">
 					<join>
 						<column source="HANDLE">SHOP_ORDER_BO</column>
 					</join>
 				</plan>
-				<plan name="ShopOrderSFC">
+				<plan taskName="ShopOrderSFC">
 					<join>
 						<column source="HANDLE">SHOP_ORDER_BO</column>
 					</join>
 				</plan>
-				<plan name="ShopOrderSFCPlan">
+				<plan taskName="ShopOrderSFCPlan">
 					<join>
 						<column source="HANDLE">SHOP_ORDER_BO</column>
 					</join>
 				</plan>
-				<plan name="Status">
+				<plan taskName="Status">
 					<join>
 						<column source="STATUS_BO">HANDLE</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="ShopOrderInspection">
 			<sourceSelect table="SHOP_ORDER_INSPECTION">
@@ -109,13 +109,13 @@
 			<sourceSelect table="SHOP_ORDER_INSPECTION_LOT">
 			</sourceSelect>
 			<targetUpdate />
-			<nexts>
-				<plan name="ShopOrderInspection">
+			<next>
+				<plan taskName="ShopOrderInspection">
 					<join>
 						<column source="HANDLE">SHOP_ORDER_INSPECTION_LOT_BO</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="ShopOrderSchedule">
 			<sourceSelect table="SHOP_ORDER_SCHEDULE">
@@ -145,28 +145,28 @@
 			<sourceSelect table="Z_TASK">
 			</sourceSelect>
 			<targetUpdate />
-			<nexts>
-				<plan name="ZTaskATTA">
+			<next>
+				<plan taskName="ZTaskATTA">
 					<join>
 						<column source="SID">TASK_SID</column>
 					</join>
 				</plan>
-				<plan name="ZTaskBatch">
+				<plan taskName="ZTaskBatch">
 					<join>
 						<column source="SID">TASK_SID</column>
 					</join>
 				</plan>
-				<plan name="ZTaskObj">
+				<plan taskName="ZTaskObj">
 					<join>
 						<column source="SID">TASK_SID</column>
 					</join>
 				</plan>
-				<plan name="ZTaskPro">
+				<plan taskName="ZTaskPro">
 					<join>
 						<column source="SID">TASK_SID</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="ZTaskATTA">
 			<sourceSelect table="Z_TASK_ATTA">

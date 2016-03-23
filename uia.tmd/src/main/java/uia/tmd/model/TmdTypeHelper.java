@@ -2,12 +2,13 @@ package uia.tmd.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Scanner;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
@@ -17,6 +18,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLFilterImpl;
 
+import uia.tmd.model.xml.ObjectFactory;
 import uia.tmd.model.xml.TmdType;
 
 /**
@@ -29,6 +31,15 @@ public class TmdTypeHelper {
 
     static Unmarshaller UNMARSHALLER;
 
+    public static void save(TmdType tmd, File file) throws Exception {
+        ObjectFactory of = new ObjectFactory();
+
+        JAXBContext jaxbContext = JAXBContext.newInstance(TmdType.class);
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        jaxbMarshaller.marshal(of.createTmd(tmd), file);
+    }
+
     /**
      * Load TMD XML and convert to model.
      * @param file TMD XML file.
@@ -36,13 +47,7 @@ public class TmdTypeHelper {
      * @throws Exception Load failure.
      */
     public static TmdType load(File file) throws Exception {
-        Scanner freader = new Scanner(file);
-        StringBuilder content = new StringBuilder();
-        while (freader.hasNextLine()) {
-            content.append(freader.nextLine().trim());
-        }
-        freader.close();
-        return load(content.toString());
+        return load(new FileInputStream(file));
     }
 
     /**

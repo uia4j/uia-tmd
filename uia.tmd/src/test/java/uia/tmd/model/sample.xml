@@ -9,13 +9,13 @@
 		<task name="CASE1">
 			<sourceSelect table="human" />
 			<targetUpdate table="people" />
-			<nexts>
-				<plan name="CASE11">
+			<next>
+				<plan taskName="CASE11">
 					<join>
 						<column source="id">human</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="CASE11">
 			<sourceSelect table="human_acc" />
@@ -34,13 +34,13 @@
 		<task name="CASE3">
 			<sourceSelect table="human" />
 			<targetUpdate />
-			<nexts>
-				<plan name="CASE31">
+			<next>
+				<plan taskName="CASE31">
 					<join>
 						<column source="id">human</column>
 					</join>
 				</plan>
-				<plan name="CASE_TW">
+				<plan taskName="CASE_TW">
 					<rule>
 						<criteria column="human_type" validate="equals">TW</criteria>
 					</rule>
@@ -48,7 +48,7 @@
 						<column source="id">human</column>
 					</join>
 				</plan>
-				<plan name="CASE_US">
+				<plan taskName="CASE_US">
 					<rule>
 						<criteria column="human_type" validate="equals">TW</criteria>
 					</rule>
@@ -56,7 +56,7 @@
 						<column source="id">human</column>
 					</join>
 				</plan>
-			</nexts>
+			</next>
 		</task>
 		<task name="CASE31">
 			<sourceSelect table="human_acc" />
