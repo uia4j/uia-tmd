@@ -28,11 +28,12 @@
 		    <artifactId>sqljdbc4</artifactId>
 		    <version>4.0</version>
 		    <type>jar</type>
-		    <!-- 
-		    <scope>system</scope>
-		    <systemPath>${basedir}/lib/sqljdbc_4.2/enu/sqljdbc4.jar</systemPath>
-		    <optional>true</optional>
-		     -->
+		</dependency>
+		<dependency>
+			<!--  add: Import > Install or deploy an artifact to a Maven repository -->
+			<groupId>ojdbc6</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

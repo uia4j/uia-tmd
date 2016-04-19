@@ -44,6 +44,9 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         else if ("PGSQL".equalsIgnoreCase(dbServer.getDbType())) {
             return new PGSQLAccessor(tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
         }
+        else if ("ORA".equalsIgnoreCase(dbServer.getDbType())) {
+            return new ORAAccessor(tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
+        }
         else if ("PI".equalsIgnoreCase(dbServer.getDbType())) {
             return new PIDBAccessor(tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
         }

@@ -4,6 +4,7 @@
 		<executor name="CASE1" source="MSSQL1" target="MSSQL1" task="CASE1" />
 		<executor name="CASE2" source="MSSQL1" target="MSSQL1" task="CASE2" />
 		<executor name="CASE3" source="MSSQL1" target="MSSQL1" task="CASE3" />
+		<executor name="CASE4" source="MSSQL1" target="ORA-WIP" task="CASE1" />
 	</executorSpace>
 	<taskSpace>
 		<task name="CASE1">
@@ -99,6 +100,15 @@
 			<user>postgre</user>
 			<password>pgAdm</password>
 			<dbType>PGSQL</dbType>
+		</dbServer>
+		<dbServer>
+			<id>ORA-WIP</id>
+			<host>192.168.1.103</host>
+			<port>1521</port>
+			<dbName>mes</dbName>
+			<user>wip</user>
+			<password>Sap12345</password>
+			<dbType>ORA</dbType>
 		</dbServer>
 	</databaseSpace>
 </tmd>

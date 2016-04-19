@@ -294,7 +294,8 @@ public class TaskExecutor {
      */
     private boolean runTask(TaskType task, Map<String, Object> whereValues, String parentPath) {
         String statement = null;
-        Map<String, Object> statementParams = whereValues;
+        Map<String, Object> statementParams = whereValues == null ? new TreeMap<String, Object>() : whereValues;
+
         Database database = Database.SOURCE;
         try {
             SourceSelectType sourceSelect = task.getSourceSelect();
@@ -302,12 +303,13 @@ public class TaskExecutor {
 
             // source: select
             List<ColumnType> sourceColumns = this.sourceAccessor.prepareColumns(sourceSelect.getTable());
-            statement = AbstractDataAccessor.sqlSelect(sourceSelect.getTable(), sourceColumns, whereValues.keySet().toArray(new String[0]));
+            statement = AbstractDataAccessor.sqlSelect(sourceSelect.getTable(), sourceColumns, statementParams.keySet().toArray(new String[0]));
             List<Map<String, Object>> sourceResult = this.sourceAccessor.select(statement, statementParams);
             raiseSourceSelected(new TaskExecutorEvent(
                     task,
                     parentPath,
-                    statement, statementParams,
+                    statement,
+                    statementParams,
                     sourceResult.size(),
                     database));
 
