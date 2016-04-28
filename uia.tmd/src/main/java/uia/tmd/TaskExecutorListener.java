@@ -85,7 +85,7 @@ public interface TaskExecutorListener {
         public TaskExecutorEvent(TaskType task, String parentPath, String sql, Where[] wheres, int count, Database database) {
             this.task = task;
             this.parentPath = parentPath;
-            this.path = parentPath + task.getName();
+            this.path = parentPath + task.getName() + "/";
             this.sql = sql;
             this.criteria = new TreeMap<String, Object>();
             this.database = database;
@@ -98,7 +98,7 @@ public interface TaskExecutorListener {
         public TaskExecutorEvent(TaskType task, String parentPath, String sql, Map<String, Object> criteriaValues, int count, Database database) {
             this.task = task;
             this.parentPath = parentPath;
-            this.path = parentPath + this.task.getName();
+            this.path = parentPath + this.task.getName() + "/";
             this.sql = sql;
             this.criteria = criteriaValues;
             this.count = count;
