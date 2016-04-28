@@ -434,6 +434,19 @@ public class TaskExecutor {
             // System.out.println(plan.getTaskName() + " no task");
         }
         Map<String, Object> whereValues = prepare(master, plan.getJoin().getColumn());
+
+        if (plan.getWhere() != null && plan.getWhere().getCriteria() != null) {
+            List<CriteriaType> where = plan.getWhere().getCriteria();
+            for (CriteriaType criteria : where) {
+                if (criteria.isEmplyIsNull() && (criteria.getValue() == null || "".equals(criteria.getValue()))) {
+                    whereValues.put(criteria.getColumn(), null);
+                }
+                else {
+                    whereValues.put(criteria.getColumn(), criteria.getValue());
+                }
+            }
+        }
+
         return runTask(task, whereValues, parentPath);
     }
 

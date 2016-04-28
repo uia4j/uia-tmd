@@ -29,6 +29,9 @@
 					<join>
 						<column source="COMPONENT_GBO">HANDLE</column>
 					</join>
+					<where>
+						<criteria column="COMPONENT_GBO" validate="startsWith">ItemBO</criteria>
+					</where>
 				</plan>
 			</next>
 		</task>

@@ -68,6 +68,13 @@
 			        </sequence>
 				</complexType>
 			</element>
+			<element name="where">
+				<complexType>
+			        <sequence>
+						<element name="criteria" type="uia:CriteriaType" maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
 		</sequence>
         <attribute name="taskName" type="string" use="required" />
     </complexType>
@@ -116,6 +123,7 @@
             <extension base="string">
                 <attribute name="column" type="string" />
                 <attribute name="validate" type="string" default="equals" />
+                <attribute name="emplyIsNull" type="boolean" default="true" />
             </extension>
         </simpleContent>
     </complexType>
