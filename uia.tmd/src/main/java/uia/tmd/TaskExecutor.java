@@ -95,7 +95,7 @@ public class TaskExecutor {
 
     /**
      * Run this task.
-     * @param whereValues Criteria used to select data from database.
+     * @param wheres Criteria used to select data from database.
      * @return Result.
      * @throws SQLException SQL exception.
      */
@@ -199,6 +199,16 @@ public class TaskExecutor {
                 }
                 else {
                     targetColumns = this.targetAccessor.prepareColumns(targetUpdate.getTable());
+                    // TODO: fix
+                    List<ColumnType> temp = targetUpdate.getColumns().getColumn();
+                    for (ColumnType temp0 : temp) {
+                        for (ColumnType temp2 : targetColumns) {
+                            if (temp2.getValue().equals(temp0.getValue())) {
+                                temp2.setSource(temp0.getSource());
+                                break;
+                            }
+                        }
+                    }
                 }
                 if (targetColumns.size() == 0) {
                     throw new SQLException(tableName + " without columns.");
@@ -332,6 +342,16 @@ public class TaskExecutor {
                 }
                 else {
                     targetColumns = this.targetAccessor.prepareColumns(targetUpdate.getTable());
+                    // TODO: fix
+                    List<ColumnType> temp = targetUpdate.getColumns().getColumn();
+                    for (ColumnType temp0 : temp) {
+                        for (ColumnType temp2 : targetColumns) {
+                            if (temp2.getValue().equals(temp0.getValue())) {
+                                temp2.setSource(temp0.getSource());
+                                break;
+                            }
+                        }
+                    }
                 }
                 if (targetColumns.size() == 0) {
                     throw new SQLException(tableName + " without columns.");

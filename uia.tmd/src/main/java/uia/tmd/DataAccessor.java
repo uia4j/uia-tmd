@@ -97,10 +97,10 @@ public interface DataAccessor {
     public void execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException;
 
     /**
-     *
-     * @param tableName
-     * @return
-     * @throws SQLException
+     * Prepare column information of specific table.
+     * @param tableName Table name.
+     * @return Column information.
+     * @throws SQLException Prepare failed.
      */
     public List<ColumnType> prepareColumns(String tableName) throws SQLException;
 

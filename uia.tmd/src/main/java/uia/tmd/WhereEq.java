@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class WhereEq extends Where {
 
-    private Object value;
+    private final Object value;
 
     public WhereEq(String name, Object value) {
         super(name);
@@ -19,13 +19,18 @@ public class WhereEq extends Where {
 
     @Override
     public String sql() {
-        return this.name + "=?";
+        return this.value == null ? this.name + " is null" : this.name + "=?";
     }
 
     @Override
     public int addParameters(PreparedStatement stmt, int index) throws SQLException {
-        stmt.setObject(index, this.value);
-        return index + 1;
+        if (this.value != null) {
+            stmt.setObject(index, this.value);
+            return index + 1;
+        }
+        else {
+            return index;
+        }
     }
 
     @Override

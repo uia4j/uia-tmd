@@ -19,7 +19,7 @@ public class TmdTypeHelperTest {
 
     @Test
     public void testSample() throws Exception {
-        TmdType tmd = TmdTypeHelper.load(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
+        TmdType tmd = TmdTypeHelper.load(new File(TmdTypeHelperTest.class.getResource("sample2.xml").toURI()));
         for (TaskType t : tmd.getTaskSpace().getTask()) {
             System.out.println("-------------------------------------------");
             System.out.println("task: " + t.getName());
@@ -50,8 +50,15 @@ public class TmdTypeHelperTest {
             for (CriteriaType criteria : plan.getRule().getCriteria()) {
                 System.out.println("  criteria: " + criteria.getColumn() + "='" + criteria.getValue() + "'");
             }
+        }
+        if (plan.getJoin() != null) {
             for (ColumnType column : plan.getJoin().getColumn()) {
                 System.out.println("  column: " + column.getValue());
+            }
+        }
+        if (plan.getWhere() != null) {
+            for (CriteriaType criteria : plan.getWhere().getCriteria()) {
+                System.out.println("  where: " + criteria.getColumn() + "='" + criteria.getValue() + "'");
             }
         }
     }

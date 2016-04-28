@@ -28,10 +28,10 @@ public abstract class AbstractDataAccessor implements DataAccessor {
 
     /**
      * Create instance.
-     * @param dbServer
-     * @param factory
-     * @return
-     * @throws Exception
+     * @param dbServer Database information.
+     * @param tables table information.
+     * @return Data access instance.
+     * @throws Exception Create failed.
      */
     public static DataAccessor create(DbServerType dbServer, Map<String, TableType> tables) throws Exception {
         if (dbServer == null) {
@@ -173,6 +173,14 @@ public abstract class AbstractDataAccessor implements DataAccessor {
      */
     @Override
     public List<Map<String, Object>> select(String sql, Map<String, Object> parameters) throws SQLException {
+        // what ?
+        for (String key : parameters.keySet().toArray(new String[0])) {
+            if (parameters.get(key) == null) {
+                sql = sql.replace(key + "=?", key + " is null");
+                parameters.remove(key);
+            }
+        }
+
         ArrayList<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
 
         // parameters
