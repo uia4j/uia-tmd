@@ -11,20 +11,74 @@ import uia.tmd.model.TmdTypeHelperTest;
 
 public class TaskFactoryTest implements TaskExecutorListener {
 
+    private int count;
+
+    private boolean concurrent = false;
+
     @Test
-    public void testCase1() throws URISyntaxException, Exception {
+    public void testSimple() throws URISyntaxException, Exception {
+        this.count = 0;
+
         TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
 
-        TaskExecutor executor = factory.createExecutor("CASE1");
+        TreeMap<String, Object> where = new TreeMap<String, Object>();
+
+        TaskExecutor executor = factory.createExecutor("Simple", this.concurrent);
         executor.addListener(this);
 
+        executor.run(where);
+        executor.printRunLog();
+    }
+
+    @Test
+    public void testSimpleBack() throws URISyntaxException, Exception {
+        this.count = 0;
+
+        TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
+
         TreeMap<String, Object> where = new TreeMap<String, Object>();
-        where.put("id", 1);
-        System.out.println("Execute:" + executor.run(where));
+
+        TaskExecutor executor = factory.createExecutor("SimpleBack", this.concurrent);
+        executor.addListener(this);
+
+        executor.run(where);
+        executor.printRunLog();
+    }
+
+    @Test
+    public void testLoop() throws URISyntaxException, Exception {
+        this.count = 0;
+
+        TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
+
+        TreeMap<String, Object> where = new TreeMap<String, Object>();
+
+        TaskExecutor executor = factory.createExecutor("Loop", this.concurrent);
+        executor.addListener(this);
+
+        executor.run(where);
+        executor.printRunLog();
+    }
+
+    @Test
+    public void testLoopBack() throws URISyntaxException, Exception {
+        this.count = 0;
+
+        TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
+
+        TreeMap<String, Object> where = new TreeMap<String, Object>();
+
+        TaskExecutor executor = factory.createExecutor("LoopBack", this.concurrent);
+        executor.addListener(this);
+
+        executor.run(where);
+        executor.printRunLog();
     }
 
     @Test
     public void testCase2() throws URISyntaxException, Exception {
+        this.count = 0;
+
         TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
 
         TaskExecutor executor = factory.createExecutor("CASE2");
@@ -38,25 +92,26 @@ public class TaskFactoryTest implements TaskExecutorListener {
     @Override
     public void sourceSelected(TaskExecutor executor, TaskExecutorEvent evt) {
         System.out.println(evt.task.getName() + "> source>" + evt.sql + ", count=" + evt.count);
-        System.out.println("    " + evt.criteria);
+        System.out.println("    criteria:" + evt.criteria);
     }
 
     @Override
     public void sourceDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
-        System.out.println(evt.task.getName() + "> source>" + evt.sql + ", count=" + evt.count);
-        System.out.println("    " + evt.criteria);
+        //System.out.println(evt.task.getName() + "> source>" + evt.sql + ", count=" + evt.count);
+        //System.out.println("    criteria:" + evt.criteria);
     }
 
     @Override
     public void targetDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
-        System.out.println(evt.task.getName() + "> target> " + evt.sql + ", count=" + evt.count);
-        System.out.println("    " + evt.criteria);
+        //System.out.println(evt.task.getName() + "> target> " + evt.sql + ", count=" + evt.count);
+        //System.out.println("    criteria:" + evt.criteria);
     }
 
     @Override
     public void targetInserted(TaskExecutor executor, TaskExecutorEvent evt) {
-        System.out.println(evt.task.getName() + "> target>" + evt.sql);
-        System.out.println("    " + evt.criteria);
+        this.count += evt.count;
+        //System.out.println(evt.task.getName() + "> target>" + evt.sql);
+        //System.out.println("    criteria:" + evt.criteria);
     }
 
     @Override
@@ -67,7 +122,7 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
     @Override
     public void done(TaskExecutor executor) {
-        // TODO Auto-generated method stub
+        System.out.println("total: " + this.count);
 
     }
 }

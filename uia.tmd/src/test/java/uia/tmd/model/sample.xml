@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd>
 	<executorSpace>
+		<executor name="Simple" source="MSSQL1" target="MSSQL1" task="Simple" />
+		<executor name="SimpleBack" source="MSSQL1" target="MSSQL1" task="SimpleBack" />
+		<executor name="Loop" source="MSSQL1" target="MSSQL1" task="Loop" />
+		<executor name="LoopBack" source="MSSQL1" target="MSSQL1" task="LoopBack" />
 		<executor name="CASE1" source="MSSQL1" target="MSSQL1" task="CASE1" />
 		<executor name="CASE2" source="MSSQL1" target="MSSQL1" task="CASE2" />
 		<executor name="CASE3" source="MSSQL1" target="MSSQL1" task="CASE3" />
 		<executor name="CASE4" source="MSSQL1" target="ORA-WIP" task="CASE1" />
 	</executorSpace>
 	<taskSpace>
+		<task name="Simple">
+			<sourceSelect table="human" deleted="true" />
+			<targetUpdate table="people" />
+			<next />
+		</task>
+		<task name="SimpleBack">
+			<sourceSelect table="people" />
+			<targetUpdate table="human" />
+			<next />
+		</task>
+		<task name="Loop">
+			<sourceSelect table="human" deleted="true" />
+			<targetUpdate table="people" />
+			<next>
+				<plan taskName="Loop">
+					<join>
+						<column source="id">id</column>
+					</join>
+				</plan>
+			</next>
+		</task>
+		<task name="LoopBack">
+			<sourceSelect table="people" />
+			<targetUpdate table="human" />
+			<next>
+				<plan taskName="LoopBack">
+					<join>
+						<column source="id">id</column>
+					</join>
+				</plan>
+			</next>
+		</task>
 		<task name="CASE1">
 			<sourceSelect table="human" />
 			<targetUpdate table="people" />
@@ -15,9 +51,6 @@
 					<join>
 						<column source="id">human</column>
 					</join>
-					<where>
-						<criteria column="account"></criteria>
-					</where>
 				</plan>
 			</next>
 		</task>
@@ -78,7 +111,13 @@
 			<targetUpdate />
 		</task>
 	</taskSpace>
-	<tableSpace />
+	<tableSpace>
+		<table name="people">
+			<pk>
+				<name>id</name>
+			</pk>
+		</table>
+	</tableSpace>
 	<databaseSpace>
 		<dbServer>
 			<id>MSSQL1</id>

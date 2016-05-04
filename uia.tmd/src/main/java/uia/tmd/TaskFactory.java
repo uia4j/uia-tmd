@@ -102,6 +102,22 @@ public class TaskFactory {
             return null;
         }
 
-        return new TaskExecutor(this, executor);
+        return new SimpleTaskExecutor(this, executor);
+    }
+
+    /**
+     * Create task executor.
+     * @param execName Task name defined in TMD XML file.
+     * @param multiThread using multiple threads to run.
+     * @return Executor.
+     * @throws Exception
+     */
+    public TaskExecutor createExecutor(String execName, boolean multiThread) throws Exception {
+        ExecutorType executor = this.executors.get(execName);
+        if (executor == null) {
+            return null;
+        }
+
+        return multiThread ? new ConcurrentTaskExecutor(this, executor) : new SimpleTaskExecutor(this, executor);
     }
 }
