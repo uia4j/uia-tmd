@@ -34,7 +34,7 @@ public class SimpleTaskExecutor extends TaskExecutor {
     }
 
     @Override
-    protected boolean runTask(final TaskType task, Where[] wheres, final String parentPath) {
+    protected boolean runTask(final TaskType task, Where[] wheres, final String parentPath) throws SQLException {
         List<String> kss = this.tableRows.get(task.getName());
         if (kss == null) {
             kss = new ArrayList<String>();
@@ -132,12 +132,12 @@ public class SimpleTaskExecutor extends TaskExecutor {
             raiseExecuteFailure(
                     new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, database),
                     ex);
-            return false;
+            throw ex;
         }
     }
 
     @Override
-    protected boolean runTask(final TaskType task, Map<String, Object> whereValues, final String parentPath) {
+    protected boolean runTask(final TaskType task, Map<String, Object> whereValues, final String parentPath) throws SQLException {
         List<String> kss = this.tableRows.get(task.getName());
         if (kss == null) {
             kss = new ArrayList<String>();
@@ -234,7 +234,7 @@ public class SimpleTaskExecutor extends TaskExecutor {
         }
         catch (SQLException ex) {
             raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, database), ex);
-            return false;
+            throw ex;
         }
     }
 }

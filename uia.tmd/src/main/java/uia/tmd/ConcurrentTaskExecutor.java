@@ -39,7 +39,7 @@ public class ConcurrentTaskExecutor extends TaskExecutor {
     }
 
     @Override
-    protected boolean runTask(final TaskType task, Where[] wheres, final String parentPath) {
+    protected boolean runTask(final TaskType task, Where[] wheres, final String parentPath) throws SQLException {
         List<String> kss = this.tableRows.get(task.getName());
         if (kss == null) {
             kss = new ArrayList<String>();
@@ -186,7 +186,7 @@ public class ConcurrentTaskExecutor extends TaskExecutor {
             raiseExecuteFailure(
                     new TaskExecutorEvent(task, parentPath, statement, wheres, 0, database),
                     ex);
-            return false;
+            throw ex;
         }
     }
 
@@ -198,7 +198,7 @@ public class ConcurrentTaskExecutor extends TaskExecutor {
      * @return Result.
      */
     @Override
-    protected boolean runTask(final TaskType task, Map<String, Object> whereValues, final String parentPath) {
+    protected boolean runTask(final TaskType task, Map<String, Object> whereValues, final String parentPath) throws SQLException {
         List<String> kss = this.tableRows.get(task.getName());
         if (kss == null) {
             kss = new ArrayList<String>();
@@ -346,7 +346,7 @@ public class ConcurrentTaskExecutor extends TaskExecutor {
         }
         catch (SQLException ex) {
             raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, database), ex);
-            return false;
+            throw ex;
         }
     }
 }

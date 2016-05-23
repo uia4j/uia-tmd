@@ -154,9 +154,9 @@ public abstract class TaskExecutor {
         }
     }
 
-    protected abstract boolean runTask(TaskType task, Where[] wheres, String parentPath);
+    protected abstract boolean runTask(TaskType task, Where[] wheres, String parentPath) throws SQLException;
 
-    protected abstract boolean runTask(TaskType task, Map<String, Object> whereValues, String parentPath);
+    protected abstract boolean runTask(TaskType task, Map<String, Object> whereValues, String parentPath) throws SQLException;
 
     protected boolean runNext(TaskType task, Map<String, Object> row, String parentPath) throws SQLException {
         if (task.getNext() == null) {
@@ -171,7 +171,7 @@ public abstract class TaskExecutor {
         return true;
     }
 
-    protected int handle(TaskType task, String keyString, String targetTableName, List<ColumnType> targetColumns, List<ColumnType> targetPK, String parentPath, Map<String, Object> row) {
+    protected int handle(TaskType task, String keyString, String targetTableName, List<ColumnType> targetColumns, List<ColumnType> targetPK, String parentPath, Map<String, Object> row) throws SQLException {
 
         // check if sync already
         List<String> kss = this.tableRows.get(task.getName());
@@ -188,33 +188,19 @@ public abstract class TaskExecutor {
                 statement = AbstractDataAccessor.sqlDelete(targetTableName, targetPK);
                 statementParams = prepare(row, targetPK);
                 int count = this.targetAccessor.execueUpdate(statement, statementParams);
-                raiseTargetDeleted(new TaskExecutorEvent(
-                        task,
-                        parentPath,
-                        statement,
-                        statementParams,
-                        count,
-                        Database.TARGET));
+                raiseTargetDeleted(new TaskExecutorEvent(task, parentPath, statement, statementParams, count, Database.TARGET));
             }
 
             statement = AbstractDataAccessor.sqlInsert(targetTableName, targetColumns);
             statementParams = prepare(row, targetColumns);
             int uc = this.targetAccessor.execueUpdate(statement, statementParams);
-            raiseTargetInserted(new TaskExecutorEvent(
-                    task,
-                    parentPath,
-                    statement,
-                    statementParams,
-                    uc,
-                    Database.TARGET));
+            raiseTargetInserted(new TaskExecutorEvent(task, parentPath, statement, statementParams, uc, Database.TARGET));
 
             return uc;
         }
         catch (SQLException ex) {
-            raiseExecuteFailure(
-                    new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, Database.TARGET),
-                    ex);
-            return -1;
+            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, Database.TARGET), ex);
+            throw ex;
         }
     }
 
