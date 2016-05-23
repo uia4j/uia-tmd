@@ -12,7 +12,7 @@
 	</executorSpace>
 	<taskSpace>
 		<task name="Simple">
-			<sourceSelect table="human" deleted="true" />
+			<sourceSelect table="human" />
 			<targetUpdate table="people" />
 			<next />
 		</task>

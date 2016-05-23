@@ -171,21 +171,14 @@ public abstract class TaskExecutor {
         return true;
     }
 
-    protected int handle(
-            TaskType task,
-            String keyString,
-            String targetTableName,
-            List<ColumnType> targetColumns,
-            List<ColumnType> targetPK,
-            String parentPath,
-            Map<String, Object> row) {
+    protected int handle(TaskType task, String keyString, String targetTableName, List<ColumnType> targetColumns, List<ColumnType> targetPK, String parentPath, Map<String, Object> row) {
 
         // check if sync already
         List<String> kss = this.tableRows.get(task.getName());
         if (kss.contains(keyString)) {
             return 0;
         }
-        this.tableRows.get(task.getName()).add(keyString);
+        kss.add(keyString);
 
         String statement = null;
         Map<String, Object> statementParams = null;

@@ -13,7 +13,7 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
     private int count;
 
-    private boolean concurrent = false;
+    private boolean concurrent = true;
 
     @Test
     public void testSimple() throws URISyntaxException, Exception {
@@ -26,8 +26,10 @@ public class TaskFactoryTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("Simple", this.concurrent);
         executor.addListener(this);
 
+        long t1 = System.currentTimeMillis();
         executor.run(where);
-        executor.printRunLog();
+        long t2 = System.currentTimeMillis();
+        System.out.println(t2 - t1);
     }
 
     @Test
@@ -41,8 +43,10 @@ public class TaskFactoryTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("SimpleBack", this.concurrent);
         executor.addListener(this);
 
+        long t1 = System.currentTimeMillis();
         executor.run(where);
-        executor.printRunLog();
+        long t2 = System.currentTimeMillis();
+        System.out.println(t2 - t1);
     }
 
     @Test

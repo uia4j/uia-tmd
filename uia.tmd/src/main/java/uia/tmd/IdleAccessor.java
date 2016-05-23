@@ -69,12 +69,11 @@ public class IdleAccessor implements DataAccessor {
 
     @Override
     public int execueUpdate(String sql, Map<String, Object> parameters) throws SQLException {
-        return 0;
+        return 1;
     }
 
     @Override
     public void execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
-
     }
 
     @Override
