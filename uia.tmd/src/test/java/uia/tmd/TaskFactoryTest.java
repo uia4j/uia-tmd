@@ -13,8 +13,6 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
     private int count;
 
-    private boolean concurrent = true;
-
     @Test
     public void testSimple() throws URISyntaxException, Exception {
         this.count = 0;
@@ -23,7 +21,7 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
         TreeMap<String, Object> where = new TreeMap<String, Object>();
 
-        TaskExecutor executor = factory.createExecutor("Simple", this.concurrent);
+        TaskExecutor executor = factory.createExecutor("Simple");
         executor.addListener(this);
 
         long t1 = System.currentTimeMillis();
@@ -40,7 +38,7 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
         TreeMap<String, Object> where = new TreeMap<String, Object>();
 
-        TaskExecutor executor = factory.createExecutor("SimpleBack", this.concurrent);
+        TaskExecutor executor = factory.createExecutor("SimpleBack");
         executor.addListener(this);
 
         long t1 = System.currentTimeMillis();
@@ -57,7 +55,7 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
         TreeMap<String, Object> where = new TreeMap<String, Object>();
 
-        TaskExecutor executor = factory.createExecutor("Loop", this.concurrent);
+        TaskExecutor executor = factory.createExecutor("Loop");
         executor.addListener(this);
 
         executor.run(where);
@@ -72,7 +70,7 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
         TreeMap<String, Object> where = new TreeMap<String, Object>();
 
-        TaskExecutor executor = factory.createExecutor("LoopBack", this.concurrent);
+        TaskExecutor executor = factory.createExecutor("LoopBack");
         executor.addListener(this);
 
         executor.run(where);

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import uia.tmd.model.xml.ColumnType;
+import uia.tmd.model.xml.DbServerType;
+import uia.tmd.model.xml.TableType;
 
 /**
  * Database accessor.
@@ -14,6 +16,8 @@ import uia.tmd.model.xml.ColumnType;
  *
  */
 public interface DataAccessor {
+
+    public void initial(DbServerType svrType, Map<String, TableType> tables);
 
     /**
      * Get connection.
@@ -27,7 +31,7 @@ public interface DataAccessor {
      * @param password Password.
      * @throws SQLException SQL exception.
      */
-    public abstract void connect(String user, String password) throws SQLException;
+    public abstract void connect() throws SQLException;
 
     /**
      * Disconnect to database.
@@ -94,7 +98,7 @@ public interface DataAccessor {
      * @param table Values of parameters with ordering.
      * @throws SQLException SQL exception.
      */
-    public void execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException;
+    public int execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException;
 
     /**
      * Prepare column information of specific table.

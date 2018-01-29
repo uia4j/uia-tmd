@@ -56,8 +56,33 @@ public abstract class TaskExecutor {
         this.task1 = this.factory.tasks.get(executor.getTask());
         this.source = this.factory.dbServers.get(executor.getSource());
         this.target = this.factory.dbServers.get(executor.getTarget());
-        this.sourceAccessor = AbstractDataAccessor.create(this.source, factory.tables);
-        this.targetAccessor = AbstractDataAccessor.create(this.target, factory.tables);
+
+        this.sourceAccessor = (DataAccessor) Class.forName(this.source.getDbType()).newInstance();
+        this.targetAccessor = (DataAccessor) Class.forName(this.target.getDbType()).newInstance();
+        this.sourceAccessor.initial(this.source, factory.getTables());
+        this.targetAccessor.initial(this.target, factory.getTables());
+
+        this.listeners = new ArrayList<TaskExecutorListener>();
+
+        this.deleteTarget = true;
+        this.tableRows = new TreeMap<String, List<String>>();
+        this.name = executor.getName();
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param task Task definition.
+     * @param factory Task factory.
+     * @throws Exception
+     */
+    TaskExecutor(TaskFactory factory, DataAccessor source, DataAccessor target, ExecutorType executor) throws Exception {
+        this.factory = factory;
+        this.task1 = this.factory.tasks.get(executor.getTask());
+        this.source = this.factory.dbServers.get(executor.getSource());
+        this.target = this.factory.dbServers.get(executor.getTarget());
+        this.sourceAccessor = source;
+        this.targetAccessor = target;
         this.listeners = new ArrayList<TaskExecutorListener>();
 
         this.deleteTarget = true;
@@ -105,9 +130,9 @@ public abstract class TaskExecutor {
     public boolean run(Where[] wheres) throws SQLException {
         this.tableRows.clear();
         try {
-            this.sourceAccessor.connect(this.source.getUser(), this.source.getPassword());
+            this.sourceAccessor.connect();
             if (this.target != null) {  // TODO: good?
-                this.targetAccessor.connect(this.target.getUser(), this.target.getPassword());
+                this.targetAccessor.connect();
             }
             if (runTask(this.task1, wheres, "/")) {
                 raiseDone();
@@ -131,9 +156,9 @@ public abstract class TaskExecutor {
     public boolean run(Map<String, Object> whereValues) throws SQLException {
         this.tableRows.clear();
         try {
-            this.sourceAccessor.connect(this.source.getUser(), this.source.getPassword());
+            this.sourceAccessor.connect();
             if (this.target != null) {  // TODO: good?
-                this.targetAccessor.connect(this.target.getUser(), this.target.getPassword());
+                this.targetAccessor.connect();
             }
             if (runTask(this.task1, whereValues, "/")) {
                 raiseDone();
@@ -200,6 +225,34 @@ public abstract class TaskExecutor {
         }
         catch (SQLException ex) {
             raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, Database.TARGET), ex);
+            throw ex;
+        }
+    }
+
+    protected int handleBatch(TaskType task, String targetTableName, List<ColumnType> targetColumns, List<ColumnType> targetPK, String parentPath, List<Map<String, Object>> rows) throws SQLException {
+        String statement = null;
+        Map<String, Object> statementParams = null;
+
+        try {
+            for (Map<String, Object> row : rows) {
+                if (this.deleteTarget) {
+                    statement = AbstractDataAccessor.sqlDelete(targetTableName, targetPK);
+                    statementParams = prepare(row, targetPK);
+                    int count = this.targetAccessor.execueUpdate(statement, statementParams);
+                    raiseTargetDeleted(new TaskExecutorEvent(task, parentPath, statement, statementParams, count, Database.TARGET));
+                }
+
+            }
+
+            int uc = 0;
+            statement = AbstractDataAccessor.sqlInsert(targetTableName, targetColumns);
+            this.targetAccessor.execueUpdateBatch(statement, rows);
+            raiseTargetInserted(new TaskExecutorEvent(task, parentPath, statement, (Map<String, Object>) null, uc, Database.TARGET));
+
+            return uc;
+        }
+        catch (SQLException ex) {
+            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, (Map<String, Object>) null, 0, Database.TARGET), ex);
             throw ex;
         }
     }

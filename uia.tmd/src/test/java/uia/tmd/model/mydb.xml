@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd>
+	<executorSpace>
+		<executor name="CASE1" source="MYDB-local" target="" task="Person" />
+	</executorSpace>
+	<taskSpace>
+		<task name="Person">
+			<sourceSelect table="person" />
+			<targetUpdate table="human" />
+			<next />
+		</task>
+		<task name="PersonAccount">
+			<sourceSelect table="person_acc" />
+			<targetUpdate table="human" />
+			<next />
+		</task>
+	</taskSpace>
+	<tableSpace>
+	</tableSpace>
+	<databaseSpace>
+		<dbServer>
+			<id>MYDB-local</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>mydb</dbName>
+			<user>kyle</user>
+			<password>5683Kanlin</password>
+			<dbType>PGSQL</dbType>
+		</dbServer>
+	</databaseSpace>
+</tmd>

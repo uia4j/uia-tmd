@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import uia.tmd.model.xml.ColumnType;
+import uia.tmd.model.xml.DbServerType;
+import uia.tmd.model.xml.TableType;
 
 /**
  * Idle data accessor.
@@ -16,16 +18,14 @@ import uia.tmd.model.xml.ColumnType;
  */
 public class IdleAccessor implements DataAccessor {
 
-    IdleAccessor() throws Exception {
+    @Override
+    public void connect() throws SQLException {
+
     }
 
     @Override
     public Connection getConnection() {
         return null;
-    }
-
-    @Override
-    public void connect(String user, String password) throws SQLException {
     }
 
     @Override
@@ -73,11 +73,16 @@ public class IdleAccessor implements DataAccessor {
     }
 
     @Override
-    public void execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
+    public int execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
+        return 0;
     }
 
     @Override
     public List<ColumnType> prepareColumns(String tableName) throws SQLException {
         return new ArrayList<ColumnType>();
+    }
+
+    @Override
+    public void initial(DbServerType svrType, Map<String, TableType> tables) {
     }
 }

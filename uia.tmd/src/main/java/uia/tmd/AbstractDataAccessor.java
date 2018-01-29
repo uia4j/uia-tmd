@@ -1,5 +1,8 @@
 package uia.tmd;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,40 +25,20 @@ import uia.tmd.model.xml.TableType;
  */
 public abstract class AbstractDataAccessor implements DataAccessor {
 
-    private Map<String, TableType> tables;
+    protected DbServerType svrType;
 
-    private TreeMap<String, List<ColumnType>> tableColumns;
+    protected Map<String, TableType> tables;
 
-    /**
-     * Create instance.
-     * @param dbServer Database information.
-     * @param tables table information.
-     * @return Data access instance.
-     * @throws Exception Create failed.
-     */
-    public static DataAccessor create(DbServerType dbServer, Map<String, TableType> tables) throws Exception {
-        if (dbServer == null) {
-            return new IdleAccessor();
-        }
+    protected TreeMap<String, List<ColumnType>> tableColumns;
 
-        if ("MSSQL".equalsIgnoreCase(dbServer.getDbType())) {
-            return new MSSQLAccessor(tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
-        }
-        else if ("PGSQL".equalsIgnoreCase(dbServer.getDbType())) {
-            return new PGSQLAccessor(tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
-        }
-        else if ("ORA".equalsIgnoreCase(dbServer.getDbType())) {
-            return new ORAAccessor(tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
-        }
-        else if ("PI".equalsIgnoreCase(dbServer.getDbType())) {
-            return new PIDBAccessor(tables, dbServer.getHost(), dbServer.getPort(), dbServer.getDbName());
-        }
-        return new IdleAccessor();
+    protected AbstractDataAccessor() {
+        this.tableColumns = new TreeMap<String, List<ColumnType>>();
     }
 
-    AbstractDataAccessor(Map<String, TableType> tables) {
+    @Override
+    public void initial(DbServerType svrType, Map<String, TableType> tables) {
+        this.svrType = svrType;
         this.tables = tables;
-        this.tableColumns = new TreeMap<String, List<ColumnType>>();
     }
 
     /**
@@ -72,7 +55,7 @@ public abstract class AbstractDataAccessor implements DataAccessor {
      * @throws SQLException SQL exception.
      */
     @Override
-    public abstract void connect(String user, String password) throws SQLException;
+    public abstract void connect() throws SQLException;
 
     /**
      * Disconnect to database.
@@ -153,7 +136,12 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         while (rs.next()) {
             LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
             for (int i = 0; i < cnt; i++) {
-                row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
+                if (rs.getMetaData().getColumnType(i + 1) == 2005) {
+                    row.put(rs.getMetaData().getColumnName(i + 1), convert(rs.getClob(i + 1)));
+                }
+                else {
+                    row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
+                }
             }
             table.add(row);
         }
@@ -199,7 +187,12 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         while (rs.next()) {
             LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
             for (int i = 0; i < cnt; i++) {
-                row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
+                if (rs.getMetaData().getColumnType(i + 1) == 2005) {
+                    row.put(rs.getMetaData().getColumnName(i + 1), convert(rs.getClob(i + 1)));
+                }
+                else {
+                    row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
+                }
             }
             table.add(row);
         }
@@ -216,6 +209,7 @@ public abstract class AbstractDataAccessor implements DataAccessor {
      * @param parameters Values of parameters with ordering.
      * @return Count of updated records.
      * @throws SQLException SQL exception.
+     * @throws IOException
      */
     @Override
     public int execueUpdate(String sql, Map<String, Object> parameters) throws SQLException {
@@ -226,7 +220,20 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         PreparedStatement ps = getConnection().prepareStatement(sql);
         int i = 1;
         for (Map.Entry<String, Object> e : parameters.entrySet()) {
-            ps.setObject(i, e.getValue());
+            if (e.getValue() instanceof ClobData) {
+                ClobData data = (ClobData) e.getValue();
+                try {
+                    Clob clob = getConnection().createClob();
+                    clob.setString(1, data.content);
+                    ps.setClob(i, clob);
+                }
+                catch (Exception ex) {
+                    ps.setString(i, data.content);
+                }
+            }
+            else {
+                ps.setObject(i, e.getValue());
+            }
             i++;
         }
 
@@ -243,9 +250,9 @@ public abstract class AbstractDataAccessor implements DataAccessor {
      * @throws SQLException SQL exception.
      */
     @Override
-    public void execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
+    public int execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
         if (table == null || table.size() == 0) {
-            return;
+            return 0;
         }
 
         int batchSize = 100;
@@ -254,7 +261,20 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         for (Map<String, Object> parameters : table) {
             int i = 1;
             for (Map.Entry<String, Object> e : parameters.entrySet()) {
-                ps.setObject(i, e.getValue());
+                if (e.getValue() instanceof ClobData) {
+                    ClobData data = (ClobData) e.getValue();
+                    try {
+                        Clob clob = getConnection().createClob();
+                        clob.setString(1, data.content);
+                        ps.setClob(i, clob);
+                    }
+                    catch (Exception ex) {
+                        ps.setString(i, data.content);
+                    }
+                }
+                else {
+                    ps.setObject(i, e.getValue());
+                }
                 i++;
             }
             ps.addBatch();
@@ -266,6 +286,8 @@ public abstract class AbstractDataAccessor implements DataAccessor {
 
         ps.executeBatch();
         ps.close();
+
+        return count;
     }
 
     @Override
@@ -372,5 +394,27 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         }
 
         return String.format("DELETE FROM %s WHERE %s", table, sb2);
+    }
+
+    private ClobData convert(Clob clob) throws SQLException {
+        StringBuffer sb = new StringBuffer((int) clob.length());
+        Reader r = clob.getCharacterStream();
+        char[] cbuf = new char[2048];
+        int n = 0;
+        try {
+            while ((n = r.read(cbuf, 0, cbuf.length)) != -1) {
+                if (n > 0) {
+                    sb.append(cbuf, 0, n);
+                }
+            }
+        }
+        catch (IOException e1) {
+            throw new SQLException(e1);
+        }
+
+        ClobData data = new ClobData();
+        data.content = sb.toString();
+        return data;
+
     }
 }

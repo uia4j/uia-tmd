@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd>
 	<executorSpace>
-		<executor name="ShopOrder" source="WIP" target="WIPTEST" task="ShopOrder" />
-		<executor name="ZTask" source="WIP" target="WIPTEST" task="ZTask" />
+		<executor name="ShopOrder" source="ORACLE_DEV" target="HANA_DEV" task="Item" />
 	</executorSpace>
 	<taskSpace>
 		<task name="BOM">
@@ -36,16 +35,8 @@
 			</next>
 		</task>
 		<task name="Item">
-			<sourceSelect table="ITEM">
-			</sourceSelect>
+			<sourceSelect table="ITEM" />
 			<targetUpdate />
-			<next>
-				<plan taskName="BOM">
-					<join>
-						<column source="BOM_BO">HANDLE</column>
-					</join>
-				</plan>
-			</next>
 		</task>
 		<task name="Router">
 			<sourceSelect table="ROUTER">
@@ -2837,22 +2828,22 @@
 	</tableSpace>
 	<databaseSpace>
 		<dbServer>
-			<id>WIP</id>
-			<host>localhost</host>
-			<port>1433</port>
+			<id>ORACLE_DEV</id>
+			<host>10.160.1.48</host>
+			<port>1521</port>
 			<dbName>WIP</dbName>
-			<user>wip</user>
+			<user>WIP</user>
 			<password>wip</password>
-			<dbType>MSSQL</dbType>
+			<dbType>ame.psb.oraha.ORAAccessor</dbType>
 		</dbServer>
 		<dbServer>
-			<id>WIPTEST</id>
-			<host>localhost</host>
-			<port>1433</port>
-			<dbName>WIPTEST</dbName>
-			<user>wip</user>
-			<password>wip</password>
-			<dbType>MSSQL</dbType>
+			<id>HANA_DEV</id>
+			<host>10.160.1.52</host>
+			<port>39015</port>
+			<dbName>WIP</dbName>
+			<user>WIP</user>
+			<password>Hdb12345</password>
+			<dbType>ame.psb.oraha.HanaAccessor</dbType>
 		</dbServer>
 	</databaseSpace>
 </tmd>

@@ -203,36 +203,43 @@ public class SimpleTaskExecutor extends TaskExecutor {
             }
 
             // one by one
-            for (Map<String, Object> row : sourceResult) {
-                Map<String, Object> sourcePKvalues = prepare(row, sourcePK);
+            if (task.getNext() == null) {
+                handleBatch(task, targetTableName, targetColumns, targetPK, parentPath, sourceResult);
+            }
+            else {
+                for (Map<String, Object> row : sourceResult) {
+                    Map<String, Object> sourcePKvalues = prepare(row, sourcePK);
 
-                database = Database.TARGET;
-                int rc = handle(task, sourcePKvalues.toString(), targetTableName, targetColumns, targetPK, parentPath, row);
+                    database = Database.TARGET;
+                    int rc = handle(task, sourcePKvalues.toString(), targetTableName, targetColumns, targetPK, parentPath, row);
 
-                // next plans
-                if (rc > 0 && !runNext(task, row, parentPath)) {
-                    return false;
-                }
+                    // next plans
+                    if (rc > 0 && !runNext(task, row, parentPath)) {
+                        return false;
+                    }
 
-                // delete source
-                database = Database.SOURCE;
-                if (sourceSelect.isDeleted()) {
-                    statement = sourceDelete;
-                    statementParams = sourcePKvalues;
-                    int count = this.sourceAccessor.execueUpdate(statement, statementParams);
-                    raiseSourceDeleted(new TaskExecutorEvent(
-                            task,
-                            parentPath,
-                            sourceDelete,
-                            sourcePKvalues,
-                            count,
-                            database));
+                    // delete source
+                    database = Database.SOURCE;
+                    if (sourceSelect.isDeleted()) {
+                        statement = sourceDelete;
+                        statementParams = sourcePKvalues;
+                        int count = this.sourceAccessor.execueUpdate(statement, statementParams);
+                        raiseSourceDeleted(new TaskExecutorEvent(
+                                task,
+                                parentPath,
+                                sourceDelete,
+                                sourcePKvalues,
+                                count,
+                                database));
+                    }
                 }
             }
 
             return true;
         }
-        catch (SQLException ex) {
+        catch (
+
+        SQLException ex) {
             raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, database), ex);
             throw ex;
         }
