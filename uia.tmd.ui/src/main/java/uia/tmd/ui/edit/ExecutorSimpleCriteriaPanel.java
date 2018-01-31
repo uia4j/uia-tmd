@@ -1,13 +1,16 @@
 package uia.tmd.ui.edit;
 
 import java.awt.Dimension;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+
+import uia.tmd.Where;
+import uia.tmd.WhereEq;
 
 public class ExecutorSimpleCriteriaPanel extends JPanel {
 
@@ -30,8 +33,8 @@ public class ExecutorSimpleCriteriaPanel extends JPanel {
         add(this.txtrHandle);
     }
 
-    public Map<String, Object> saveParamMap() {
-        TreeMap<String, Object> criteria = new TreeMap<String, Object>();
+    public List<Where> save() {
+        ArrayList<Where> wheres = new ArrayList<Where>();
 
         String text = this.txtrHandle.getText();
         text = text.replace("\r", "");
@@ -42,10 +45,10 @@ public class ExecutorSimpleCriteriaPanel extends JPanel {
             if (kv.length < 2) {
                 continue;
             }
-            criteria.put(kv[0], kv[1]);
+            wheres.add(new WhereEq(kv[0], kv[1]));
         }
 
-        return criteria;
+        return wheres;
     }
 
 }

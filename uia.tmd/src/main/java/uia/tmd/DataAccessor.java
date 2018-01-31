@@ -75,15 +75,6 @@ public interface DataAccessor {
     public List<Map<String, Object>> select(String sql, Where[] wheres) throws SQLException;
 
     /**
-     * Select data.
-     * @param sql SQL statement.
-     * @param parameters Values of parameters with ordering.
-     * @return Result. Order of keys is same as selected columns.
-     * @throws SQLException SQL exception.
-     */
-    public List<Map<String, Object>> select(String sql, Map<String, Object> parameters) throws SQLException;
-
-    /**
      * Insert, update or delete data.
      * @param sql SQL statement.
      * @param parameters Values of parameters with ordering.
@@ -98,7 +89,7 @@ public interface DataAccessor {
      * @param table Values of parameters with ordering.
      * @throws SQLException SQL exception.
      */
-    public int execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException;
+    public int execueBatch(String sql, List<Map<String, Object>> table) throws SQLException;
 
     /**
      * Prepare column information of specific table.

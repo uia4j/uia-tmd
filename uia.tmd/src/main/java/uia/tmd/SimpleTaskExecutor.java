@@ -4,10 +4,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import uia.tmd.TaskExecutorListener.TaskExecutorEvent;
-import uia.tmd.TaskExecutorListener.TaskExecutorEvent.Database;
+import uia.tmd.TaskExecutorListener.TaskExecutorEvent.OperationType;
 import uia.tmd.model.xml.ColumnType;
 import uia.tmd.model.xml.ExecutorType;
 import uia.tmd.model.xml.SourceSelectType;
@@ -35,15 +34,13 @@ public class SimpleTaskExecutor extends TaskExecutor {
 
     @Override
     protected boolean runTask(final TaskType task, Where[] wheres, final String parentPath) throws SQLException {
-        List<String> kss = this.tableRows.get(task.getName());
-        if (kss == null) {
-            kss = new ArrayList<String>();
-            this.tableRows.put(task.getName(), kss);
+        if (this.tableRows.containsKey(task.getName())) {
+            this.tableRows.put(task.getName(), new ArrayList<String>());
         }
 
         String statement = null;
         Map<String, Object> statementParams = null;
-        Database database = Database.SOURCE;
+        OperationType operationTarget = OperationType.SOURCE;
         try {
             final SourceSelectType sourceSelect = task.getSourceSelect();
             final TargetUpdateType targetUpdate = task.getTargetUpdate();
@@ -63,7 +60,7 @@ public class SimpleTaskExecutor extends TaskExecutor {
                     statement,
                     wheres,
                     sourceResult.size(),
-                    database));
+                    operationTarget));
 
             String sourceDelete = null;
             if (sourceSelect.isDeleted()) {
@@ -71,7 +68,7 @@ public class SimpleTaskExecutor extends TaskExecutor {
             }
 
             // target: delete & insert
-            database = Database.TARGET;
+            operationTarget = OperationType.TARGET;
             final String targetTableName = targetUpdate.getTable() == null ? sourceSelect.getTable() : targetUpdate.getTable();
             final List<ColumnType> targetColumns;
             if (targetUpdate.getColumns() == null || targetUpdate.getColumns().getColumn().size() == 0) {
@@ -98,119 +95,15 @@ public class SimpleTaskExecutor extends TaskExecutor {
                 throw new SQLException("Table:" + targetTableName + " without primary key.");
             }
 
-            // one by one
-            for (Map<String, Object> row : sourceResult) {
-                Map<String, Object> sourcePKvalues = prepare(row, sourcePK);
-
-                database = Database.TARGET;
-                int rc = handle(task, sourcePKvalues.toString(), targetTableName, targetColumns, targetPK, parentPath, row);
-
-                // next plans
-                if (rc > 0 && !runNext(task, row, parentPath)) {
-                    return false;
-                }
-
-                // delete source
-                database = Database.SOURCE;
-                if (sourceSelect.isDeleted()) {
-                    statement = sourceDelete;
-                    statementParams = sourcePKvalues;
-                    int count = this.sourceAccessor.execueUpdate(statement, statementParams);
-                    raiseSourceDeleted(new TaskExecutorEvent(
-                            task,
-                            parentPath,
-                            sourceDelete,
-                            sourcePKvalues,
-                            count,
-                            database));
-                }
-            }
-
-            return true;
-        }
-        catch (SQLException ex) {
-            raiseExecuteFailure(
-                    new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, database),
-                    ex);
-            throw ex;
-        }
-    }
-
-    @Override
-    protected boolean runTask(final TaskType task, Map<String, Object> whereValues, final String parentPath) throws SQLException {
-        List<String> kss = this.tableRows.get(task.getName());
-        if (kss == null) {
-            kss = new ArrayList<String>();
-            this.tableRows.put(task.getName(), kss);
-        }
-
-        String statement = null;
-        Map<String, Object> statementParams = whereValues == null ? new TreeMap<String, Object>() : whereValues;
-
-        Database database = Database.SOURCE;
-        try {
-            SourceSelectType sourceSelect = task.getSourceSelect();
-            TargetUpdateType targetUpdate = task.getTargetUpdate();
-
-            // source: select
-            final List<ColumnType> sourceColumns = this.sourceAccessor.prepareColumns(sourceSelect.getTable());
-            final List<ColumnType> sourcePK = findPK(sourceColumns);
-            if (sourcePK.size() == 0) {
-                throw new SQLException("Table:" + sourceSelect.getTable() + " without primary key.");
-            }
-
-            statement = AbstractDataAccessor.sqlSelect(sourceSelect.getTable(), sourceColumns, statementParams.keySet().toArray(new String[0]));
-            List<Map<String, Object>> sourceResult = this.sourceAccessor.select(statement, statementParams);
-            raiseSourceSelected(new TaskExecutorEvent(
-                    task,
-                    parentPath,
-                    statement,
-                    statementParams,
-                    sourceResult.size(),
-                    database));
-
-            String sourceDelete = null;
-            if (sourceSelect.isDeleted()) {
-                sourceDelete = AbstractDataAccessor.sqlDelete(sourceSelect.getTable(), sourcePK);
-            }
-
-            // target: delete & insert
-            database = Database.TARGET;
-            final String targetTableName = targetUpdate.getTable() == null ? sourceSelect.getTable() : targetUpdate.getTable();
-            final List<ColumnType> targetColumns;
-            if (targetUpdate.getColumns() == null || targetUpdate.getColumns().getColumn().size() == 0) {
-                targetColumns = sourceColumns;
-            }
-            else {
-                targetColumns = this.targetAccessor.prepareColumns(targetUpdate.getTable());
-                // TODO: fix
-                List<ColumnType> temp = targetUpdate.getColumns().getColumn();
-                for (ColumnType temp0 : temp) {
-                    for (ColumnType temp2 : targetColumns) {
-                        if (temp2.getValue().equals(temp0.getValue())) {
-                            temp2.setSource(temp0.getSource());
-                            break;
-                        }
-                    }
-                }
-            }
-            if (targetColumns.size() == 0) {
-                throw new SQLException("Table:" + targetTableName + " without columns.");
-            }
-            final List<ColumnType> targetPK = findPK(targetColumns);
-            if (targetPK.size() == 0) {
-                throw new SQLException("Table:" + targetTableName + " without primary key.");
-            }
-
-            // one by one
+            // BATCH if no children
             if (task.getNext() == null) {
                 handleBatch(task, targetTableName, targetColumns, targetPK, parentPath, sourceResult);
             }
             else {
                 for (Map<String, Object> row : sourceResult) {
-                    Map<String, Object> sourcePKvalues = prepare(row, sourcePK);
+                    Map<String, Object> sourcePKvalues = filterData(row, sourcePK);
 
-                    database = Database.TARGET;
+                    operationTarget = OperationType.TARGET;
                     int rc = handle(task, sourcePKvalues.toString(), targetTableName, targetColumns, targetPK, parentPath, row);
 
                     // next plans
@@ -219,7 +112,7 @@ public class SimpleTaskExecutor extends TaskExecutor {
                     }
 
                     // delete source
-                    database = Database.SOURCE;
+                    operationTarget = OperationType.SOURCE;
                     if (sourceSelect.isDeleted()) {
                         statement = sourceDelete;
                         statementParams = sourcePKvalues;
@@ -230,17 +123,18 @@ public class SimpleTaskExecutor extends TaskExecutor {
                                 sourceDelete,
                                 sourcePKvalues,
                                 count,
-                                database));
+                                operationTarget));
                     }
                 }
             }
 
             return true;
         }
-        catch (
-
-        SQLException ex) {
-            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, database), ex);
+        catch (SQLException ex) {
+            ex.printStackTrace();
+            raiseExecuteFailure(
+                    new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, operationTarget),
+                    ex);
             throw ex;
         }
     }

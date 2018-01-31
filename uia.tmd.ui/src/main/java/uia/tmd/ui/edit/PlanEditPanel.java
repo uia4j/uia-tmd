@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import uia.tmd.AbstractDataAccessor;
 import uia.tmd.DataAccessor;
 import uia.tmd.TaskFactory;
 import uia.tmd.model.xml.ColumnType;
@@ -244,8 +243,9 @@ public class PlanEditPanel extends JPanel {
         this.factory = factory;
         try {
             DbServerType db = factory.getTmd().getDatabaseSpace().getDbServer().get(0);
-            this.da = AbstractDataAccessor.create(db, factory.getTables());
-            this.da.connect(db.getUser(), db.getPassword());
+            this.da = (DataAccessor) Class.forName(db.getDbType()).newInstance();
+            this.da.initial(db, factory.getTables());
+            this.da.connect();
         }
         catch (Exception e) {
 

@@ -62,7 +62,7 @@ public interface TaskExecutorListener {
      */
     public static class TaskExecutorEvent {
 
-        public enum Database {
+        public enum OperationType {
             SOURCE,
             TARGET
         }
@@ -79,9 +79,9 @@ public interface TaskExecutorListener {
 
         public final int count;
 
-        public final Database database;
+        public final OperationType database;
 
-        public TaskExecutorEvent(TaskType task, String parentPath, String sql, Where[] wheres, int count, Database database) {
+        public TaskExecutorEvent(TaskType task, String parentPath, String sql, Where[] wheres, int count, OperationType database) {
             this.task = task;
             this.parentPath = parentPath;
             this.path = parentPath + task.getName() + "/";
@@ -94,7 +94,7 @@ public interface TaskExecutorListener {
             this.count = count;
         }
 
-        public TaskExecutorEvent(TaskType task, String parentPath, String sql, Map<String, Object> criteriaValues, int count, Database database) {
+        public TaskExecutorEvent(TaskType task, String parentPath, String sql, Map<String, Object> criteriaValues, int count, OperationType database) {
             this.task = task;
             this.parentPath = parentPath;
             this.path = parentPath + this.task.getName() + "/";

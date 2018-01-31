@@ -146,6 +146,10 @@ public class NaviPanel extends JPanel {
             @Override
             public void valueChanged(TreeSelectionEvent evt) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) NaviPanel.this.spaceTree.getLastSelectedPathComponent();
+                if (node == null || node.getUserObject() == null) {
+                    return;
+                }
+
                 ((NodeValue) node.getUserObject()).select(NaviPanel.this);
                 ((NodeValue) node.getUserObject()).expand(NaviPanel.this);
             }

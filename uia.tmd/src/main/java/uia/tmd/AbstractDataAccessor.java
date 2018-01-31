@@ -153,57 +153,6 @@ public abstract class AbstractDataAccessor implements DataAccessor {
     }
 
     /**
-     * Select data.
-     * @param sql SQL statement.
-     * @param parameters Values of parameters with ordering.
-     * @return Result. Order of keys is same as selected columns.
-     * @throws SQLException SQL exception.
-     */
-    @Override
-    public List<Map<String, Object>> select(String sql, Map<String, Object> parameters) throws SQLException {
-        // what ?
-        for (String key : parameters.keySet().toArray(new String[0])) {
-            if (parameters.get(key) == null) {
-                sql = sql.replace(key + "=?", key + " is null");
-                parameters.remove(key);
-            }
-        }
-
-        ArrayList<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
-
-        // parameters
-        PreparedStatement ps = getConnection().prepareStatement(sql);
-        if (parameters != null) {
-            int i = 1;
-            for (Map.Entry<String, Object> e : parameters.entrySet()) {
-                ps.setObject(i, e.getValue());
-                i++;
-            }
-        }
-
-        // select
-        ResultSet rs = ps.executeQuery();
-        int cnt = rs.getMetaData().getColumnCount();
-        while (rs.next()) {
-            LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
-            for (int i = 0; i < cnt; i++) {
-                if (rs.getMetaData().getColumnType(i + 1) == 2005) {
-                    row.put(rs.getMetaData().getColumnName(i + 1), convert(rs.getClob(i + 1)));
-                }
-                else {
-                    row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
-                }
-            }
-            table.add(row);
-        }
-
-        rs.close();
-        ps.close();
-
-        return table;
-    }
-
-    /**
      * Insert, update or delete data.
      * @param sql SQL statement.
      * @param parameters Values of parameters with ordering.
@@ -250,12 +199,12 @@ public abstract class AbstractDataAccessor implements DataAccessor {
      * @throws SQLException SQL exception.
      */
     @Override
-    public int execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
+    public int execueBatch(String sql, List<Map<String, Object>> table) throws SQLException {
         if (table == null || table.size() == 0) {
             return 0;
         }
 
-        int batchSize = 100;
+        int batchSize = 200;
         int count = 0;
         PreparedStatement ps = getConnection().prepareStatement(sql);
         for (Map<String, Object> parameters : table) {
@@ -279,7 +228,8 @@ public abstract class AbstractDataAccessor implements DataAccessor {
             }
             ps.addBatch();
 
-            if (++count % batchSize == 0) {
+            count++;
+            if ((count % batchSize) == 0) {
                 ps.executeBatch();
             }
         }

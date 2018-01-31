@@ -3,6 +3,7 @@ package uia.tmd.ui.edit;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -23,20 +24,24 @@ public class TaskEditPanel extends JPanel {
 
     private JTextField nameField;
 
-    private JComboBox sourceBox;
+    private JComboBox<String> sourceBox;
 
-    private JComboBox targetBox;
+    private JComboBox<String> targetBox;
 
     private TaskType task;
 
+    private List<String> tableNames;
+
     public TaskEditPanel(List<TableType> tables) {
+        this.tableNames = new ArrayList<String>();
 
         setLayout(null);
         setPreferredSize(new Dimension(335, 105));
 
-        DefaultComboBoxModel sourceModel = new DefaultComboBoxModel();
-        DefaultComboBoxModel targetModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel<String> sourceModel = new DefaultComboBoxModel<String>();
+        DefaultComboBoxModel<String> targetModel = new DefaultComboBoxModel<String>();
         for (TableType table : tables) {
+            this.tableNames.add(table.getName());
             sourceModel.addElement(table.getName());
             targetModel.addElement(table.getName());
         }
@@ -56,7 +61,7 @@ public class TaskEditPanel extends JPanel {
         sourceLabel.setBounds(10, 44, 83, 15);
         add(sourceLabel);
 
-        this.sourceBox = new JComboBox();
+        this.sourceBox = new JComboBox<String>();
         this.sourceBox.setBounds(103, 41, 222, 21);
         this.sourceBox.setModel(sourceModel);
         this.sourceBox.addItemListener(new ItemListener() {
@@ -75,7 +80,7 @@ public class TaskEditPanel extends JPanel {
         targetLabel.setBounds(10, 75, 83, 15);
         add(targetLabel);
 
-        this.targetBox = new JComboBox();
+        this.targetBox = new JComboBox<String>();
         this.targetBox.setBounds(103, 72, 222, 21);
         this.targetBox.setModel(targetModel);
         add(this.targetBox);
@@ -100,6 +105,15 @@ public class TaskEditPanel extends JPanel {
 
     public void load(TaskType task) {
         this.task = task;
+        if (!this.tableNames.contains(task.getSourceSelect().getTable())) {
+            ((DefaultComboBoxModel<String>) this.sourceBox.getModel()).addElement(task.getSourceSelect().getTable());
+            ((DefaultComboBoxModel<String>) this.targetBox.getModel()).addElement(task.getSourceSelect().getTable());
+            this.tableNames.add(task.getSourceSelect().getTable());
+        }
+        if (task.getTargetUpdate().getTable() != null && !this.tableNames.contains(task.getTargetUpdate().getTable())) {
+            ((DefaultComboBoxModel<String>) this.targetBox.getModel()).addElement(task.getTargetUpdate().getTable());
+            this.tableNames.add(task.getTargetUpdate().getTable());
+        }
 
         this.sourceBox.setSelectedItem(task.getSourceSelect().getTable());
         if (task.getTargetUpdate() == null || task.getTargetUpdate().getTable() == null) {

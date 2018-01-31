@@ -18,6 +18,7 @@ import org.apache.log4j.PatternLayout;
 
 import uia.tmd.TaskExecutor;
 import uia.tmd.TaskExecutorListener;
+import uia.tmd.Where;
 import uia.tmd.ui.edit.ExecutorSimpleCriteriaPanel;
 
 public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
@@ -71,8 +72,7 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
                 LOGGER.addAppender(appender);
                 try {
                     ExecutorRunPanel.this.frame.setExecutable(false);
-                    te.run(panel.saveParamMap());
-                    te.printRunLog();
+                    te.run(panel.save().toArray(new Where[0]));
                 }
                 catch (Exception ex) {
                     ex.printStackTrace();
@@ -100,11 +100,11 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
         }
     }
 
-    private void appendQRY(final TaskExecutorEvent evt, final int count) {
+    private void append(final TaskExecutorEvent evt) {
         if (SwingUtilities.isEventDispatchThread()) {
-            this.messageArea.setText(this.messageArea.getText() + String.format("QRY> %s (%s)\n",
+            this.messageArea.setText(this.messageArea.getText() + String.format("RUN> %s (%s)\n",
                     evt.path,
-                    count));
+                    evt.count));
             this.messageArea.setText(this.messageArea.getText() + String.format("     %s\n", evt.sql));
         }
         else {
@@ -112,24 +112,7 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
 
                 @Override
                 public void run() {
-                    appendQRY(evt, count);
-                }
-            });
-        }
-    }
-
-    private void appendINS(final TaskExecutorEvent evt) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            this.messageArea.setText(this.messageArea.getText() + String.format("INS> %s\n", evt.path));
-            this.messageArea.setText(this.messageArea.getText() + String.format("     %s\n", evt.sql));
-            this.messageArea.setText(this.messageArea.getText() + String.format("     %s\n", evt.criteria));
-        }
-        else {
-            SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    appendINS(evt);
+                    append(evt);
                 }
             });
         }
@@ -139,7 +122,7 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
     public void sourceSelected(TaskExecutor executor, TaskExecutorEvent evt) {
         LOGGER.info(String.format("QRY> %s(%s)\n%50s - %s\n%50s - %s", evt.path, evt.count, "", evt.sql, "", evt.criteria));
         appendMessage("");
-        appendQRY(evt, evt.count);
+        append(evt);
     }
 
     @Override
@@ -150,17 +133,21 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
     @Override
     public void targetInserted(TaskExecutor executor, TaskExecutorEvent evt) {
         LOGGER.info(String.format("INS> %s\n%50s - %s", evt.path, "", evt.sql));
+        append(evt);
     }
 
     @Override
     public void targetDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
         LOGGER.info(String.format("DEL> %s(%s)\n%50s - %s\n%50s - %s", evt.path, evt.count, "", evt.sql, "", evt.criteria));
+        append(evt);
     }
 
     @Override
     public void executeFailure(TaskExecutor executor, TaskExecutorEvent evt, SQLException ex) {
         LOGGER.error(String.format("%s> %s", evt.path, evt.sql));
         LOGGER.error(String.format("%s> %s", evt.path, evt.criteria), ex);
+        appendMessage(String.format("RUN> %s failed\n", evt.path));
+        appendMessage(ex.getMessage() + "\n");
     }
 
     @Override

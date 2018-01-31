@@ -3,7 +3,6 @@ package uia.tmd;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.TreeMap;
 
 import org.junit.Test;
 
@@ -19,13 +18,11 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
         TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
 
-        TreeMap<String, Object> where = new TreeMap<String, Object>();
-
         TaskExecutor executor = factory.createExecutor("Simple");
         executor.addListener(this);
 
         long t1 = System.currentTimeMillis();
-        executor.run(where);
+        executor.run(new Where[0]);
         long t2 = System.currentTimeMillis();
         System.out.println(t2 - t1);
     }
@@ -36,13 +33,11 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
         TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
 
-        TreeMap<String, Object> where = new TreeMap<String, Object>();
-
         TaskExecutor executor = factory.createExecutor("SimpleBack");
         executor.addListener(this);
 
         long t1 = System.currentTimeMillis();
-        executor.run(where);
+        executor.run(new Where[0]);
         long t2 = System.currentTimeMillis();
         System.out.println(t2 - t1);
     }
@@ -53,12 +48,10 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
         TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
 
-        TreeMap<String, Object> where = new TreeMap<String, Object>();
-
         TaskExecutor executor = factory.createExecutor("Loop");
         executor.addListener(this);
 
-        executor.run(where);
+        executor.run(new Where[0]);
         executor.printRunLog();
     }
 
@@ -68,12 +61,10 @@ public class TaskFactoryTest implements TaskExecutorListener {
 
         TaskFactory factory = new TaskFactory(new File(TmdTypeHelperTest.class.getResource("sample.xml").toURI()));
 
-        TreeMap<String, Object> where = new TreeMap<String, Object>();
-
         TaskExecutor executor = factory.createExecutor("LoopBack");
         executor.addListener(this);
 
-        executor.run(where);
+        executor.run(new Where[0]);
         executor.printRunLog();
     }
 
@@ -86,9 +77,9 @@ public class TaskFactoryTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("CASE2");
         executor.addListener(this);
 
-        TreeMap<String, Object> where = new TreeMap<String, Object>();
-        where.put("id", 1);
-        System.out.println("Execute:" + executor.run(where));
+        Where[] ws = new Where[1];
+        ws[0] = new WhereEq("id", 1);
+        System.out.println("Execute:" + executor.run(ws));
     }
 
     @Override

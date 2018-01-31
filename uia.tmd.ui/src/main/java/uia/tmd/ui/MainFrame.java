@@ -87,7 +87,7 @@ public class MainFrame extends JFrame implements WindowListener {
     }
 
     public MainFrame() {
-        setTitle("TMD");
+        setTitle("Database Migration Tool");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1200, 700);
         setLocation(100, 100);

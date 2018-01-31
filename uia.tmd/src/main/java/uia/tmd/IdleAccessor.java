@@ -63,17 +63,14 @@ public class IdleAccessor implements DataAccessor {
     }
 
     @Override
-    public List<Map<String, Object>> select(String sql, Map<String, Object> parameters) throws SQLException {
-        return new ArrayList<Map<String, Object>>();
-    }
-
-    @Override
     public int execueUpdate(String sql, Map<String, Object> parameters) throws SQLException {
+        System.out.println(sql + ", count: 1");
         return 1;
     }
 
     @Override
-    public int execueUpdateBatch(String sql, List<Map<String, Object>> table) throws SQLException {
+    public int execueBatch(String sql, List<Map<String, Object>> table) throws SQLException {
+        System.out.println(sql + ", batch: " + table.size());
         return 0;
     }
 

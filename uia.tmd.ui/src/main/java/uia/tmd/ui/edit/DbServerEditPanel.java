@@ -28,7 +28,7 @@ public class DbServerEditPanel extends JPanel {
 
     private JTextField dbNameField;
 
-    private JComboBox dbTypeBox;
+    private JComboBox<String> dbTypeBox;
 
     private DbServerType dbServer;
 
@@ -86,8 +86,8 @@ public class DbServerEditPanel extends JPanel {
         dbTypeLabel.setBounds(10, 168, 77, 15);
         add(dbTypeLabel);
 
-        this.dbTypeBox = new JComboBox();
-        this.dbTypeBox.setModel(new DefaultComboBoxModel(new String[] { "Mircosoft SQL Server", "PostgreSQL", "PI OLEDB" }));
+        this.dbTypeBox = new JComboBox<String>();
+        this.dbTypeBox.setModel(new DefaultComboBoxModel<String>(new String[] { "Hana", "Oracle", "MSSQL", "PostgreSQL" }));
         this.dbTypeBox.setSelectedIndex(0);
         this.dbTypeBox.setBounds(97, 165, 198, 21);
         add(this.dbTypeBox);
@@ -102,13 +102,16 @@ public class DbServerEditPanel extends JPanel {
         this.dbServer.setPassword(this.pwdField.getText());
         switch (this.dbTypeBox.getSelectedIndex()) {
             case 1:
-                this.dbServer.setDbType("PGSQL");
+                this.dbServer.setDbType("uia.tmd.accessor.ORAAccessor");
                 break;
             case 2:
-                this.dbServer.setDbType("PI");
+                this.dbServer.setDbType("uia.tmd.accessor.MSSQLAccessor");
+                break;
+            case 3:
+                this.dbServer.setDbType("uia.tmd.accessor.PGAccessor");
                 break;
             default:
-                this.dbServer.setDbType("MSSQL");
+                this.dbServer.setDbType("uia.tmd.accessor.HanaAccessor");
         }
         return this.dbServer;
     }
@@ -121,11 +124,14 @@ public class DbServerEditPanel extends JPanel {
         this.dbNameField.setText(this.dbServer.getDbName());
         this.userField.setText(this.dbServer.getUser());
         this.pwdField.setText(this.dbServer.getPassword());
-        if ("PGSQL".equalsIgnoreCase(this.dbServer.getDbType())) {
+        if ("uia.tmd.accessor.ORAAccessor".equalsIgnoreCase(this.dbServer.getDbType())) {
             this.dbTypeBox.setSelectedIndex(1);
         }
-        else if (("PI".equalsIgnoreCase(this.dbServer.getDbType()))) {
+        else if (("uia.tmd.accessor.MSSQLAccessor".equalsIgnoreCase(this.dbServer.getDbType()))) {
             this.dbTypeBox.setSelectedIndex(2);
+        }
+        else if ("uia.tmd.accessor.PGAccessor".equalsIgnoreCase(this.dbServer.getDbType())) {
+            this.dbTypeBox.setSelectedIndex(1);
         }
         else {
             this.dbTypeBox.setSelectedIndex(0);

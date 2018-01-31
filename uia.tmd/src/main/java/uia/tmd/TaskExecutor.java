@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import uia.tmd.TaskExecutorListener.TaskExecutorEvent;
-import uia.tmd.TaskExecutorListener.TaskExecutorEvent.Database;
+import uia.tmd.TaskExecutorListener.TaskExecutorEvent.OperationType;
 import uia.tmd.model.xml.ColumnType;
 import uia.tmd.model.xml.CriteriaType;
 import uia.tmd.model.xml.DbServerType;
@@ -153,35 +153,7 @@ public abstract class TaskExecutor {
         }
     }
 
-    public boolean run(Map<String, Object> whereValues) throws SQLException {
-        this.tableRows.clear();
-        try {
-            this.sourceAccessor.connect();
-            if (this.target != null) {  // TODO: good?
-                this.targetAccessor.connect();
-            }
-            if (runTask(this.task1, whereValues, "/")) {
-                raiseDone();
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        finally {
-            try {
-                this.sourceAccessor.disconnect();
-                this.targetAccessor.disconnect();
-            }
-            catch (Exception ex) {
-
-            }
-        }
-    }
-
     protected abstract boolean runTask(TaskType task, Where[] wheres, String parentPath) throws SQLException;
-
-    protected abstract boolean runTask(TaskType task, Map<String, Object> whereValues, String parentPath) throws SQLException;
 
     protected boolean runNext(TaskType task, Map<String, Object> row, String parentPath) throws SQLException {
         if (task.getNext() == null) {
@@ -197,7 +169,6 @@ public abstract class TaskExecutor {
     }
 
     protected int handle(TaskType task, String keyString, String targetTableName, List<ColumnType> targetColumns, List<ColumnType> targetPK, String parentPath, Map<String, Object> row) throws SQLException {
-
         // check if sync already
         List<String> kss = this.tableRows.get(task.getName());
         if (kss.contains(keyString)) {
@@ -211,20 +182,20 @@ public abstract class TaskExecutor {
         try {
             if (this.deleteTarget) {
                 statement = AbstractDataAccessor.sqlDelete(targetTableName, targetPK);
-                statementParams = prepare(row, targetPK);
+                statementParams = filterData(row, targetPK);
                 int count = this.targetAccessor.execueUpdate(statement, statementParams);
-                raiseTargetDeleted(new TaskExecutorEvent(task, parentPath, statement, statementParams, count, Database.TARGET));
+                raiseTargetDeleted(new TaskExecutorEvent(task, parentPath, statement, statementParams, count, OperationType.TARGET));
             }
 
             statement = AbstractDataAccessor.sqlInsert(targetTableName, targetColumns);
-            statementParams = prepare(row, targetColumns);
+            statementParams = filterData(row, targetColumns);
             int uc = this.targetAccessor.execueUpdate(statement, statementParams);
-            raiseTargetInserted(new TaskExecutorEvent(task, parentPath, statement, statementParams, uc, Database.TARGET));
+            raiseTargetInserted(new TaskExecutorEvent(task, parentPath, statement, statementParams, uc, OperationType.TARGET));
 
             return uc;
         }
         catch (SQLException ex) {
-            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, Database.TARGET), ex);
+            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, OperationType.TARGET), ex);
             throw ex;
         }
     }
@@ -232,39 +203,39 @@ public abstract class TaskExecutor {
     protected int handleBatch(TaskType task, String targetTableName, List<ColumnType> targetColumns, List<ColumnType> targetPK, String parentPath, List<Map<String, Object>> rows) throws SQLException {
         String statement = null;
         Map<String, Object> statementParams = null;
+        int count = 0;
 
         try {
-            for (Map<String, Object> row : rows) {
-                if (this.deleteTarget) {
-                    statement = AbstractDataAccessor.sqlDelete(targetTableName, targetPK);
-                    statementParams = prepare(row, targetPK);
-                    int count = this.targetAccessor.execueUpdate(statement, statementParams);
-                    raiseTargetDeleted(new TaskExecutorEvent(task, parentPath, statement, statementParams, count, Database.TARGET));
+            if (this.deleteTarget) {
+                statement = AbstractDataAccessor.sqlDelete(targetTableName, targetPK);
+                ArrayList<Map<String, Object>> targetPKvalues = new ArrayList<Map<String, Object>>();
+                for (Map<String, Object> row : rows) {
+                    targetPKvalues.add(filterData(row, targetPK));
                 }
-
+                count = this.targetAccessor.execueBatch(statement, targetPKvalues);
+                raiseTargetDeleted(new TaskExecutorEvent(task, parentPath, statement, statementParams, count, OperationType.TARGET));
             }
 
-            int uc = 0;
             statement = AbstractDataAccessor.sqlInsert(targetTableName, targetColumns);
-            this.targetAccessor.execueUpdateBatch(statement, rows);
-            raiseTargetInserted(new TaskExecutorEvent(task, parentPath, statement, (Map<String, Object>) null, uc, Database.TARGET));
+            count = this.targetAccessor.execueBatch(statement, rows);
+            raiseTargetInserted(new TaskExecutorEvent(task, parentPath, statement, (Map<String, Object>) null, count, OperationType.TARGET));
 
-            return uc;
+            return count;
         }
         catch (SQLException ex) {
-            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, (Map<String, Object>) null, 0, Database.TARGET), ex);
+            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, (Map<String, Object>) null, 0, OperationType.TARGET), ex);
             throw ex;
         }
     }
 
-    protected Map<String, Object> prepare(Map<String, Object> row, List<ColumnType> columns) throws SQLException {
+    protected Map<String, Object> filterData(Map<String, Object> data, List<ColumnType> columns) throws SQLException {
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
         for (ColumnType column : columns) {
             if (column.getSource() == null) {
-                result.put(column.getValue(), row.get(column.getValue()));
+                result.put(column.getValue(), data.get(column.getValue()));
             }
             else {
-                result.put(column.getValue(), row.get(column.getSource()));
+                result.put(column.getValue(), data.get(column.getSource()));
             }
         }
         return result;
@@ -368,7 +339,7 @@ public abstract class TaskExecutor {
         }
 
         TaskType task = this.factory.tasks.get(plan.getTaskName());
-        Map<String, Object> whereValues = prepare(master, plan.getJoin().getColumn());
+        Map<String, Object> whereValues = filterData(master, plan.getJoin().getColumn());
 
         if (plan.getWhere() != null && plan.getWhere().getCriteria() != null) {
             List<CriteriaType> where = plan.getWhere().getCriteria();
@@ -382,7 +353,12 @@ public abstract class TaskExecutor {
             }
         }
 
-        return runTask(task, whereValues, parentPath);
+        ArrayList<Where> ws = new ArrayList<Where>();
+        for (Map.Entry<String, Object> e : whereValues.entrySet()) {
+            ws.add(new WhereEq(e.getKey(), e.getValue()));
+        }
+
+        return runTask(task, ws.toArray(new Where[0]), parentPath);
     }
 
     void printRunLog() {

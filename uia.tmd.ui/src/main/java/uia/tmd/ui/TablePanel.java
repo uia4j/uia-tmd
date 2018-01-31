@@ -20,6 +20,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import uia.tmd.DataAccessor;
 import uia.tmd.model.xml.DbServerType;
 import uia.tmd.model.xml.TableType;
 
@@ -33,7 +34,7 @@ public class TablePanel extends JPanel {
 
     private JButton addButton;
 
-    private JComboBox dbServverBox;
+    private JComboBox<String> dbServverBox;
 
     private JTable listTable;
 
@@ -68,7 +69,7 @@ public class TablePanel extends JPanel {
         });
         toolbarPanel.add(this.addButton);
 
-        this.dbServverBox = new JComboBox();
+        this.dbServverBox = new JComboBox<String>();
         this.dbServverBox.setBounds(40, 3, 195, 24);
         toolbarPanel.add(this.dbServverBox);
 
@@ -127,19 +128,34 @@ public class TablePanel extends JPanel {
         }
         this.dbServverBox.setSelectedIndex(0);
 
-        /**
+        int i = this.dbServverBox.getSelectedIndex();
+        if (i < 0) {
+            return;
+        }
         try {
-            DataAccessor da = DataAccessor.create(
-                    this.frame.getTaskFactory().getDbServer((String) this.dbServverBox.getSelectedItem()),
-                    new TreeMap<String, TableType>());
-        
+            DbServerType server = this.frame.getTaskFactory().getTmd().getDatabaseSpace().getDbServer().get(i);
+            if (server == null) {
+                return;
+            }
+
+            DataAccessor da = (DataAccessor) Class.forName(server.getDbType()).newInstance();
+            da.initial(server, this.frame.getTaskFactory().getTables());
+            da.connect();
             List<String> tables = da.listTables();
-        
+            da.disconnect();
+
+            for (String tableName : tables) {
+                TableType type = this.frame.getTaskFactory().getTables().get(tableName);
+                if (type == null) {
+                    type = new TableType();
+                    type.setName(tableName);
+                    this.data.add(type);
+                }
+            }
         }
         catch (Exception e) {
-        
+
         }
-         */
     }
 
     class TableDefModel extends AbstractTableModel {
@@ -195,12 +211,24 @@ public class TablePanel extends JPanel {
 
         @Override
         public int getRowCount() {
-            return TablePanel.this.selectedItem == null ? 0 : TablePanel.this.selectedItem.getPk().getName().size();
+            if (TablePanel.this.selectedItem == null) {
+                return 0;
+            }
+            if (TablePanel.this.selectedItem.getPk() == null) {
+                return 0;
+            }
+            return TablePanel.this.selectedItem.getPk().getName().size();
         }
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            return TablePanel.this.selectedItem == null || rowIndex < 0 ? null : TablePanel.this.selectedItem.getPk().getName().get(rowIndex);
+            if (TablePanel.this.selectedItem == null || rowIndex < 0) {
+                return null;
+            }
+            if (TablePanel.this.selectedItem.getPk() == null) {
+                return null;
+            }
+            return TablePanel.this.selectedItem.getPk().getName().get(rowIndex);
         }
     }
 }
