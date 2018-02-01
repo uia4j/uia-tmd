@@ -1,11 +1,14 @@
 package uia.tmd.ui.navi;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import uia.tmd.model.xml.DatabaseSpaceType;
+import uia.tmd.model.xml.DbServerType;
+import uia.tmd.model.xml.ExecutorType;
 import uia.tmd.ui.NaviPanel;
 
 public class DatabaseSpaceNodeValue implements NodeValue {
@@ -23,12 +26,18 @@ public class DatabaseSpaceNodeValue implements NodeValue {
 
     @Override
     public void appendNode(NaviPanel panel) {
-
+        panel.appendDatabase();
     }
 
     @Override
-    public boolean appendable(String taskName) {
-        return false;
+    public boolean appendable(String dbServerName) {
+        List<DbServerType> servers = this.ds.getDbServer();
+        for (DbServerType server : servers) {
+            if (dbServerName.equals(server.getDbName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -36,11 +45,11 @@ public class DatabaseSpaceNodeValue implements NodeValue {
         LinkedHashMap<String, String> props = new LinkedHashMap<String, String>();
         props.put("Node Type", "Database Space");
         panel.updateProperties(props);
+        panel.nodeSelected(this.ds);
     }
 
     @Override
     public void delete(NaviPanel panel) {
-
     }
 
     @Override

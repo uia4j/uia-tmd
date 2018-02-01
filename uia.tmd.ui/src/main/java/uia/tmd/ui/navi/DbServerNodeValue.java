@@ -44,6 +44,7 @@ public class DbServerNodeValue implements NodeValue {
         props.put("Database", this.db.getDbName());
         props.put("Suser", this.db.getUser());
         naviPanel.updateProperties(props);
+        naviPanel.nodeSelected(this.db);
     }
 
     @Override

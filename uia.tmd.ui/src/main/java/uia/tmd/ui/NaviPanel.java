@@ -27,6 +27,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
+import uia.tmd.model.xml.DatabaseSpaceType;
 import uia.tmd.model.xml.DbServerType;
 import uia.tmd.model.xml.ExecutorSpaceType;
 import uia.tmd.model.xml.ExecutorType;
@@ -34,6 +35,7 @@ import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.TaskSpaceType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
+import uia.tmd.ui.edit.DbServerEditPanel;
 import uia.tmd.ui.edit.ExecutorEditPanel;
 import uia.tmd.ui.edit.PlanEditPanel;
 import uia.tmd.ui.edit.TaskEditPanel;
@@ -72,6 +74,8 @@ public class NaviPanel extends JPanel {
 
     private ExecutorType selectedExecutor;
 
+    private DbServerType selectedDbServer;
+
     private TaskType selectedTask;
 
     private PlanType selectedPlan;
@@ -89,6 +93,8 @@ public class NaviPanel extends JPanel {
     private DefaultMutableTreeNode executorSpaceNode;
 
     private DefaultMutableTreeNode taskSpaceNode;
+    
+    private DefaultMutableTreeNode databaseSpaceNode;
 
     private AddModeType addMode;
 
@@ -258,11 +264,11 @@ public class NaviPanel extends JPanel {
         }
 
         // database
-        DefaultMutableTreeNode dsNode = new DefaultMutableTreeNode(new DatabaseSpaceNodeValue(this.tmdType.getDatabaseSpace()));
-        rootNode.add(dsNode);
+        this.databaseSpaceNode = new DefaultMutableTreeNode(new DatabaseSpaceNodeValue(this.tmdType.getDatabaseSpace()));
+        rootNode.add(this.databaseSpaceNode);
         for (DbServerType value : this.tmdType.getDatabaseSpace().getDbServer()) {
             DefaultMutableTreeNode dbserverNode = new DefaultMutableTreeNode(new DbServerNodeValue(value));
-            dsNode.add(dbserverNode);
+            this.databaseSpaceNode.add(dbserverNode);
         }
 
         this.spaceTree.setModel(new DefaultTreeModel(rootNode));
@@ -270,6 +276,7 @@ public class NaviPanel extends JPanel {
     }
 
     public void nodeSelected(TmdType tmd) {
+        this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = null;
         this.selectedPlan = null;
@@ -281,6 +288,7 @@ public class NaviPanel extends JPanel {
 
     public void nodeSelected(ExecutorSpaceType executor) {
         this.addMode = AddModeType.EXECUTOR;
+        this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = null;
         this.selectedPlan = null;
@@ -292,6 +300,7 @@ public class NaviPanel extends JPanel {
 
     public void nodeSelected(ExecutorType executor) {
         this.addMode = null;
+        this.selectedDbServer = null;
         this.selectedExecutor = executor;
         this.selectedTask = null;
         this.selectedPlan = null;
@@ -303,6 +312,7 @@ public class NaviPanel extends JPanel {
 
     public void nodeSelected(TaskSpaceType ts) {
         this.addMode = AddModeType.TASK;
+        this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = null;
         this.selectedPlan = null;
@@ -314,6 +324,7 @@ public class NaviPanel extends JPanel {
 
     public void nodeSelected(TaskType task) {
         this.addMode = null;
+        this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = task;
         this.selectedPlan = null;
@@ -325,9 +336,35 @@ public class NaviPanel extends JPanel {
 
     public void nodeSelected(PlanType plan) {
         this.addMode = AddModeType.PLAN;
+        this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = null;
         this.selectedPlan = plan;
+
+        this.addButton.setEnabled(false);
+        this.removeButton.setEnabled(true);
+        this.runButton.setEnabled(false);
+    }
+
+    public void nodeSelected(DatabaseSpaceType ds) {
+        this.addMode = AddModeType.DATABASE;
+        this.selectedDbServer = null;
+        this.selectedExecutor = null;
+        this.selectedTask = null;
+        this.selectedPlan = null;
+
+        this.addButton.setEnabled(true);
+        this.removeButton.setEnabled(false);
+        this.runButton.setEnabled(false);
+    }
+
+
+    public void nodeSelected(DbServerType dbServer) {
+    	this.addMode = AddModeType.DATABASE;
+    	this.selectedDbServer = dbServer;
+        this.selectedExecutor = null;
+        this.selectedTask = null;
+        this.selectedPlan = null;
 
         this.addButton.setEnabled(false);
         this.removeButton.setEnabled(true);
@@ -358,6 +395,32 @@ public class NaviPanel extends JPanel {
     public void removeExecutor(ExecutorType executor) {
         this.executorSpaceNode.remove(getSelectedTreeNode());
         this.frame.getTaskFactory().removeExecutor(this.selectedExecutor);
+        this.spaceTree.updateUI();
+    }
+
+    public void appendDatabase() {
+        DbServerEditPanel panel = new DbServerEditPanel();
+        int button = JOptionPane.showConfirmDialog(this.frame, panel, "Select one task", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        if (button == JOptionPane.YES_OPTION) {
+            appendDatabase(panel.save());
+        }
+    }
+
+    public void appendDatabase(DbServerType dbServer) {
+        NodeValue nv = (NodeValue) this.databaseSpaceNode.getUserObject();
+        if (!nv.appendable(dbServer.getDbName())) {
+            JOptionPane.showMessageDialog(this.frame, dbServer.getDbName() + " exists.", "Information", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        this.frame.getTaskFactory().addDbServer(dbServer);
+        this.databaseSpaceNode.add(new DefaultMutableTreeNode(new DbServerNodeValue(dbServer)));
+
+        this.spaceTree.updateUI();
+    }
+
+    public void removeDatabase(DbServerType dbServer) {
+        this.databaseSpaceNode.remove(getSelectedTreeNode());
+        this.frame.getTaskFactory().removeDbServer(this.selectedDbServer);
         this.spaceTree.updateUI();
     }
 

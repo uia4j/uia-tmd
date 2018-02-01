@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import uia.tmd.model.TmdTypeHelper;
+import uia.tmd.model.xml.DatabaseSpaceType;
 import uia.tmd.model.xml.DbServerType;
 import uia.tmd.model.xml.ExecutorSpaceType;
 import uia.tmd.model.xml.ExecutorType;
@@ -98,8 +99,22 @@ public class TaskFactory {
         this.tmd.getExecutorSpace().getExecutor().remove(executor);
     }
 
+    public DatabaseSpaceType getDbServers() {
+        return this.tmd.getDatabaseSpace();
+    }
+
     public DbServerType getDbServer(String dbName) {
         return this.dbServers.get(dbName);
+    }
+    
+    public void addDbServer(DbServerType dbServer) {
+    	this.dbServers.put(dbServer.getDbName(), dbServer);
+    	this.tmd.getDatabaseSpace().getDbServer().add(dbServer);
+    }
+    
+    public void removeDbServer(DbServerType dbServer) {
+    	this.dbServers.remove(dbServer.getDbName());
+    	this.tmd.getDatabaseSpace().getDbServer().remove(dbServer);
     }
 
     public Map<String, TableType> getTables() {
