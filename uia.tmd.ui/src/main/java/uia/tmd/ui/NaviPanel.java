@@ -34,6 +34,7 @@ import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.TaskSpaceType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
+import uia.tmd.ui.edit.ExecutorEditPanel;
 import uia.tmd.ui.edit.PlanEditPanel;
 import uia.tmd.ui.edit.TaskEditPanel;
 import uia.tmd.ui.navi.DatabaseSpaceNodeValue;
@@ -47,6 +48,13 @@ import uia.tmd.ui.navi.TaskSpaceNodeValue;
 import uia.tmd.ui.navi.TmdNodeValue;
 
 public class NaviPanel extends JPanel {
+
+    static enum AddModeType {
+        EXECUTOR,
+        TASK,
+        PLAN,
+        DATABASE
+    }
 
     private static final int WIDTH = 350;
 
@@ -78,7 +86,11 @@ public class NaviPanel extends JPanel {
 
     private JTable propsTable;
 
+    private DefaultMutableTreeNode executorSpaceNode;
+
     private DefaultMutableTreeNode taskSpaceNode;
+
+    private AddModeType addMode;
 
     public NaviPanel() {
         this.propKeys = new String[0];
@@ -116,7 +128,7 @@ public class NaviPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent evt) {
-
+                getSelectedTreeNodeValue().delete(NaviPanel.this);
             }
 
         });
@@ -224,11 +236,11 @@ public class NaviPanel extends JPanel {
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new TmdNodeValue(this.tmdType));
 
         // executor
-        DefaultMutableTreeNode esNode = new DefaultMutableTreeNode(new ExecutorSpaceNodeValue(this.tmdType.getExecutorSpace()));
-        rootNode.add(esNode);
+        this.executorSpaceNode = new DefaultMutableTreeNode(new ExecutorSpaceNodeValue(this.tmdType.getExecutorSpace()));
+        rootNode.add(this.executorSpaceNode);
         for (ExecutorType value : this.tmdType.getExecutorSpace().getExecutor()) {
             DefaultMutableTreeNode executorNode = new DefaultMutableTreeNode(new ExecutorNodeValue(value));
-            esNode.add(executorNode);
+            this.executorSpaceNode.add(executorNode);
         }
 
         // task
@@ -268,26 +280,29 @@ public class NaviPanel extends JPanel {
     }
 
     public void nodeSelected(ExecutorSpaceType executor) {
+        this.addMode = AddModeType.EXECUTOR;
         this.selectedExecutor = null;
         this.selectedTask = null;
         this.selectedPlan = null;
 
-        this.addButton.setEnabled(false);
+        this.addButton.setEnabled(true);
         this.removeButton.setEnabled(false);
         this.runButton.setEnabled(false);
     }
 
     public void nodeSelected(ExecutorType executor) {
+        this.addMode = null;
         this.selectedExecutor = executor;
         this.selectedTask = null;
         this.selectedPlan = null;
 
         this.addButton.setEnabled(false);
-        this.removeButton.setEnabled(false);
+        this.removeButton.setEnabled(true);
         this.runButton.setEnabled(true);
     }
 
     public void nodeSelected(TaskSpaceType ts) {
+        this.addMode = AddModeType.TASK;
         this.selectedExecutor = null;
         this.selectedTask = null;
         this.selectedPlan = null;
@@ -298,6 +313,7 @@ public class NaviPanel extends JPanel {
     }
 
     public void nodeSelected(TaskType task) {
+        this.addMode = null;
         this.selectedExecutor = null;
         this.selectedTask = task;
         this.selectedPlan = null;
@@ -308,6 +324,7 @@ public class NaviPanel extends JPanel {
     }
 
     public void nodeSelected(PlanType plan) {
+        this.addMode = AddModeType.PLAN;
         this.selectedExecutor = null;
         this.selectedTask = null;
         this.selectedPlan = plan;
@@ -315,6 +332,33 @@ public class NaviPanel extends JPanel {
         this.addButton.setEnabled(false);
         this.removeButton.setEnabled(true);
         this.runButton.setEnabled(false);
+    }
+
+    public void appendExecutor() {
+        ExecutorEditPanel panel = new ExecutorEditPanel();
+        panel.load(this.tmdType, null);
+        int button = JOptionPane.showConfirmDialog(this.frame, panel, "Create new executor", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        if (button == JOptionPane.YES_OPTION) {
+            appendExecutor(panel.save());
+        }
+    }
+
+    public void appendExecutor(ExecutorType executor) {
+        NodeValue nv = (NodeValue) this.executorSpaceNode.getUserObject();
+        if (!nv.appendable(executor.getName())) {
+            JOptionPane.showMessageDialog(this.frame, executor.getName() + " exists.", "Information", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        this.frame.getTaskFactory().addExecutor(executor);
+        this.executorSpaceNode.add(new DefaultMutableTreeNode(new ExecutorNodeValue(executor)));
+
+        this.spaceTree.updateUI();
+    }
+
+    public void removeExecutor(ExecutorType executor) {
+        this.executorSpaceNode.remove(getSelectedTreeNode());
+        this.frame.getTaskFactory().removeExecutor(this.selectedExecutor);
+        this.spaceTree.updateUI();
     }
 
     public void appendTask() {
@@ -334,6 +378,12 @@ public class NaviPanel extends JPanel {
         this.frame.getTaskFactory().addTask(task);
         this.taskSpaceNode.add(new DefaultMutableTreeNode(new TaskNodeValue(task)));
 
+        this.spaceTree.updateUI();
+    }
+
+    public void removeTask(TaskType task) {
+        this.taskSpaceNode.remove(getSelectedTreeNode());
+        this.frame.getTaskFactory().removeTask(this.selectedTask);
         this.spaceTree.updateUI();
     }
 

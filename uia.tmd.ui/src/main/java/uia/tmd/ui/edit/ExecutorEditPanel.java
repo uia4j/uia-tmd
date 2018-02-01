@@ -20,11 +20,11 @@ public class ExecutorEditPanel extends JPanel {
 
     private JTextField nameField;
 
-    private JComboBox sourceBox;
+    private JComboBox<String> sourceBox;
 
-    private JComboBox targetBox;
+    private JComboBox<String> targetBox;
 
-    private JComboBox taskBox;
+    private JComboBox<String> taskBox;
 
     public ExecutorEditPanel() {
         setLayout(null);
@@ -35,15 +35,15 @@ public class ExecutorEditPanel extends JPanel {
         add(this.nameField);
         this.nameField.setColumns(10);
 
-        this.sourceBox = new JComboBox();
+        this.sourceBox = new JComboBox<String>();
         this.sourceBox.setBounds(126, 41, 222, 21);
         add(this.sourceBox);
 
-        this.targetBox = new JComboBox();
+        this.targetBox = new JComboBox<String>();
         this.targetBox.setBounds(126, 72, 222, 21);
         add(this.targetBox);
 
-        this.taskBox = new JComboBox();
+        this.taskBox = new JComboBox<String>();
         this.taskBox.setBounds(126, 103, 222, 21);
         add(this.taskBox);
 
@@ -65,6 +65,9 @@ public class ExecutorEditPanel extends JPanel {
     }
 
     public ExecutorType save() {
+        if (this.executor == null) {
+            this.executor = new ExecutorType();
+        }
         this.executor.setName(this.nameField.getText());
         this.executor.setSource((String) this.sourceBox.getSelectedItem());
         this.executor.setTarget((String) this.targetBox.getSelectedItem());
@@ -75,17 +78,20 @@ public class ExecutorEditPanel extends JPanel {
     public void load(TmdType tmd, ExecutorType executor) {
         this.executor = executor;
 
-        this.nameField.setText(this.executor.getName());
         for (DbServerType db : tmd.getDatabaseSpace().getDbServer()) {
             this.sourceBox.addItem(db.getId());
             this.targetBox.addItem(db.getId());
         }
-        this.sourceBox.setSelectedItem(this.executor.getSource());
-        this.targetBox.setSelectedItem(this.executor.getTarget());
-
         for (TaskType task : tmd.getTaskSpace().getTask()) {
             this.taskBox.addItem(task.getName());
         }
-        this.taskBox.setSelectedItem(this.executor.getTask());
+
+        if (this.executor != null) {
+            this.nameField.setText(this.executor.getName());
+            this.sourceBox.setSelectedItem(this.executor.getSource());
+            this.targetBox.setSelectedItem(this.executor.getTarget());
+
+            this.taskBox.setSelectedItem(this.executor.getTask());
+        }
     }
 }

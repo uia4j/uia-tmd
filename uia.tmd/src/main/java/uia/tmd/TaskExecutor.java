@@ -129,11 +129,13 @@ public abstract class TaskExecutor {
 
     public boolean run(Where[] wheres) throws SQLException {
         this.tableRows.clear();
+        long t1 = 0;
         try {
             this.sourceAccessor.connect();
             if (this.target != null) {  // TODO: good?
                 this.targetAccessor.connect();
             }
+            t1 = System.currentTimeMillis();
             if (runTask(this.task1, wheres, "/")) {
                 raiseDone();
                 return true;
@@ -143,6 +145,8 @@ public abstract class TaskExecutor {
             }
         }
         finally {
+            long t2 = System.currentTimeMillis();
+            System.out.println("run: " + (t2 - t1));
             try {
                 this.sourceAccessor.disconnect();
                 this.targetAccessor.disconnect();

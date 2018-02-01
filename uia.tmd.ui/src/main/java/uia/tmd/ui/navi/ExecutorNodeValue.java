@@ -52,8 +52,7 @@ public class ExecutorNodeValue implements NodeValue {
 
     @Override
     public void delete(NaviPanel naviPanel) {
-        // TODO Auto-generated method stub
-
+        naviPanel.removeExecutor(this.executor);
     }
 
     @Override

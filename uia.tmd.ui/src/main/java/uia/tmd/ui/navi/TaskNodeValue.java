@@ -58,7 +58,7 @@ public class TaskNodeValue implements NodeValue {
 
     @Override
     public void delete(NaviPanel panel) {
-
+        panel.removeTask(this.task);
     }
 
     @Override

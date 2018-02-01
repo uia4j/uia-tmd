@@ -20,7 +20,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import uia.tmd.DataAccessor;
 import uia.tmd.model.xml.DbServerType;
 import uia.tmd.model.xml.TableType;
 
@@ -138,12 +137,13 @@ public class TablePanel extends JPanel {
                 return;
             }
 
+            /**
             DataAccessor da = (DataAccessor) Class.forName(server.getDbType()).newInstance();
             da.initial(server, this.frame.getTaskFactory().getTables());
             da.connect();
             List<String> tables = da.listTables();
             da.disconnect();
-
+            
             for (String tableName : tables) {
                 TableType type = this.frame.getTaskFactory().getTables().get(tableName);
                 if (type == null) {
@@ -152,6 +152,7 @@ public class TablePanel extends JPanel {
                     this.data.add(type);
                 }
             }
+            */
         }
         catch (Exception e) {
 

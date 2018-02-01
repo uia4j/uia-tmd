@@ -1,11 +1,13 @@
 package uia.tmd.ui.navi;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import uia.tmd.model.xml.ExecutorSpaceType;
+import uia.tmd.model.xml.ExecutorType;
 import uia.tmd.ui.NaviPanel;
 
 public class ExecutorSpaceNodeValue implements NodeValue {
@@ -27,13 +29,19 @@ public class ExecutorSpaceNodeValue implements NodeValue {
     }
 
     @Override
-    public boolean appendable(String taskName) {
-        return false;
+    public boolean appendable(String executorName) {
+        List<ExecutorType> executors = this.es.getExecutor();
+        for (ExecutorType executor : executors) {
+            if (executorName.equals(executor.getName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public void appendNode(NaviPanel naviPanel) {
-
+        naviPanel.appendExecutor();
     }
 
     @Override

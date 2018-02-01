@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import uia.tmd.model.TmdTypeHelper;
 import uia.tmd.model.xml.DbServerType;
+import uia.tmd.model.xml.ExecutorSpaceType;
 import uia.tmd.model.xml.ExecutorType;
 import uia.tmd.model.xml.TableType;
 import uia.tmd.model.xml.TaskSpaceType;
@@ -61,10 +62,6 @@ public class TaskFactory {
         return this.tmd;
     }
 
-    public Set<String> getExecutorNames() {
-        return this.executors.keySet();
-    }
-
     public TaskSpaceType getTasks() {
         return this.tmd.getTaskSpace();
     }
@@ -76,6 +73,29 @@ public class TaskFactory {
     public void addTask(TaskType task) {
         this.tasks.put(task.getName(), task);
         this.tmd.getTaskSpace().getTask().add(task);
+    }
+
+    public void removeTask(TaskType task) {
+        this.tasks.remove(task.getName());
+        this.tmd.getTaskSpace().getTask().remove(task);
+    }
+
+    public Set<String> getExecutorNames() {
+        return this.executors.keySet();
+    }
+
+    public ExecutorSpaceType getExecutors() {
+        return this.tmd.getExecutorSpace();
+    }
+
+    public void addExecutor(ExecutorType executor) {
+        this.executors.put(executor.getName(), executor);
+        this.tmd.getExecutorSpace().getExecutor().add(executor);
+    }
+
+    public void removeExecutor(ExecutorType executor) {
+        this.executors.remove(executor.getName());
+        this.tmd.getExecutorSpace().getExecutor().remove(executor);
     }
 
     public DbServerType getDbServer(String dbName) {
