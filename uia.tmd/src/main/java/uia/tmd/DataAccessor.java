@@ -68,6 +68,14 @@ public interface DataAccessor {
     /**
      * Select data.
      * @param sql SQL statement.
+     * @return Result. Order of keys is same as selected columns.
+     * @throws SQLException SQL exception.
+     */
+    public List<Map<String, Object>> select(String sql) throws SQLException;
+
+    /**
+     * Select data.
+     * @param sql SQL statement.
      * @param wheres Values of parameters with ordering.
      * @return Result. Order of keys is same as selected columns.
      * @throws SQLException SQL exception.

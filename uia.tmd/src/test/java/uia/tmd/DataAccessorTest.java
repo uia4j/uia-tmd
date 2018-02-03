@@ -11,7 +11,6 @@ public class DataAccessorTest {
 
     @Test
     public void testSQL() throws Exception {
-        System.out.println(AbstractDataAccessor.sqlSelect("human", prepareColumns(), prepareWhere().toArray(new String[0])));
         System.out.println(AbstractDataAccessor.sqlInsert("human", prepareColumns()));
         System.out.println(AbstractDataAccessor.sqlDelete("human", prepareWhere()));
     }

@@ -1,8 +1,6 @@
 package uia.tmd;
 
 import java.sql.SQLException;
-import java.util.Map;
-import java.util.TreeMap;
 
 import uia.tmd.model.xml.TaskType;
 
@@ -75,33 +73,17 @@ public interface TaskExecutorListener {
 
         public final String sql;
 
-        public final Map<String, Object> criteria;
-
         public final int count;
 
         public final OperationType database;
 
-        public TaskExecutorEvent(TaskType task, String parentPath, String sql, Where[] wheres, int count, OperationType database) {
+        public TaskExecutorEvent(TaskType task, String parentPath, String sql, int count, OperationType database) {
             this.task = task;
             this.parentPath = parentPath;
             this.path = parentPath + task.getName() + "/";
             this.sql = sql;
-            this.criteria = new TreeMap<String, Object>();
             this.database = database;
-            for (Where where : wheres) {
-                this.criteria.put(where.getParamName(), where.getParamValue());
-            }
             this.count = count;
-        }
-
-        public TaskExecutorEvent(TaskType task, String parentPath, String sql, Map<String, Object> criteriaValues, int count, OperationType database) {
-            this.task = task;
-            this.parentPath = parentPath;
-            this.path = parentPath + this.task.getName() + "/";
-            this.sql = sql;
-            this.criteria = criteriaValues;
-            this.count = count;
-            this.database = database;
         }
     }
 }

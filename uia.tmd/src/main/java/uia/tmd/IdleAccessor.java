@@ -19,7 +19,7 @@ import uia.tmd.model.xml.TableType;
 public class IdleAccessor implements DataAccessor {
 
     @Override
-    public void connect() throws SQLException {
+    public void connect() throws SQLException { 
 
     }
 
@@ -82,4 +82,9 @@ public class IdleAccessor implements DataAccessor {
     @Override
     public void initial(DbServerType svrType, Map<String, TableType> tables) {
     }
+
+	@Override
+	public List<Map<String, Object>> select(String sql) throws SQLException {
+		return new ArrayList<Map<String, Object>>();
+	}
 }

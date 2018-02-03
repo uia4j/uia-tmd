@@ -85,7 +85,6 @@ public class TaskFactoryTest implements TaskExecutorListener {
     @Override
     public void sourceSelected(TaskExecutor executor, TaskExecutorEvent evt) {
         System.out.println(evt.task.getName() + "> source>" + evt.sql + ", count=" + evt.count);
-        System.out.println("    criteria:" + evt.criteria);
     }
 
     @Override

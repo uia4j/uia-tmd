@@ -76,20 +76,17 @@ public class WIPTest implements TaskExecutorListener {
     public void sourceSelected(TaskExecutor executor, TaskExecutorEvent evt) {
         this.rc++;
         System.out.println(evt.task.getName() + "> " + evt.sql + ", count=" + evt.count);
-        System.out.println("      " + evt.criteria);
     }
 
     @Override
     public void sourceDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
         System.out.println(evt.task.getName() + "> " + evt.sql + ", count=" + evt.count);
-        System.out.println("      " + evt.criteria);
     }
 
     @Override
     public void targetDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
         this.rc++;
         System.out.println(evt.task.getName() + "> " + evt.sql + ", count=" + evt.count);
-        System.out.println("      " + evt.criteria);
     }
 
     @Override

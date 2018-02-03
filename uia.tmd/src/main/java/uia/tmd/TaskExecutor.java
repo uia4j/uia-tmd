@@ -28,7 +28,7 @@ public abstract class TaskExecutor {
 
     protected final TaskFactory factory;
 
-    protected final TaskType task1;
+    protected final TaskType rootTask;
 
     protected final DbServerType source;
 
@@ -53,7 +53,7 @@ public abstract class TaskExecutor {
      */
     TaskExecutor(TaskFactory factory, ExecutorType executor) throws Exception {
         this.factory = factory;
-        this.task1 = this.factory.tasks.get(executor.getTask());
+        this.rootTask = this.factory.tasks.get(executor.getTask());
         this.source = this.factory.dbServers.get(executor.getSource());
         this.target = this.factory.dbServers.get(executor.getTarget());
 
@@ -78,7 +78,7 @@ public abstract class TaskExecutor {
      */
     TaskExecutor(TaskFactory factory, DataAccessor source, DataAccessor target, ExecutorType executor) throws Exception {
         this.factory = factory;
-        this.task1 = this.factory.tasks.get(executor.getTask());
+        this.rootTask = this.factory.tasks.get(executor.getTask());
         this.source = this.factory.dbServers.get(executor.getSource());
         this.target = this.factory.dbServers.get(executor.getTarget());
         this.sourceAccessor = source;
@@ -129,14 +129,12 @@ public abstract class TaskExecutor {
 
     public boolean run(Where[] wheres) throws SQLException {
         this.tableRows.clear();
-        long t1 = 0;
         try {
             this.sourceAccessor.connect();
             if (this.target != null) {  // TODO: good?
                 this.targetAccessor.connect();
             }
-            t1 = System.currentTimeMillis();
-            if (runTask(this.task1, wheres, "/")) {
+            if (runTask(this.rootTask, wheres, "/")) {
                 raiseDone();
                 return true;
             }
@@ -145,8 +143,6 @@ public abstract class TaskExecutor {
             }
         }
         finally {
-            long t2 = System.currentTimeMillis();
-            System.out.println("run: " + (t2 - t1));
             try {
                 this.sourceAccessor.disconnect();
                 this.targetAccessor.disconnect();
@@ -157,103 +153,35 @@ public abstract class TaskExecutor {
         }
     }
 
-    protected abstract boolean runTask(TaskType task, Where[] wheres, String parentPath) throws SQLException;
-
-    protected boolean runNext(TaskType task, Map<String, Object> row, String parentPath) throws SQLException {
-        if (task.getNext() == null) {
-            return true;
-        }
-
-        for (PlanType p : task.getNext().getPlan()) {
-            if (!runPlan(p, row, parentPath + task.getName() + "/")) {
+    public boolean run(String where) throws SQLException {
+        this.tableRows.clear();
+        try {
+            this.sourceAccessor.connect();
+            if (this.target != null) {  // TODO: good?
+                this.targetAccessor.connect();
+            }
+            if (runTask(this.rootTask, where, "/")) {
+                raiseDone();
+                return true;
+            }
+            else {
                 return false;
             }
         }
-        return true;
-    }
-
-    protected int handle(TaskType task, String keyString, String targetTableName, List<ColumnType> targetColumns, List<ColumnType> targetPK, String parentPath, Map<String, Object> row) throws SQLException {
-        // check if sync already
-        List<String> kss = this.tableRows.get(task.getName());
-        if (kss.contains(keyString)) {
-            return 0;
-        }
-        kss.add(keyString);
-
-        String statement = null;
-        Map<String, Object> statementParams = null;
-
-        try {
-            if (this.deleteTarget) {
-                statement = AbstractDataAccessor.sqlDelete(targetTableName, targetPK);
-                statementParams = filterData(row, targetPK);
-                int count = this.targetAccessor.execueUpdate(statement, statementParams);
-                raiseTargetDeleted(new TaskExecutorEvent(task, parentPath, statement, statementParams, count, OperationType.TARGET));
+        finally {
+            try {
+                this.sourceAccessor.disconnect();
+                this.targetAccessor.disconnect();
             }
+            catch (Exception ex) {
 
-            statement = AbstractDataAccessor.sqlInsert(targetTableName, targetColumns);
-            statementParams = filterData(row, targetColumns);
-            int uc = this.targetAccessor.execueUpdate(statement, statementParams);
-            raiseTargetInserted(new TaskExecutorEvent(task, parentPath, statement, statementParams, uc, OperationType.TARGET));
-
-            return uc;
-        }
-        catch (SQLException ex) {
-            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, statementParams, 0, OperationType.TARGET), ex);
-            throw ex;
+            }
         }
     }
 
-    protected int handleBatch(TaskType task, String targetTableName, List<ColumnType> targetColumns, List<ColumnType> targetPK, String parentPath, List<Map<String, Object>> rows) throws SQLException {
-        String statement = null;
-        Map<String, Object> statementParams = null;
-        int count = 0;
+    protected abstract boolean runTask(TaskType task, String where, String parentPath) throws SQLException;
 
-        try {
-            if (this.deleteTarget) {
-                statement = AbstractDataAccessor.sqlDelete(targetTableName, targetPK);
-                ArrayList<Map<String, Object>> targetPKvalues = new ArrayList<Map<String, Object>>();
-                for (Map<String, Object> row : rows) {
-                    targetPKvalues.add(filterData(row, targetPK));
-                }
-                count = this.targetAccessor.execueBatch(statement, targetPKvalues);
-                raiseTargetDeleted(new TaskExecutorEvent(task, parentPath, statement, statementParams, count, OperationType.TARGET));
-            }
-
-            statement = AbstractDataAccessor.sqlInsert(targetTableName, targetColumns);
-            count = this.targetAccessor.execueBatch(statement, rows);
-            raiseTargetInserted(new TaskExecutorEvent(task, parentPath, statement, (Map<String, Object>) null, count, OperationType.TARGET));
-
-            return count;
-        }
-        catch (SQLException ex) {
-            raiseExecuteFailure(new TaskExecutorEvent(task, parentPath, statement, (Map<String, Object>) null, 0, OperationType.TARGET), ex);
-            throw ex;
-        }
-    }
-
-    protected Map<String, Object> filterData(Map<String, Object> data, List<ColumnType> columns) throws SQLException {
-        LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
-        for (ColumnType column : columns) {
-            if (column.getSource() == null) {
-                result.put(column.getValue(), data.get(column.getValue()));
-            }
-            else {
-                result.put(column.getValue(), data.get(column.getSource()));
-            }
-        }
-        return result;
-    }
-
-    protected List<ColumnType> findPK(List<ColumnType> columns) {
-        ArrayList<ColumnType> pk = new ArrayList<ColumnType>();
-        for (ColumnType column : columns) {
-            if (column.isPk()) {
-                pk.add(column);
-            }
-        }
-        return pk;
-    }
+    protected abstract boolean runTask(TaskType task, Where[] wheres, String parentPath) throws SQLException;
 
     protected void raiseSourceSelected(TaskExecutorEvent evt) {
         for (TaskExecutorListener l : this.listeners) {
@@ -319,50 +247,6 @@ public abstract class TaskExecutor {
 
             }
         }
-    }
-
-    private boolean runPlan(PlanType plan, Map<String, Object> master, String parentPath) throws SQLException {
-        if (plan.getRule() != null && plan.getRule().getCriteria().size() > 0) {
-            for (CriteriaType criteria : plan.getRule().getCriteria()) {
-                Object v = master.get(criteria.getColumn());
-                if (v == null) {
-                    return true;
-                }
-
-                boolean accept = true;
-                if (criteria.getValidate().equalsIgnoreCase("STARTSWITH")) {
-                    accept = v.toString().startsWith(criteria.getValue());
-                }
-                else {
-                    accept = v.toString().equals(criteria.getValue());
-                }
-                if (!accept) {
-                    return true;
-                }
-            }
-        }
-
-        TaskType task = this.factory.tasks.get(plan.getTaskName());
-        Map<String, Object> whereValues = filterData(master, plan.getJoin().getColumn());
-
-        if (plan.getWhere() != null && plan.getWhere().getCriteria() != null) {
-            List<CriteriaType> where = plan.getWhere().getCriteria();
-            for (CriteriaType criteria : where) {
-                if (criteria.isEmplyIsNull() && (criteria.getValue() == null || "".equals(criteria.getValue()))) {
-                    whereValues.put(criteria.getColumn(), null);
-                }
-                else {
-                    whereValues.put(criteria.getColumn(), criteria.getValue());
-                }
-            }
-        }
-
-        ArrayList<Where> ws = new ArrayList<Where>();
-        for (Map.Entry<String, Object> e : whereValues.entrySet()) {
-            ws.add(new WhereEq(e.getKey(), e.getValue()));
-        }
-
-        return runTask(task, ws.toArray(new Where[0]), parentPath);
     }
 
     void printRunLog() {

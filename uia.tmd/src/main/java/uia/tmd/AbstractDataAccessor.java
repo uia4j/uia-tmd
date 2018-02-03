@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -110,13 +111,34 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         return tables;
     }
 
-    /**
-     * Select data.
-     * @param sql SQL statement.
-     * @param wheres Values of parameters with ordering.
-     * @return Result. Order of keys is same as selected columns.
-     * @throws SQLException SQL exception.
-     */
+    @Override
+    public List<Map<String, Object>> select(String sql) throws SQLException {
+        ArrayList<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
+
+        // parameters
+        Statement stat = getConnection().createStatement();
+        ResultSet rs = stat.executeQuery(sql);
+
+        // select
+        int cnt = rs.getMetaData().getColumnCount();
+        while (rs.next()) {
+            LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
+            for (int i = 0; i < cnt; i++) {
+                if (rs.getMetaData().getColumnType(i + 1) == 2005) {
+                    row.put(rs.getMetaData().getColumnName(i + 1), convert(rs.getClob(i + 1)));
+                }
+                else {
+                    row.put(rs.getMetaData().getColumnName(i + 1), rs.getObject(i + 1));
+                }
+            }
+            table.add(row);
+        }
+
+        rs.close();
+
+        return table;
+    }
+
     @Override
     public List<Map<String, Object>> select(String sql, Where[] wheres) throws SQLException {
         ArrayList<Map<String, Object>> table = new ArrayList<Map<String, Object>>();
@@ -152,14 +174,6 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         return table;
     }
 
-    /**
-     * Insert, update or delete data.
-     * @param sql SQL statement.
-     * @param parameters Values of parameters with ordering.
-     * @return Count of updated records.
-     * @throws SQLException SQL exception.
-     * @throws IOException
-     */
     @Override
     public int execueUpdate(String sql, Map<String, Object> parameters) throws SQLException {
         if (parameters == null) {
@@ -313,27 +327,22 @@ public abstract class AbstractDataAccessor implements DataAccessor {
         else {
             return String.format("SELECT %s FROM %s", sb1, table);
         }
-
     }
 
-    static String sqlSelect(String table, List<ColumnType> columns, String[] where) {
+
+    static String sqlSelect(String table, List<ColumnType> columns, String where) {
         // fields
         StringBuilder sb1 = new StringBuilder(columns.get(0).getValue());
         for (int i = 1, n = columns.size(); i < n; i++) {
             sb1.append(",").append(columns.get(i).getValue());
         }
         // where
-        if (where.length > 0) {
-            StringBuilder sb2 = new StringBuilder(where[0]).append("=?");
-            for (int i = 1, n = where.length; i < n; i++) {
-                sb2.append(" AND ").append(where[i]).append("=?");
-            }
-            return String.format("SELECT %s FROM %s WHERE %s", sb1, table, sb2);
+        if (where != null) {
+            return String.format("SELECT %s FROM %s WHERE %s", sb1, table, where);
         }
         else {
             return String.format("SELECT %s FROM %s", sb1, table);
         }
-
     }
 
     static String sqlDelete(String table, List<ColumnType> where) {

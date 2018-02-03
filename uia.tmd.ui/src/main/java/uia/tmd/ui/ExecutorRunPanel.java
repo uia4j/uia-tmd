@@ -120,14 +120,14 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
 
     @Override
     public void sourceSelected(TaskExecutor executor, TaskExecutorEvent evt) {
-        LOGGER.info(String.format("QRY> %s(%s)\n%50s - %s\n%50s - %s", evt.path, evt.count, "", evt.sql, "", evt.criteria));
+        LOGGER.info(String.format("QRY> %s(%s)\n%50s - %s\n%50s", evt.path, evt.count, "", evt.sql, ""));
         appendMessage("");
         append(evt);
     }
 
     @Override
     public void sourceDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
-        LOGGER.info(String.format("DEL> %s(%s)\n%50s - %s\n%50s - %s", evt.path, evt.count, "", evt.sql, "", evt.criteria));
+        LOGGER.info(String.format("DEL> %s(%s)\n%50s - %s\n%50s", evt.path, evt.count, "", evt.sql, ""));
     }
 
     @Override
@@ -138,14 +138,13 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
 
     @Override
     public void targetDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
-        LOGGER.info(String.format("DEL> %s(%s)\n%50s - %s\n%50s - %s", evt.path, evt.count, "", evt.sql, "", evt.criteria));
+        LOGGER.info(String.format("DEL> %s(%s)\n%50s - %s\n%50s", evt.path, evt.count, "", evt.sql, ""));
         append(evt);
     }
 
     @Override
     public void executeFailure(TaskExecutor executor, TaskExecutorEvent evt, SQLException ex) {
-        LOGGER.error(String.format("%s> %s", evt.path, evt.sql));
-        LOGGER.error(String.format("%s> %s", evt.path, evt.criteria), ex);
+        LOGGER.error(String.format("%s> %s", evt.path, evt.sql), ex);
         appendMessage(String.format("RUN> %s failed\n", evt.path));
         appendMessage(ex.getMessage() + "\n");
     }
