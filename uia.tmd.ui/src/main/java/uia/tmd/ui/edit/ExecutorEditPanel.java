@@ -20,11 +20,11 @@ public class ExecutorEditPanel extends JPanel {
 
     private JTextField nameField;
 
-    private JComboBox<String> sourceBox;
+    private JComboBox sourceBox;
 
-    private JComboBox<String> targetBox;
+    private JComboBox targetBox;
 
-    private JComboBox<String> taskBox;
+    private JComboBox taskBox;
 
     public ExecutorEditPanel() {
         setLayout(null);
@@ -35,15 +35,15 @@ public class ExecutorEditPanel extends JPanel {
         add(this.nameField);
         this.nameField.setColumns(10);
 
-        this.sourceBox = new JComboBox<String>();
+        this.sourceBox = new JComboBox();
         this.sourceBox.setBounds(126, 41, 222, 21);
         add(this.sourceBox);
 
-        this.targetBox = new JComboBox<String>();
+        this.targetBox = new JComboBox();
         this.targetBox.setBounds(126, 72, 222, 21);
         add(this.targetBox);
 
-        this.taskBox = new JComboBox<String>();
+        this.taskBox = new JComboBox();
         this.taskBox.setBounds(126, 103, 222, 21);
         add(this.taskBox);
 

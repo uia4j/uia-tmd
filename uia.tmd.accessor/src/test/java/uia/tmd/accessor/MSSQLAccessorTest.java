@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.Test;
-
 import uia.tmd.Where;
 import uia.tmd.model.xml.ColumnType;
 import uia.tmd.model.xml.DbServerType;
@@ -14,7 +12,6 @@ import uia.tmd.model.xml.TableType;
 
 public class MSSQLAccessorTest {
 
-    @Test
     public void testListTables() throws Exception {
         ORAAccessor accessor = new ORAAccessor();
         accessor.initial(createDb(), new TreeMap<String, TableType>());
@@ -28,7 +25,6 @@ public class MSSQLAccessorTest {
         }
     }
 
-    @Test
     public void testSelect() throws Exception {
         ORAAccessor accessor = new ORAAccessor();
         accessor.initial(createDb(), new TreeMap<String, TableType>());
@@ -79,7 +75,6 @@ public class MSSQLAccessorTest {
         accessor.disconnect();
     }
 
-    @Test
     public void testPrepareColumns() throws Exception {
         ORAAccessor accessor = new ORAAccessor();
         accessor.initial(createDb(), new TreeMap<String, TableType>());

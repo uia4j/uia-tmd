@@ -14,6 +14,7 @@ import uia.tmd.model.xml.CriteriaType;
 import uia.tmd.model.xml.DbServerType;
 import uia.tmd.model.xml.ExecutorType;
 import uia.tmd.model.xml.PlanType;
+import uia.tmd.model.xml.TableType;
 import uia.tmd.model.xml.TaskType;
 
 /**
@@ -245,10 +246,21 @@ public abstract class TaskExecutor {
         return result;
     }
 
-    protected List<ColumnType> findPK(List<ColumnType> columns) {
+    protected List<ColumnType> findPK(String tableName, List<ColumnType> columns) {
+        List<String> preDefs = new ArrayList<String>();
+        if (this.factory.getTable(tableName) != null) {
+            TableType.Pk pks = this.factory.getTable(tableName).getPk();
+            if (pks != null) {
+                preDefs = pks.getName();
+            }
+        }
+
         ArrayList<ColumnType> pk = new ArrayList<ColumnType>();
         for (ColumnType column : columns) {
             if (column.isPk()) {
+                pk.add(column);
+            }
+            else if (preDefs.contains(column.getSource())) {
                 pk.add(column);
             }
         }

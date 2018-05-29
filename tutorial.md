@@ -1,12 +1,12 @@
 # Example
 
-Suggest that there are two tables in system. One is about employee, another is about manhour of employee. Structure and relation of tables are below:
-### table: employee
+Suggest that there are two tables in system. One is __employee__, another is __employee_manhour__. Structure and relation of tables are below:
+### table: __employee__
 * id - Primary key.
 
-### table: employee_manhour
+### table: __employee_manhour__
 * id - Primary key.
-* employee - foreign key to id of employee.
+* employee - Foreign key to id of __employee__.
 
 When one employee retires，system need to move his personal data from "local1" database to "local2".
 
@@ -15,14 +15,14 @@ When one employee retires，system need to move his personal data from "local1" 
 ## XML
 
 * Define "Retire" executor to run "job1" which moves data of employee from "local1" to "local2".
-```
+```xml
 <executorSpace>
     <executor name="Retire" source="local1" target="local2" task="job1" />
 </executorSpace>
 ```
 
-* Define "job1" task to handle table of employee, and make "job2" to be next task. The relation between "job1" and "job2" is employee.id=employee_manhour.employee
-```
+* Define "job1" task to handle table of employee, and make "job2" to be next task. The relation between "job1" and "job2" is __employee__.id=__employee_manhour__.employee
+```xml
 <task name="job1">
     <sourceSelect table="employee" />
     <targetUpdate />
@@ -37,7 +37,7 @@ When one employee retires，system need to move his personal data from "local1" 
 ```
 
 * Define "job2" task to handle table of employee_manhour.
-```
+```xml
 <task name="job2">
     <sourceSelect table="employee_manhour" />
     <targetUpdate />
@@ -45,7 +45,7 @@ When one employee retires，system need to move his personal data from "local1" 
 ```
 
 * Define data sources of "local1" & "local2"
-```
+```xml
 <dbServer>
     <id>local1</id>
     <host>localhost</host>
@@ -68,8 +68,7 @@ When one employee retires，system need to move his personal data from "local1" 
 
 Full XML:
 
-```
-
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd>
 	<executorSpace>
@@ -117,16 +116,13 @@ Full XML:
 ```
 
 ## java code
-When one whose id is 0098712 retires, system creates "Retire" executor to finish the job describes above.
+When one whose id is __0098712__ retired, system creates "Retire" executor to finish the job describes above.
 
-"Retire" exeuctes "job1", and "job1" handles table of employee which primary key is id, so the criteria is id="0098712".
+"Retire" exeuctes "job1", and "job1" queries data from __employee__ which id is "0098712".
 
-```
+```java
 TaskFactory factory = new TaskFactory(new File("sample.xml"));
 TaskExecutor executor = factory.createExecutor("Retire");
 
-TreeMap<String, Object> where = new TreeMap<String, Object>();
-where.put("id", "0098712");
-
-executor.run(where);
+executor.run(new Where[] { new WhereEq("id", "0098712") });
 ```

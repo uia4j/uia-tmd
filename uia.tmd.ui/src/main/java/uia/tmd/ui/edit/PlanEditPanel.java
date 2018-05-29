@@ -37,7 +37,7 @@ public class PlanEditPanel extends JPanel {
 
     private JTextField mainField;
 
-    private JComboBox<String> nextBox;
+    private JComboBox nextBox;
 
     private JCheckBox fkCheck1;
 
@@ -49,31 +49,31 @@ public class PlanEditPanel extends JPanel {
 
     private JCheckBox fkCheck5;
 
-    private JComboBox<String> mainFkBox1;
+    private JComboBox mainFkBox1;
 
-    private JComboBox<String> mainFkBox2;
+    private JComboBox mainFkBox2;
 
-    private JComboBox<String> mainFkBox3;
+    private JComboBox mainFkBox3;
 
-    private JComboBox<String> mainFkBox4;
+    private JComboBox mainFkBox4;
 
-    private JComboBox<String> mainFkBox5;
+    private JComboBox mainFkBox5;
 
-    private JComboBox<String> nextFkBox1;
+    private JComboBox nextFkBox1;
 
-    private JComboBox<String> nextFkBox2;
+    private JComboBox nextFkBox2;
 
-    private JComboBox<String> nextFkBox3;
+    private JComboBox nextFkBox3;
 
-    private JComboBox<String> nextFkBox4;
+    private JComboBox nextFkBox4;
 
-    private JComboBox<String> nextFkBox5;
+    private JComboBox nextFkBox5;
 
     private JCheckBox[] checkList;
 
-    private JComboBox<String>[] mainBoxList;
+    private JComboBox[] mainBoxList;
 
-    private JComboBox<String>[] nextBoxList;
+    private JComboBox[] nextBoxList;
 
     public PlanEditPanel() {
         setLayout(null);
@@ -85,7 +85,7 @@ public class PlanEditPanel extends JPanel {
         this.mainField.setBounds(81, 66, 205, 21);
         add(this.mainField);
 
-        this.nextBox = new JComboBox<String>();
+        this.nextBox = new JComboBox();
         this.nextBox.setBackground(Color.WHITE);
         this.nextBox.setBounds(296, 66, 205, 21);
         add(this.nextBox);
@@ -96,12 +96,12 @@ public class PlanEditPanel extends JPanel {
         this.fkCheck1.setBounds(6, 105, 51, 23);
         add(this.fkCheck1);
 
-        this.mainFkBox1 = new JComboBox<String>();
+        this.mainFkBox1 = new JComboBox();
         this.mainFkBox1.setBackground(Color.WHITE);
         this.mainFkBox1.setBounds(81, 106, 205, 21);
         add(this.mainFkBox1);
 
-        this.nextFkBox1 = new JComboBox<String>();
+        this.nextFkBox1 = new JComboBox();
         this.nextFkBox1.setBackground(Color.WHITE);
         this.nextFkBox1.setBounds(296, 106, 205, 21);
         add(this.nextFkBox1);
@@ -110,13 +110,13 @@ public class PlanEditPanel extends JPanel {
         this.fkCheck2.setBounds(6, 136, 51, 23);
         add(this.fkCheck2);
 
-        this.mainFkBox2 = new JComboBox<String>();
+        this.mainFkBox2 = new JComboBox();
         this.mainFkBox2.setBackground(Color.WHITE);
         this.mainFkBox2.setEnabled(false);
         this.mainFkBox2.setBounds(81, 137, 205, 21);
         add(this.mainFkBox2);
 
-        this.nextFkBox2 = new JComboBox<String>();
+        this.nextFkBox2 = new JComboBox();
         this.nextFkBox2.setBackground(Color.WHITE);
         this.nextFkBox2.setEnabled(false);
         this.nextFkBox2.setBounds(296, 137, 205, 21);
@@ -126,13 +126,13 @@ public class PlanEditPanel extends JPanel {
         this.fkCheck3.setBounds(6, 165, 51, 23);
         add(this.fkCheck3);
 
-        this.mainFkBox3 = new JComboBox<String>();
+        this.mainFkBox3 = new JComboBox();
         this.mainFkBox3.setBackground(Color.WHITE);
         this.mainFkBox3.setEnabled(false);
         this.mainFkBox3.setBounds(81, 166, 205, 21);
         add(this.mainFkBox3);
 
-        this.nextFkBox3 = new JComboBox<String>();
+        this.nextFkBox3 = new JComboBox();
         this.nextFkBox3.setBackground(Color.WHITE);
         this.nextFkBox3.setEnabled(false);
         this.nextFkBox3.setBounds(296, 166, 205, 21);
@@ -142,13 +142,13 @@ public class PlanEditPanel extends JPanel {
         this.fkCheck4.setBounds(6, 196, 51, 23);
         add(this.fkCheck4);
 
-        this.mainFkBox4 = new JComboBox<String>();
+        this.mainFkBox4 = new JComboBox();
         this.mainFkBox4.setBackground(Color.WHITE);
         this.mainFkBox4.setEnabled(false);
         this.mainFkBox4.setBounds(81, 197, 205, 21);
         add(this.mainFkBox4);
 
-        this.nextFkBox4 = new JComboBox<String>();
+        this.nextFkBox4 = new JComboBox();
         this.nextFkBox4.setBackground(Color.WHITE);
         this.nextFkBox4.setEnabled(false);
         this.nextFkBox4.setBounds(296, 197, 205, 21);
@@ -158,13 +158,13 @@ public class PlanEditPanel extends JPanel {
         this.fkCheck5.setBounds(6, 227, 51, 23);
         add(this.fkCheck5);
 
-        this.mainFkBox5 = new JComboBox<String>();
+        this.mainFkBox5 = new JComboBox();
         this.mainFkBox5.setBackground(Color.WHITE);
         this.mainFkBox5.setEnabled(false);
         this.mainFkBox5.setBounds(81, 228, 205, 21);
         add(this.mainFkBox5);
 
-        this.nextFkBox5 = new JComboBox<String>();
+        this.nextFkBox5 = new JComboBox();
         this.nextFkBox5.setBackground(Color.WHITE);
         this.nextFkBox5.setEnabled(false);
         this.nextFkBox5.setBounds(296, 228, 205, 21);
@@ -199,7 +199,7 @@ public class PlanEditPanel extends JPanel {
         nextLabel.setBounds(296, 41, 205, 15);
         add(nextLabel);
 
-        JComboBox<String> mainDbBox = new JComboBox<String>();
+        JComboBox mainDbBox = new JComboBox();
         mainDbBox.setBackground(Color.WHITE);
         mainDbBox.setBounds(81, 10, 420, 21);
         add(mainDbBox);
@@ -271,16 +271,16 @@ public class PlanEditPanel extends JPanel {
 
         try {
             this.mainField.setText(main.getSourceSelect().getTable());
-            
-            if(main.getSourceSelect() != null) {
-            	List<ColumnType> mainCols = this.da.prepareColumns(main.getSourceSelect().getTable());
-	            for (ColumnType col : mainCols) {
-	                this.mainFkBox1.addItem(col.getValue());
-	                this.mainFkBox2.addItem(col.getValue());
-	                this.mainFkBox3.addItem(col.getValue());
-	                this.mainFkBox4.addItem(col.getValue());
-	                this.mainFkBox5.addItem(col.getValue());
-	            }
+
+            if (main.getSourceSelect() != null) {
+                List<ColumnType> mainCols = this.da.prepareColumns(main.getSourceSelect().getTable());
+                for (ColumnType col : mainCols) {
+                    this.mainFkBox1.addItem(col.getValue());
+                    this.mainFkBox2.addItem(col.getValue());
+                    this.mainFkBox3.addItem(col.getValue());
+                    this.mainFkBox4.addItem(col.getValue());
+                    this.mainFkBox5.addItem(col.getValue());
+                }
             }
 
             this.next = null;

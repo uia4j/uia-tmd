@@ -28,7 +28,7 @@ public class DbServerEditPanel extends JPanel {
 
     private JTextField dbNameField;
 
-    private JComboBox<String> dbTypeBox;
+    private JComboBox dbTypeBox;
 
     private DbServerType dbServer;
 
@@ -86,8 +86,8 @@ public class DbServerEditPanel extends JPanel {
         dbTypeLabel.setBounds(10, 168, 77, 15);
         add(dbTypeLabel);
 
-        this.dbTypeBox = new JComboBox<String>();
-        this.dbTypeBox.setModel(new DefaultComboBoxModel<String>(new String[] { "Hana", "Oracle", "MSSQL", "PostgreSQL" }));
+        this.dbTypeBox = new JComboBox();
+        this.dbTypeBox.setModel(new DefaultComboBoxModel(new String[] { "Hana", "Oracle", "MSSQL", "PostgreSQL" }));
         this.dbTypeBox.setSelectedIndex(0);
         this.dbTypeBox.setBounds(97, 165, 198, 21);
         add(this.dbTypeBox);

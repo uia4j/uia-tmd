@@ -33,7 +33,7 @@ public class TablePanel extends JPanel {
 
     private JButton addButton;
 
-    private JComboBox<String> dbServverBox;
+    private JComboBox dbServverBox;
 
     private JTable listTable;
 
@@ -68,7 +68,7 @@ public class TablePanel extends JPanel {
         });
         toolbarPanel.add(this.addButton);
 
-        this.dbServverBox = new JComboBox<String>();
+        this.dbServverBox = new JComboBox();
         this.dbServverBox.setBounds(40, 3, 195, 24);
         toolbarPanel.add(this.dbServverBox);
 
@@ -143,7 +143,7 @@ public class TablePanel extends JPanel {
             da.connect();
             List<String> tables = da.listTables();
             da.disconnect();
-            
+
             for (String tableName : tables) {
                 TableType type = this.frame.getTaskFactory().getTables().get(tableName);
                 if (type == null) {
@@ -152,7 +152,7 @@ public class TablePanel extends JPanel {
                     this.data.add(type);
                 }
             }
-            */
+             */
         }
         catch (Exception e) {
 

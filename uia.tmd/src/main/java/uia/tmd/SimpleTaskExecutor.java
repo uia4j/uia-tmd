@@ -47,7 +47,7 @@ public class SimpleTaskExecutor extends TaskExecutor {
 
             // source: select
             final List<ColumnType> sourceColumns = this.sourceAccessor.prepareColumns(sourceSelect.getTable());
-            final List<ColumnType> sourcePK = findPK(sourceColumns);
+            final List<ColumnType> sourcePK = findPK(sourceSelect.getTable(), sourceColumns);
             if (sourcePK.size() == 0) {
                 throw new SQLException("Table:" + sourceSelect.getTable() + " without primary key.");
             }
@@ -90,7 +90,7 @@ public class SimpleTaskExecutor extends TaskExecutor {
             if (targetColumns.size() == 0) {
                 throw new SQLException("Table:" + targetTableName + " without columns.");
             }
-            final List<ColumnType> targetPK = findPK(targetColumns);
+            final List<ColumnType> targetPK = findPK(targetTableName, targetColumns);
             if (targetPK.size() == 0) {
                 throw new SQLException("Table:" + targetTableName + " without primary key.");
             }

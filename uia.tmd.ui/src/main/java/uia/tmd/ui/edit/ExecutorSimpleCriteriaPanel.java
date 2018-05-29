@@ -27,7 +27,7 @@ public class ExecutorSimpleCriteriaPanel extends JPanel {
         add(paramLabel);
 
         this.txtrHandle = new JTextArea();
-        this.txtrHandle.setText("HANDLE=ShopOrderBO:1600,20150928-CFZ-001");
+        this.txtrHandle.setText("SITE=1020");
         this.txtrHandle.setBorder(BorderFactory.createEtchedBorder(1));
         this.txtrHandle.setBounds(10, 35, 410, 155);
         add(this.txtrHandle);

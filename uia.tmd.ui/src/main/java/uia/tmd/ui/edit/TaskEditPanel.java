@@ -24,9 +24,9 @@ public class TaskEditPanel extends JPanel {
 
     private JTextField nameField;
 
-    private JComboBox<String> sourceBox;
+    private JComboBox sourceBox;
 
-    private JComboBox<String> targetBox;
+    private JComboBox targetBox;
 
     private TaskType task;
 
@@ -38,8 +38,8 @@ public class TaskEditPanel extends JPanel {
         setLayout(null);
         setPreferredSize(new Dimension(335, 105));
 
-        DefaultComboBoxModel<String> sourceModel = new DefaultComboBoxModel<String>();
-        DefaultComboBoxModel<String> targetModel = new DefaultComboBoxModel<String>();
+        DefaultComboBoxModel sourceModel = new DefaultComboBoxModel();
+        DefaultComboBoxModel targetModel = new DefaultComboBoxModel();
         for (TableType table : tables) {
             this.tableNames.add(table.getName());
             sourceModel.addElement(table.getName());
@@ -61,7 +61,7 @@ public class TaskEditPanel extends JPanel {
         sourceLabel.setBounds(10, 44, 83, 15);
         add(sourceLabel);
 
-        this.sourceBox = new JComboBox<String>();
+        this.sourceBox = new JComboBox();
         this.sourceBox.setBounds(103, 41, 222, 21);
         this.sourceBox.setModel(sourceModel);
         this.sourceBox.addItemListener(new ItemListener() {
@@ -80,7 +80,7 @@ public class TaskEditPanel extends JPanel {
         targetLabel.setBounds(10, 75, 83, 15);
         add(targetLabel);
 
-        this.targetBox = new JComboBox<String>();
+        this.targetBox = new JComboBox();
         this.targetBox.setBounds(103, 72, 222, 21);
         this.targetBox.setModel(targetModel);
         add(this.targetBox);
@@ -106,12 +106,12 @@ public class TaskEditPanel extends JPanel {
     public void load(TaskType task) {
         this.task = task;
         if (!this.tableNames.contains(task.getSourceSelect().getTable())) {
-            ((DefaultComboBoxModel<String>) this.sourceBox.getModel()).addElement(task.getSourceSelect().getTable());
-            ((DefaultComboBoxModel<String>) this.targetBox.getModel()).addElement(task.getSourceSelect().getTable());
+            ((DefaultComboBoxModel) this.sourceBox.getModel()).addElement(task.getSourceSelect().getTable());
+            ((DefaultComboBoxModel) this.targetBox.getModel()).addElement(task.getSourceSelect().getTable());
             this.tableNames.add(task.getSourceSelect().getTable());
         }
         if (task.getTargetUpdate().getTable() != null && !this.tableNames.contains(task.getTargetUpdate().getTable())) {
-            ((DefaultComboBoxModel<String>) this.targetBox.getModel()).addElement(task.getTargetUpdate().getTable());
+            ((DefaultComboBoxModel) this.targetBox.getModel()).addElement(task.getTargetUpdate().getTable());
             this.tableNames.add(task.getTargetUpdate().getTable());
         }
 

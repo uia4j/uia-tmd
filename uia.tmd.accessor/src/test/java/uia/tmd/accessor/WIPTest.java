@@ -4,20 +4,16 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 
-import org.junit.Test;
-
 import uia.tmd.TaskExecutor;
 import uia.tmd.TaskExecutorListener;
 import uia.tmd.TaskFactory;
 import uia.tmd.Where;
-import uia.tmd.WhereEq;
 import uia.tmd.WhereLike;
 
 public class WIPTest implements TaskExecutorListener {
 
     private int rc;
 
-    @Test
     public void testItemOperation() throws URISyntaxException, Exception {
         TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("wip.xml").toURI()));
 
@@ -33,16 +29,22 @@ public class WIPTest implements TaskExecutorListener {
         System.out.println("test: " + (t2 - t1));
     }
 
-    public void testItem() throws URISyntaxException, Exception {
+    public void testZhDcType() throws URISyntaxException, Exception {
         TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("wip.xml").toURI()));
 
-        TaskExecutor executor = factory.createExecutor("Item");
+        TaskExecutor executor = factory.createExecutor("ZhDcType");
         executor.addListener(this);
 
-        Where[] ws = new Where[1];
-        ws[0] = new WhereEq("SITE", "9998");
+        System.out.println(String.format("Execute:%s(%s)", executor.run(new Where[0]), this.rc));
+    }
 
-        System.out.println(String.format("Execute:%s(%s)", executor.run(ws), this.rc));
+    public void testZdFutureActionDef() throws URISyntaxException, Exception {
+        TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("wip.xml").toURI()));
+
+        TaskExecutor executor = factory.createExecutor("ZdFutureActionDef");
+        executor.addListener(this);
+
+        System.out.println(String.format("Execute:%s(%s)", executor.run(new Where[0]), this.rc));
     }
 
     public void testZdLookup() throws URISyntaxException, Exception {
