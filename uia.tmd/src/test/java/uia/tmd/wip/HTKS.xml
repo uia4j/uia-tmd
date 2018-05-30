@@ -2828,22 +2828,22 @@
 	</tableSpace>
 	<databaseSpace>
 		<dbServer>
-			<id>DEV</id>
+			<id>ORACLE_DEV</id>
 			<host>10.160.1.48</host>
-			<port></port>
+			<port>1521</port>
 			<dbName>WIP</dbName>
 			<user>WIP</user>
-			<password>Sap12345</password>
-			<dbType>ame.psb.oraha.HanaAccessor</dbType>
+			<password>wip</password>
+			<dbType>ame.psb.oraha.ORAAccessor</dbType>
 		</dbServer>
 		<dbServer>
-			<id>PG</id>
-			<host>localhost</host>
-			<port>5432</port>
-			<dbName>wip</dbName>
-			<user>wip</user>
-			<password>wip</password>
-			<dbType>ame.psb.oraha.PGAccessor</dbType>
+			<id>HANA_DEV</id>
+			<host>10.160.1.52</host>
+			<port>39015</port>
+			<dbName>WIP</dbName>
+			<user>WIP</user>
+			<password>Hdb12345</password>
+			<dbType>ame.psb.oraha.HanaAccessor</dbType>
 		</dbServer>
 	</databaseSpace>
 </tmd>

@@ -1,13 +1,14 @@
 package uia.tmd;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import uia.tmd.model.xml.ColumnType;
 import uia.tmd.model.xml.DbServerType;
-import uia.tmd.model.xml.TableType;
+import uia.tmd.model.xml.MColumnType;
+import uia.tmd.model.xml.MTableType;
+import uia.utils.dao.Database;
+import uia.utils.dao.where.Where;
 
 /**
  * Database accessor.
@@ -17,13 +18,13 @@ import uia.tmd.model.xml.TableType;
  */
 public interface DataAccessor {
 
-    public void initial(DbServerType svrType, Map<String, TableType> tables);
+    public void initial(DbServerType svrType, Map<String, MTableType> tables);
 
     /**
      * Get connection.
      * @return Connection.
      */
-    public abstract Connection getConnection();
+    public abstract Database getDatabase();
 
     /**
      * Connect to database.
@@ -31,13 +32,13 @@ public interface DataAccessor {
      * @param password Password.
      * @throws SQLException SQL exception.
      */
-    public abstract void connect() throws SQLException;
+    public abstract void connect() throws Exception;
 
     /**
      * Disconnect to database.
      * @throws SQLException SQL exception.
      */
-    public abstract void disconnect() throws SQLException;
+    public abstract void disconnect() throws Exception;
 
     /**
      * Switch to manual commit. Use commit() to commit statements.
@@ -67,12 +68,12 @@ public interface DataAccessor {
 
     /**
      * Select data.
-     * @param sql SQL statement.
-     * @param wheres Values of parameters with ordering.
+     * @param sql SQL statement without WHERE.
+     * @param where WHERE statement.
      * @return Result. Order of keys is same as selected columns.
      * @throws SQLException SQL exception.
      */
-    public List<Map<String, Object>> select(String sql, Where[] wheres) throws SQLException;
+    public List<Map<String, Object>> select(String sql, Where where) throws SQLException;
 
     /**
      * Insert, update or delete data.
@@ -97,6 +98,6 @@ public interface DataAccessor {
      * @return Column information.
      * @throws SQLException Prepare failed.
      */
-    public List<ColumnType> prepareColumns(String tableName) throws SQLException;
+    public List<MColumnType> prepareColumns(String tableName) throws SQLException;
 
 }

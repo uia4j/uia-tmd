@@ -57,21 +57,21 @@
 			<element name="rule">
 				<complexType>
 			        <sequence>
-						<element name="criteria" type="uia:CriteriaType" maxOccurs="unbounded"></element>
+						<element name="criteria" type="uia:MCriteriaType" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
 			<element name="join">
 				<complexType>
 			        <sequence>
-						<element name="column" type="uia:ColumnType" maxOccurs="unbounded"></element>
+						<element name="column" type="uia:MColumnType" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
 			<element name="where">
 				<complexType>
 			        <sequence>
-						<element name="criteria" type="uia:CriteriaType" maxOccurs="unbounded"></element>
+						<element name="criteria" type="uia:MCriteriaType" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
@@ -103,14 +103,14 @@
 			<element name="columns">
 				<complexType>
 			        <sequence>
-						<element name="column" type="uia:ColumnType" maxOccurs="unbounded"></element>
+						<element name="column" type="uia:MColumnType" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
         </sequence>
         <attribute name="table" type="string" />
     </complexType>
-    <complexType name="ColumnType">
+    <complexType name="MColumnType">
         <simpleContent>
             <extension base="string">
                 <attribute name="source" type="string" />
@@ -118,7 +118,7 @@
             </extension>
         </simpleContent>
     </complexType>
-    <complexType name="CriteriaType">
+    <complexType name="MCriteriaType">
         <simpleContent>
             <extension base="string">
                 <attribute name="column" type="string" />
@@ -132,11 +132,11 @@
     <complexType name="TableSpaceType">
         <sequence>
             <choice maxOccurs="unbounded">
-                <element name="table" type="uia:TableType"></element>
+                <element name="table" type="uia:MTableType"></element>
             </choice>
         </sequence>
     </complexType>
-    <complexType name="TableType">
+    <complexType name="MTableType">
         <sequence>
 			<element name="pk">
 				<complexType>

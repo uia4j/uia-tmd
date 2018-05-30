@@ -1,190 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd>
 	<executorSpace>
-		<executor name="ShopOrder" source="ORACLE_DEV" target="HANA_DEV" task="Item" />
+		<executor name="ItemGroup" source="HANA_DEV" target="HANA_TEST" task="ItemGroup" />
+		<executor name="Item" source="HANA_DEV" target="HANA_TEST" task="Item" />
+		<executor name="ItemGroupMember" source="HANA_DEV" target="HANA_TEST" task="ItemGroupMember" />
+		<executor name="CustomFields" source="HANA_DEV" target="HANA_TEST" task="CustomFields" />
+		<executor name="ItemShopOrderType" source="HANA_DEV" target="HANA_TEST" task="ItemShopOrderType" />
+
+		<executor name="ZdCarrier" source="HANA_DEV" target="HANA_TEST" task="ZdCarrier" />
+		<executor name="ZdDcop" source="HANA_DEV" target="HANA_TEST" task="ZdDcop" />
+		<executor name="ZdDcopParameter" source="HANA_DEV" target="HANA_TEST" task="ZdDcopParameter" />
+		<executor name="ZdFutureActionDef" source="HANA_DEV" target="HANA_TEST" task="ZdFutureActionDef" />
+		<executor name="ZdItemOperation" source="HANA_DEV" target="HANA_TEST" task="ZdItemOperation" />
+		<executor name="ZdItemOperationProp" source="HANA_DEV" target="HANA_TEST" task="ZdItemOperationProp" />
+		<executor name="ZdLookup" source="ORACLE_DEV" target="HANA_TEST" task="ZdLookup" />
+
+		<executor name="ZdPkgContainerRule" source="HANA_DEV" target="HANA_TEST" task="ZdPkgContainerRule" />
+		<executor name="ZdPkgPackingPlan" source="HANA_DEV" target="HANA_TEST" task="ZdPkgPackingPlan" />
+
+		<executor name="ZdQueueTime" source="HANA_DEV" target="HANA_TEST" task="ZdQueueTime" />
+		<executor name="ZdResource" source="HANA_DEV" target="HANA_TEST" task="ZdResource" />
+		<executor name="ZdResourceRunBlock" source="HANA_DEV" target="HANA_TEST" task="ZdResourceRunBlock" />
+		<executor name="ZdRmsMatrix" source="HANA_DEV" target="HANA_TEST" task="ZdRmsMatrix" />
+		<executor name="ZdRmsMatrixFactorDef" source="HANA_DEV" target="HANA_TEST" task="ZdRmsMatrixFactorDef" />
+		<executor name="ZdRmsMatrixRecipe" source="HANA_DEV" target="HANA_TEST" task="ZdRmsMatrixRecipe" />
+		<executor name="ZdRmsMatrixRecipeFactor" source="HANA_DEV" target="HANA_TEST" task="ZdRmsMatrixRecipeFactor" />
+		<executor name="ZdRmsPattern" source="HANA_DEV" target="HANA_TEST" task="ZdRmsPattern" />
+		<executor name="ZdRmsPatternFactorDef" source="HANA_DEV" target="HANA_TEST" task="ZdRmsPatternFactorDef" />
+
+		<executor name="ZhDcType" source="ORACLE_DEV" target="HANA_DEV" task="ZhDcType" />
+
+		<executor name="ZLogic" source="HANA_DEV" target="HANA_TEST" task="ZLogic" />
+		<executor name="ZNextNumber" source="HANA_DEV" target="HANA_TEST" task="ZNextNumber" />
 	</executorSpace>
 	<taskSpace>
-		<task name="BOM">
-			<sourceSelect table="BOM">
-			</sourceSelect>
+		<task name="ZdCarrier">
+			<sourceSelect table="ZD_CARRIER" />
 			<targetUpdate />
-			<next>
-				<plan taskName="BOMComponent">
-					<join>
-						<column source="HANDLE">BOM_BO</column>
-					</join>
-				</plan>
-			</next>
 		</task>
-		<task name="BOMComponent">
-			<sourceSelect table="BOM_COMPONENT">
-			</sourceSelect>
+		<task name="ZdDcop">
+			<sourceSelect table="ZD_DCOP" />
 			<targetUpdate />
-			<next>
-				<plan taskName="Item">
-					<rule>
-						<criteria column="COMPONENT_GBO" validate="startsWith">ItemBO</criteria>
-					</rule>
-					<join>
-						<column source="COMPONENT_GBO">HANDLE</column>
-					</join>
-					<where>
-						<criteria column="COMPONENT_GBO" validate="startsWith">ItemBO</criteria>
-					</where>
-				</plan>
-			</next>
 		</task>
+		<task name="ZdDcopParameter">
+			<sourceSelect table="ZD_DCOP_PARAMETER" />
+			<targetUpdate />
+		</task>
+		<task name="ZdFutureActionDef">
+			<sourceSelect table="ZD_FUTURE_ACTION_DEF" />
+			<targetUpdate />
+		</task>
+		<task name="ZdItemOperation">
+			<sourceSelect table="ZD_ITEM_OPERATION" />
+			<targetUpdate />
+		</task>
+		<task name="ZdItemOperationProp">
+			<sourceSelect table="ZD_OPERATION_PROP" />
+			<targetUpdate />
+		</task>
+		<task name="ZdLookup">
+			<sourceSelect table="ZD_LOOK_UP" />
+			<targetUpdate />
+		</task>
+		<task name="ZdPkgContainerRule">
+			<sourceSelect table="ZD_PKG_CONTAINER_RULE" />
+			<targetUpdate />
+		</task>
+		<task name="ZdPkgPackingPlan">
+			<sourceSelect table="ZD_PKG_PACKING_PLAN" />
+			<targetUpdate />
+		</task>
+		<task name="ZdQueueTime">
+			<sourceSelect table="ZD_QUEUE_TIME" />
+			<targetUpdate />
+		</task>
+		<task name="ZdResource">
+			<sourceSelect table="ZD_RESOURCE" />
+			<targetUpdate />
+		</task>
+		<task name="ZdResourceRunBlock">
+			<sourceSelect table="ZD_RESOURCE_RUN_BLOCK" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsMatrix">
+			<sourceSelect table="ZD_RMS_MATRIX" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsMatrixFactorDef">
+			<sourceSelect table="ZD_RMS_MATRIX_FACTOR_DEF" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsMatrixRecipe">
+			<sourceSelect table="ZD_RMS_MATRIX_RECIPE" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsMatrixRecipeFactor">
+			<sourceSelect table="ZD_RMS_MATRIX_RECIPE_FACTOR" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsPattern">
+			<sourceSelect table="ZD_RMS_PATTERN" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsPatternFactorDef">
+			<sourceSelect table="ZD_RMS_PATTERN_FACTOR_DEF" />
+			<targetUpdate />
+		</task>
+
+		<task name="ZhDcType">
+			<sourceSelect table="ZH_DC_TYPE" />
+			<targetUpdate />
+		</task>
+
 		<task name="Item">
 			<sourceSelect table="ITEM" />
 			<targetUpdate />
 		</task>
-		<task name="Router">
-			<sourceSelect table="ROUTER">
-			</sourceSelect>
+		<task name="ItemGroup">
+			<sourceSelect table="ITEM_GROUP" />
 			<targetUpdate />
-			<next>
-				<plan taskName="Status">
-					<join>
-						<column source="STATUS_BO">HANDLE</column>
-					</join>
-				</plan>
-			</next>
 		</task>
-		<task name="ShopOrder">
-			<sourceSelect table="SHOP_ORDER">
-				<mark column=""></mark>
-			</sourceSelect>
+		<task name="ItemGroupMember">
+			<sourceSelect table="ITEM_GROUP_MEMBER" />
 			<targetUpdate />
-			<next>
-				<plan taskName="BOM">
-					<join>
-						<column source="BOM_BO">HANDLE</column>
-					</join>
-				</plan>
-				<plan taskName="Item">
-					<join>
-						<column source="ITEM_BO">HANDLE</column>
-					</join>
-				</plan>
-				<plan taskName="Router">
-					<join>
-						<column source="ROUTER_BO">HANDLE</column>
-					</join>
-				</plan>
-				<plan taskName="ShopOrderInspectionLot">
-					<join>
-						<column source="HANDLE">SHOP_ORDER_BO</column>
-					</join>
-				</plan>
-				<plan taskName="ShopOrderSFC">
-					<join>
-						<column source="HANDLE">SHOP_ORDER_BO</column>
-					</join>
-				</plan>
-				<plan taskName="ShopOrderSFCPlan">
-					<join>
-						<column source="HANDLE">SHOP_ORDER_BO</column>
-					</join>
-				</plan>
-				<plan taskName="Status">
-					<join>
-						<column source="STATUS_BO">HANDLE</column>
-					</join>
-				</plan>
-			</next>
 		</task>
-		<task name="ShopOrderInspection">
-			<sourceSelect table="SHOP_ORDER_INSPECTION">
-			</sourceSelect>
+		<task name="CustomFields">
+			<sourceSelect table="CUSTOM_FIELDS" />
 			<targetUpdate />
-			<nexts />
 		</task>
-		<task name="ShopOrderInspectionLot">
-			<sourceSelect table="SHOP_ORDER_INSPECTION_LOT">
-			</sourceSelect>
+		<task name="ItemShopOrderType">
+			<sourceSelect table="ITEM_SHOP_ORDER_TYPE" />
 			<targetUpdate />
-			<next>
-				<plan taskName="ShopOrderInspection">
-					<join>
-						<column source="HANDLE">SHOP_ORDER_INSPECTION_LOT_BO</column>
-					</join>
-				</plan>
-			</next>
 		</task>
-		<task name="ShopOrderSchedule">
-			<sourceSelect table="SHOP_ORDER_SCHEDULE">
-			</sourceSelect>
+
+
+		<task name="ZLogic">
+			<sourceSelect table="Z_LOGIC" />
 			<targetUpdate />
-			<nexts />
 		</task>
-		<task name="ShopOrderSFC">
-			<sourceSelect table="SHOP_ORDER_SFC">
-			</sourceSelect>
+		<task name="ZNextNumber">
+			<sourceSelect table="Z_NEXT_NUMBER" />
 			<targetUpdate />
-			<nexts />
-		</task>
-		<task name="ShopOrderSFCPlan">
-			<sourceSelect table="SHOP_ORDER_SFC_PLAN">
-			</sourceSelect>
-			<targetUpdate />
-			<nexts />
-		</task>
-		<task name="Status">
-			<sourceSelect table="STATUS">
-			</sourceSelect>
-			<targetUpdate />
-			<nexts />
-		</task>
-		<task name="ZTask">
-			<sourceSelect table="Z_TASK">
-			</sourceSelect>
-			<targetUpdate />
-			<next>
-				<plan taskName="ZTaskATTA">
-					<join>
-						<column source="SID">TASK_SID</column>
-					</join>
-				</plan>
-				<plan taskName="ZTaskBatch">
-					<join>
-						<column source="SID">TASK_SID</column>
-					</join>
-				</plan>
-				<plan taskName="ZTaskObj">
-					<join>
-						<column source="SID">TASK_SID</column>
-					</join>
-				</plan>
-				<plan taskName="ZTaskPro">
-					<join>
-						<column source="SID">TASK_SID</column>
-					</join>
-				</plan>
-			</next>
-		</task>
-		<task name="ZTaskATTA">
-			<sourceSelect table="Z_TASK_ATTA">
-			</sourceSelect>
-			<targetUpdate />
-			<nexts />
-		</task>
-		<task name="ZTaskBatch">
-			<sourceSelect table="Z_TASK_BATCH">
-			</sourceSelect>
-			<targetUpdate />
-			<nexts />
-		</task>
-		<task name="ZTaskObj">
-			<sourceSelect table="Z_TASK_OBJ">
-			</sourceSelect>
-			<targetUpdate />
-			<nexts />
-		</task>
-		<task name="ZTaskPro">
-			<sourceSelect table="Z_TASK_PRO">
-			</sourceSelect>
-			<targetUpdate />
-			<nexts />
 		</task>
 	</taskSpace>
 	<tableSpace>
@@ -2054,126 +2010,6 @@
 				<name>HANDLE</name>
 			</pk>
 		</table>
-		<table name="VM$_TMP_ALARM_LOG">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_AR_HOLD_DETAIL">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_AR_PARA_MEASURE">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_AR_PARAMETRIC">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_BOM_COMPONENT">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_CERTIFICATION_REQ">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_COMP_TIME_LOG_SG">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_COMP_TIME_LOG_SG_AD">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_COMP_TIME_LOG_SG_LOC">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_COMP_TIME_LOG_SG_RD">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_COST_CENTER">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_HOLD_DETAIL">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_HOLD_DETAIL_STEP">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_ITEM">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_LABOR_LOG_MEMBER">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_ODS_SYNONYMS">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_ODS_TABLES">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_PARA_MEASURE">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_PARAMETRIC">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_REASON_CODE">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_REPORT_SFC">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_SFC">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_SFC_STEP">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="VM$_TMP_USER_LABOR">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
 		<table name="VM_SUBSCRIPTION">
 			<pk>
 				<name>HANDLE</name>
@@ -2229,621 +2065,43 @@
 				<name>HANDLE</name>
 			</pk>
 		</table>
-		<table name="Z_ASSY_COMP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_BATCH_CG_MARK">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_CATEGORY">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_CATEGORY_MEMBER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_CUSTOM_FIELD_DEF">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_CUSTOM_FIELDS">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_DATA_LOCKED">
-			<pk>
-				<name>SITE</name>
-				<name>TYPE_REF</name>
-				<name>REF_OBJ</name>
-			</pk>
-		</table>
-		<table name="Z_DCM">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_DP_SHOP_ORDER_BATCH">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_EBR">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FEED_BATCH_RELEASED">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FEED_PIPELINE_CONF">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FEED_PIPELINE_CONF_DETAIL">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FEED_RESOURCE_CIP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FEED_RESOURCE_CIP_REF">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FILES_UPLOAD">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FLOW">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FLOW_INS">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FLOW_INS_CUR_STEP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FLOW_INS_LOG">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FLOW_INS_STEP_LOG">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FLOW_STEP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FLOW_STEP_ATTRIBUTE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_FLOW_TRACTION">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_HELP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_HELP_ISSUE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_INF_INSPECT_ITEM">
-			<pk />
-		</table>
-		<table name="Z_INF_INSPECT_MASTER">
-			<pk />
-		</table>
-		<table name="Z_INF_INSPECT_SEQUENCE">
-			<pk />
-		</table>
-		<table name="Z_INTERNATIONAL">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_INVENTORY_ASSY_DATA">
-			<pk>
-				<name>INVENTORY_BO</name>
-			</pk>
-		</table>
-		<table name="Z_INVENTORY_TRANSFER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_ATT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_BOM">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_BOM_COMPONENT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_CHECK_ITEM_D">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_CHECK_ITEM_M">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_CHECK_STANDARD">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_DC">
-			<pk>
-				<name>SID</name>
-				<name>SEQUENCE</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_DC_LOG">
-			<pk />
-		</table>
-		<table name="Z_LAB_EQUIP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_LARGE_CLASSIFY">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_PLAN">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LAB_PLAN_CHECK_OBJ">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LINE_SO_SFC">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LOG">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_LOGIC">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_MATERIAL_BALANCE">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="Z_MATERIAL_UOM">
-			<pk>
-				<name>HANDLE</name>
-			</pk>
-		</table>
-		<table name="Z_MB_BOM">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_MB_BOM_COMPONENT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_MD_TWO_EIGHT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_MD_TWO_EIGHT_COMPONENT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_MESSAGE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_NEXT_NUMBER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PACK_BOX_BOTTLE_REF">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PARAMETER_FRACTIONAL_PRECISION">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PARAMETER_FRACTIONAL_PRECISION_LOG">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PAS">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_CHECK_M">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_CHECK_PARAMETER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_DC">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_EQM_MEMBER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_EQUIPMENT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_EVENT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_EVENT_USERGROUPID">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_EXECUTE_TASK">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_PLAN">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_PLAN_MEMBER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_STATUS">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_STATUS_CHANGE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PMS_STATUS_GROUP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_POD_CONF">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PRODUCT_PACKAGE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PRODUCT_SHORTHAND">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PRODUCTION_STATUS">
-			<pk />
-		</table>
-		<table name="Z_PROJECT_DDS">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PROJECT_FDS">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PROJECT_MEMBER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PROJECT_TC">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PROJECT_TC_STEP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_PROJECT_URS">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_QUEUE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_QUEUE_MESSAGE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_REF_RELATION">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_RESERVED_D">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_RESERVED_M">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_SAFE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_SAFE_LOGD">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_SAFE_LOGM">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_SCALES_CHECK_D">
-			<pk />
-		</table>
-		<table name="Z_SCALES_CHECK_M">
-			<pk />
-		</table>
-		<table name="Z_SCALES_CHECK_RECORD">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_SCALES_CHECK_RESULT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_SCHEDULE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_STATUS_CONTROLLER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_STATUS_CONTROLLER_LOG">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_STATUS_DEF">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_STATUS_GROUP">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_STATUS_GROUP_MEMBER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_SYSTEM_CONFIG">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_TASK">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_TASK_ATTA">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_TASK_BATCH">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_TASK_OBJ">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_TASK_PRO">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_TEST_CASE">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_TIMER">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_UDD_SHIFT">
-			<pk />
-		</table>
-		<table name="Z_UDD_SOR">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_USER_SIGN">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_VALID_CONF">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_VALIDATION_RULE">
-			<pk />
-		</table>
-		<table name="Z_VENDOR">
-			<pk>
-				<name>ID</name>
-			</pk>
-		</table>
-		<table name="Z_VENDOR_PRO_BATCH">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_WARN">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_WD_WEIGHT_CONTENT">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_WIDGET">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_WIDGET_LOG">
-			<pk>
-				<name>SID</name>
-			</pk>
-		</table>
-		<table name="Z_WORK_CENTER_CLP">
-			<pk />
-		</table>
-		<table name="ZME_ORDER_CUSTOM">
-			<pk />
-		</table>
-		<table name="ZME_PACKING_INSPECT_RESULT">
-			<pk>
-				<name>ID</name>
-			</pk>
-		</table>
-		<table name="ZME_PACKING_INSPECT_RESULT_ITEM">
-			<pk>
-				<name>ID</name>
-			</pk>
-		</table>
 	</tableSpace>
 	<databaseSpace>
 		<dbServer>
-			<id>DEV</id>
+			<id>ORACLE_DEV</id>
 			<host>10.160.1.48</host>
-			<port></port>
+			<port>1521</port>
+			<dbName>MESDEV</dbName>
+			<user>WIP</user>
+			<password>wip</password>
+			<dbType>uia.tmd.accessor.ORAAccessor</dbType>
+		</dbServer>
+		<dbServer>
+			<id>HANA_DEV</id>
+			<host>10.160.1.52</host>
+			<port>39015</port>
+			<dbName>WIP</dbName>
+			<user>WIP</user>
+			<password>Hdb12345</password>
+			<dbType>uia.tmd.accessor.HanaAccessor</dbType>
+		</dbServer>
+		<dbServer>
+			<id>HANA_TEST</id>
+			<host>10.160.2.23</host>
+			<port>31015</port>
 			<dbName>WIP</dbName>
 			<user>WIP</user>
 			<password>Sap12345</password>
-			<dbType>ame.psb.oraha.HanaAccessor</dbType>
+			<dbType>uia.tmd.accessor.HanaAccessor</dbType>
 		</dbServer>
 		<dbServer>
-			<id>PG</id>
-			<host>localhost</host>
-			<port>5432</port>
-			<dbName>wip</dbName>
-			<user>wip</user>
-			<password>wip</password>
-			<dbType>ame.psb.oraha.PGAccessor</dbType>
+			<id>IDLE</id>
+			<host>0.0.0.0</host>
+			<port>0</port>
+			<dbName></dbName>
+			<user></user>
+			<password></password>
+			<dbType>uia.tmd.IdleAccessor</dbType>
 		</dbServer>
 	</databaseSpace>
 </tmd>

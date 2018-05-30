@@ -2,19 +2,13 @@ package uia.tmd.accessor;
 
 import uia.tmd.AbstractDataAccessor;
 import uia.utils.dao.Database;
-import uia.utils.dao.ora.Oracle;
+import uia.utils.dao.hana.Hana;
 
-/**
- * MS SQL Server data accessor.
- *
- * @author Kyle K. Lin
- *
- */
-public class ORAAccessor extends AbstractDataAccessor {
+public class HanaAccessor extends AbstractDataAccessor {
 
     private Database database;
 
-    public ORAAccessor() throws Exception {
+    public HanaAccessor() throws Exception {
     }
 
     @Override
@@ -24,10 +18,10 @@ public class ORAAccessor extends AbstractDataAccessor {
 
     @Override
     public void connect() throws Exception {
-        this.database = new Oracle(
+        this.database = new Hana(
                 this.svrType.getHost(),
                 "" + this.svrType.getPort(),
-                this.svrType.getDbName(),
+                this.svrType.getUser(),
                 this.svrType.getUser(),
                 this.svrType.getPassword());
     }

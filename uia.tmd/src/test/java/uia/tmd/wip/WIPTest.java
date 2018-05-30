@@ -9,8 +9,6 @@ import org.junit.Test;
 import uia.tmd.TaskExecutor;
 import uia.tmd.TaskExecutorListener;
 import uia.tmd.TaskFactory;
-import uia.tmd.Where;
-import uia.tmd.WhereEq;
 
 public class WIPTest implements TaskExecutorListener {
 
@@ -23,9 +21,7 @@ public class WIPTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("ZTask");
         executor.addListener(this);
 
-        Where[] ws = new Where[1];
-        ws[0] = new WhereEq("SID", "0905f3c2-4fe5-48dc-9f55-c3819e31f6ac");
-        System.out.println(String.format("Execute:%s(%s)", executor.run(ws), this.rc));
+        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
     }
 
     @Test
@@ -35,10 +31,7 @@ public class WIPTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("ShopOrder");
         executor.addListener(this);
 
-        Where[] ws = new Where[1];
-        ws[0] = new WhereEq("HANDLE", "ShopOrderBO:1600,20150928-CFZ-001");
-        // where.put("HANDLE", "ShopOrderBO:D001,PACK_SO_20150826001");
-        System.out.println(String.format("Execute:%s(%s)", executor.run(ws), this.rc));
+        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
     }
 
     @Override

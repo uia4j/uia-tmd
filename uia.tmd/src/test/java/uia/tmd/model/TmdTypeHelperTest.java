@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import uia.tmd.model.xml.ColumnType;
-import uia.tmd.model.xml.CriteriaType;
 import uia.tmd.model.xml.DbServerType;
+import uia.tmd.model.xml.MColumnType;
+import uia.tmd.model.xml.MCriteriaType;
+import uia.tmd.model.xml.MTableType;
 import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.SourceSelectType;
-import uia.tmd.model.xml.TableType;
 import uia.tmd.model.xml.TargetUpdateType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
@@ -34,7 +34,7 @@ public class TmdTypeHelperTest {
 
             System.out.println();
         }
-        for (TableType tt : tmd.getTableSpace().getTable()) {
+        for (MTableType tt : tmd.getTableSpace().getTable()) {
             System.out.println(tt.getName() + ", pk:" + tt.getPk().getName());
         }
 
@@ -47,17 +47,17 @@ public class TmdTypeHelperTest {
         System.out.println("");
         System.out.println("plan:" + plan.getTaskName());
         if (plan.getRule() != null) {
-            for (CriteriaType criteria : plan.getRule().getCriteria()) {
+            for (MCriteriaType criteria : plan.getRule().getCriteria()) {
                 System.out.println("  criteria: " + criteria.getColumn() + "='" + criteria.getValue() + "'");
             }
         }
         if (plan.getJoin() != null) {
-            for (ColumnType column : plan.getJoin().getColumn()) {
+            for (MColumnType column : plan.getJoin().getColumn()) {
                 System.out.println("  column: " + column.getValue());
             }
         }
         if (plan.getWhere() != null) {
-            for (CriteriaType criteria : plan.getWhere().getCriteria()) {
+            for (MCriteriaType criteria : plan.getWhere().getCriteria()) {
                 System.out.println("  where: " + criteria.getColumn() + "='" + criteria.getValue() + "'");
             }
         }
@@ -89,8 +89,8 @@ public class TmdTypeHelperTest {
         }
     }
 
-    private void print(List<ColumnType> columns) {
-        for (ColumnType c : columns) {
+    private void print(List<MColumnType> columns) {
+        for (MColumnType c : columns) {
             System.out.println("      " + c.getValue() + "(source=" + c.getSource() + ") pk=" + c.isPk());
         }
     }

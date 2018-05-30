@@ -1,10 +1,8 @@
 package uia.tmd.accessor;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import uia.tmd.AbstractDataAccessor;
+import uia.utils.dao.Database;
+import uia.utils.dao.pg.PostgreSQL;
 
 /**
  * PostgreSQL data accessor.
@@ -14,34 +12,33 @@ import uia.tmd.AbstractDataAccessor;
  */
 public class PGSQLAccessor extends AbstractDataAccessor {
 
-    private static final String CONN = "jdbc:postgresql://%s:%s/%s";
-
-    private Connection conn;
+    private Database database;
 
     public PGSQLAccessor() throws Exception {
-        Class.forName("org.postgresql.Driver");
     }
 
     @Override
-    public Connection getConnection() {
-        return this.conn;
+    public Database getDatabase() {
+        return this.database;
     }
 
     @Override
-    public void connect() throws SQLException {
-        this.conn = DriverManager.getConnection(
-                String.format(CONN, this.svrType.getHost(), this.svrType.getPort(), this.svrType.getDbName()),
+    public void connect() throws Exception {
+        this.database = new PostgreSQL(
+                this.svrType.getHost(),
+                "" + this.svrType.getPort(),
+                this.svrType.getDbName(),
                 this.svrType.getUser(),
                 this.svrType.getPassword());
     }
 
     @Override
-    public void disconnect() throws SQLException {
+    public void disconnect() throws Exception {
         try {
-            this.conn.close();
+            this.database.close();
         }
         finally {
-            this.conn = null;
+            this.database = null;
         }
     }
 }

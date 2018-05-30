@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd>
+	<executorSpace>
+		<executor name="Case1" source="HANA_DEV" target="IDLE" task="Case1" />
+		<executor name="Case2" source="HANA_DEV" target="IDLE" task="Case2" />
+		<executor name="Case3" source="HANA_DEV" target="IDLE" task="Case3" />
+	</executorSpace>
+	<taskSpace>
+		<task name="Case1">
+			<sourceSelect table="ZD_SFC" />
+			<targetUpdate />
+			<next />
+		</task>
+	</taskSpace>
+	<tableSpace>
+		<table name="SFC">
+			<pk>
+				<name>HANDLE</name>
+			</pk>
+		</table>
+	</tableSpace>
+	<databaseSpace>
+		<dbServer>
+			<id>HANA_DEV</id>
+			<host>10.160.1.52</host>
+			<port>39015</port>
+			<dbName>WIP</dbName>
+			<user>WIP</user>
+			<password>Hdb12345</password>
+			<dbType>uia.tmd.accessor.HanaAccessor</dbType>
+		</dbServer>
+		<dbServer>
+			<id>IDLE</id>
+			<host>0.0.0.0</host>
+			<port>0</port>
+			<dbName></dbName>
+			<user></user>
+			<password></password>
+			<dbType>uia.tmd.IdleAccessor</dbType>
+		</dbServer>
+	</databaseSpace>
+</tmd>

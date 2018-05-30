@@ -10,7 +10,7 @@ import uia.tmd.model.xml.DatabaseSpaceType;
 import uia.tmd.model.xml.DbServerType;
 import uia.tmd.model.xml.ExecutorSpaceType;
 import uia.tmd.model.xml.ExecutorType;
-import uia.tmd.model.xml.TableType;
+import uia.tmd.model.xml.MTableType;
 import uia.tmd.model.xml.TaskSpaceType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
@@ -31,7 +31,7 @@ public class TaskFactory {
 
     final TreeMap<String, DbServerType> dbServers;
 
-    final TreeMap<String, TableType> tables;
+    final TreeMap<String, MTableType> tables;
 
     /**
      * Constructor.
@@ -41,7 +41,7 @@ public class TaskFactory {
     public TaskFactory(File file) throws Exception {
         this.executors = new TreeMap<String, ExecutorType>();
         this.tasks = new TreeMap<String, TaskType>();
-        this.tables = new TreeMap<String, TableType>();
+        this.tables = new TreeMap<String, MTableType>();
         this.dbServers = new TreeMap<String, DbServerType>();
 
         this.tmd = TmdTypeHelper.load(file);
@@ -51,7 +51,7 @@ public class TaskFactory {
         for (TaskType task : this.tmd.getTaskSpace().getTask()) {
             this.tasks.put(task.getName(), task);
         }
-        for (TableType table : this.tmd.getTableSpace().getTable()) {
+        for (MTableType table : this.tmd.getTableSpace().getTable()) {
             this.tables.put(table.getName(), table);
         }
         for (DbServerType svr : this.tmd.getDatabaseSpace().getDbServer()) {
@@ -106,22 +106,22 @@ public class TaskFactory {
     public DbServerType getDbServer(String dbName) {
         return this.dbServers.get(dbName);
     }
-    
+
     public void addDbServer(DbServerType dbServer) {
-    	this.dbServers.put(dbServer.getDbName(), dbServer);
-    	this.tmd.getDatabaseSpace().getDbServer().add(dbServer);
-    }
-    
-    public void removeDbServer(DbServerType dbServer) {
-    	this.dbServers.remove(dbServer.getDbName());
-    	this.tmd.getDatabaseSpace().getDbServer().remove(dbServer);
+        this.dbServers.put(dbServer.getDbName(), dbServer);
+        this.tmd.getDatabaseSpace().getDbServer().add(dbServer);
     }
 
-    public Map<String, TableType> getTables() {
+    public void removeDbServer(DbServerType dbServer) {
+        this.dbServers.remove(dbServer.getDbName());
+        this.tmd.getDatabaseSpace().getDbServer().remove(dbServer);
+    }
+
+    public Map<String, MTableType> getTables() {
         return this.tables;
     }
 
-    public TableType getTable(String tableName) {
+    public MTableType getTable(String tableName) {
         return this.tables.get(tableName);
     }
 

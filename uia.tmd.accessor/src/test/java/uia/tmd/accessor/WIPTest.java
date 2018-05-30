@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import uia.tmd.TaskExecutor;
 import uia.tmd.TaskExecutorListener;
 import uia.tmd.TaskFactory;
-import uia.tmd.Where;
-import uia.tmd.WhereLike;
 
 public class WIPTest implements TaskExecutorListener {
 
@@ -20,13 +18,7 @@ public class WIPTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("ZdItemOperation");
         executor.addListener(this);
 
-        Where[] ws = new Where[1];
-        ws[0] = new WhereLike("ITEM_BO", "ItemBO:9998,%");
-
-        long t1 = System.currentTimeMillis();
-        System.out.println(String.format("Execute:%s(%s)", executor.run(ws), this.rc));
-        long t2 = System.currentTimeMillis();
-        System.out.println("test: " + (t2 - t1));
+        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
     }
 
     public void testZhDcType() throws URISyntaxException, Exception {
@@ -35,7 +27,7 @@ public class WIPTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("ZhDcType");
         executor.addListener(this);
 
-        System.out.println(String.format("Execute:%s(%s)", executor.run(new Where[0]), this.rc));
+        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
     }
 
     public void testZdFutureActionDef() throws URISyntaxException, Exception {
@@ -44,7 +36,7 @@ public class WIPTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("ZdFutureActionDef");
         executor.addListener(this);
 
-        System.out.println(String.format("Execute:%s(%s)", executor.run(new Where[0]), this.rc));
+        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
     }
 
     public void testZdLookup() throws URISyntaxException, Exception {
@@ -53,7 +45,7 @@ public class WIPTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("ZdLookup");
         executor.addListener(this);
 
-        System.out.println(String.format("Execute:%s(%s)", executor.run(new Where[0]), this.rc));
+        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
     }
 
     public void testZLogic() throws URISyntaxException, Exception {
@@ -62,7 +54,7 @@ public class WIPTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("ZLogic");
         executor.addListener(this);
 
-        System.out.println(String.format("Execute:%s(%s)", executor.run(new Where[0]), this.rc));
+        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
     }
 
     public void testZNextNumber() throws URISyntaxException, Exception {
@@ -71,7 +63,7 @@ public class WIPTest implements TaskExecutorListener {
         TaskExecutor executor = factory.createExecutor("ZNextNumber");
         executor.addListener(this);
 
-        System.out.println(String.format("Execute:%s(%s)", executor.run(new Where[0]), this.rc));
+        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
     }
 
     @Override
