@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd xmlns="http://tmd.uia/model/xml">
+	<jobSpace>
+		<job name="ShopOrder" source="HANA_DEV" target="PG" desc="同步工單 (HANA to PostgreSQL)">
+			<item taskName="SHOP_ORDER" />		
+		</job>
+		<job name="ShopOrderTestHTKS" source="HANA_DEV" target="IDLE" desc="同步工單 (測試專用)">
+			<item taskName="SHOP_ORDER" />
+		</job>
+		<job name="ShopOrderTestPG" source="PG" target="IDLE" desc="同步工單 (測試專用)">
+			<item taskName="SHOP_ORDER" />		
+		</job>
+		<job name="ShopOrderDeletePG" source="PG" sourceDelete="true" target="IDLE" desc="刪除工單 (測試專用)">
+			<item taskName="SHOP_ORDER" />		
+		</job> 
+		<job name="ShopOrderDeletePG" source="PG" sourceDelete="true" target="IDLE" desc="刪除工單 (測試專用)">
+			<item taskName="SHOP_ORDER_DELETE" />
+		</job>
+	</jobSpace> 
+	<taskSpace> 
+		<task name="SHOP_ORDER_DELETE" desc="Sync shop orders">
+			<sourceSelect table="SHOP_ORDER" />
+			<targetUpdate />
+			<next>
+				<plan taskName="SFC" where="SHOP_ORDER_BO=?" desc="SFCs in this shop order">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZD_CUSTOMER_ITEM" where="SHOP_ORDER_BO=?" desc="Wafers in this shop order">
+					<param sourceColumn="HANDLE" />
+				</plan>
+			</next>
+		</task>
+		<task name="SHOP_ORDER" desc="Sync shop orders">
+			<sourceSelect table="SHOP_ORDER" />
+			<targetUpdate />
+			<next>
+				<plan taskName="SFC" where="SHOP_ORDER_BO=?" desc="SFCs in this shop order">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZD_CUSTOMER_ITEM" where="SHOP_ORDER_BO=?" desc="Wafers in this shop order">
+					<param sourceColumn="HANDLE" />
+				</plan>
+			</next>
+		</task>
+		<task name="SFC" desc="Sync SFCs">
+			<sourceSelect table="SFC" />
+			<targetUpdate />
+			<next>
+				<plan taskName="ZD_SFC" where="SFC_BO=?" desc="SFC extension information">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZD_SFC_ITEM" where="SFC_BO=?" desc="Wafers in this SFC">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZD_SFC_ITEM_GRADE" where="SFC_BO=?" desc="Grades of wafers in this SFC">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZR_DISPATCH_SFC" where="SFC_BO=?" desc="SFC_STEP extension information">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZR_RUN_SFC" where="SFC_BO=?" desc="SFC run data">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZR_RUN_SFC_ITEM" where="SFC_BO=?" desc="Wafer run data">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="SFC_ROUTING" where="SFC_BO=?" desc="SFC routing">
+					<param sourceColumn="HANDLE" />
+				</plan>
+			</next>
+		</task>
+		<task name="ZD_CUSTOMER_ITEM" desc="Sync wafers">
+			<sourceSelect table="ZD_CUSTOMER_ITEM" />
+			<targetUpdate />
+		</task>
+		<task name="ZD_SFC" desc="Sync SFC extension information">
+			<sourceSelect table="ZD_SFC" />
+			<targetUpdate />
+		</task>
+		<task name="ZD_SFC_ITEM" desc="Sync SFC items">
+			<sourceSelect table="ZD_SFC_ITEM" />
+			<targetUpdate />
+		</task>
+		<task name="ZD_SFC_ITEM_GRADE" desc="Sync SFC item grades">
+			<sourceSelect table="ZD_SFC_ITEM_GRADE" />
+			<targetUpdate />
+		</task>
+		<task name="ZR_DISPATCH_SFC" desc="Sync SFC_STEP extension information">
+			<sourceSelect table="ZR_DISPATCH_SFC" />
+			<targetUpdate />
+		</task>
+		<task name="ZR_RUN_SFC" desc="Sync SFC run data">
+			<sourceSelect table="ZR_RUN_SFC" />
+			<targetUpdate />
+		</task>
+		<task name="ZR_RUN_SFC_ITEM" desc="Sync SFC item run data">
+			<sourceSelect table="ZR_RUN_SFC_ITEM" />
+			<targetUpdate />
+		</task>
+		<task name="SFC_ROUTING" desc="Sync SFC routing">
+			<sourceSelect table="SFC_ROUTING" />
+			<targetUpdate />
+			<next>
+				<plan taskName="SFC_ROUTER" where="SFC_ROUTING_BO=?" desc="SFC router">
+					<param sourceColumn="HANDLE" />
+				</plan>
+			</next>
+		</task>
+		<task name="SFC_ROUTER" desc="Sync SFC router">
+			<sourceSelect table="SFC_ROUTER" />
+			<targetUpdate />
+			<next>
+				<plan taskName="SFC_STEP" where="SFC_ROUTER_BO=?" desc="SFC routing">
+					<param sourceColumn="HANDLE" />
+				</plan>
+			</next>
+		</task>
+		<task name="SFC_STEP" desc="Sync SFC steps">
+			<sourceSelect table="SFC_STEP" />
+			<targetUpdate />
+		</task>
+	</taskSpace>
+	<tableSpace>
+		<table name="SHOP_ORDER">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="SFC">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="SFC_ROUTING">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="SFC_ROUTING">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="SFC_ROUTER">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="SFC_STEP">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+	</tableSpace>
+	<databaseSpace>
+		<database>
+			<id>IDLE</id>
+			<host>0.0.0.0</host>
+			<port>0</port>
+			<dbName></dbName>
+			<user></user>
+			<password></password>
+			<driverClass>uia.tmd.IdleAccess</driverClass>
+		</database>
+		<database>
+			<id>HANA_DEV</id>
+			<host>10.160.1.52</host>
+			<port>39015</port>
+			<dbName>WIP</dbName>
+			<user>WIP</user>
+			<password>Hdb12345</password>
+			<driverClass>uia.tmd.access.HanaAccess</driverClass>
+		</database>
+		<database>
+			<id>PG</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>wip</dbName>
+			<user>postgres</user>
+			<password>pgAdmin</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+	</databaseSpace>
+</tmd>

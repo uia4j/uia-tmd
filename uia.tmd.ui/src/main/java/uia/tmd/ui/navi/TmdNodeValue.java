@@ -32,13 +32,15 @@ public class TmdNodeValue implements NodeValue {
     }
 
     @Override
-    public void appendNode(NaviPanel panel) {
+    public void append(NaviPanel panel) {
     }
 
     @Override
     public void select(NaviPanel panel) {
         LinkedHashMap<String, String> props = new LinkedHashMap<String, String>();
         props.put("Node Type", "Root Space");
+        props.put("Jobs", "" + this.tmdType.getJobSpace().getJob().size());
+        props.put("Tasks", "" + this.tmdType.getTaskSpace().getTask().size());
         panel.updateProperties(props);
     }
 

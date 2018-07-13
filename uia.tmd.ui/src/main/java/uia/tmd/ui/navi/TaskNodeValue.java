@@ -26,6 +26,19 @@ public class TaskNodeValue implements NodeValue {
     }
 
     @Override
+    public boolean edit(NaviPanel naviPanel) {
+        TaskEditPanel panel = new TaskEditPanel();
+        panel.configure(naviPanel.getFrame().getTaskFactory());
+        panel.load(this.task);
+        int code = JOptionPane.showConfirmDialog(naviPanel.getFrame(), panel, "Configure Task", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        if (code == JOptionPane.YES_OPTION) {
+            panel.save();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean appendable(String taskName) {
         if (this.task.getNext() != null) {
             List<PlanType> plans = this.task.getNext().getPlan();
@@ -39,7 +52,7 @@ public class TaskNodeValue implements NodeValue {
     }
 
     @Override
-    public void appendNode(NaviPanel panel) {
+    public void append(NaviPanel panel) {
         panel.appendPlan(this.task);
     }
 
@@ -49,6 +62,8 @@ public class TaskNodeValue implements NodeValue {
         String tar = this.task.getTargetUpdate().getTable();
         LinkedHashMap<String, String> props = new LinkedHashMap<String, String>();
         props.put("Node Type", "Task");
+        props.put("Name", this.task.getName());
+        props.put("Description", this.task.getDesc());
         props.put("Source Table", src);
         props.put("Target Table", tar == null ? src : tar);
         panel.updateProperties(props);
@@ -74,18 +89,6 @@ public class TaskNodeValue implements NodeValue {
     @Override
     public void execute(NaviPanel panel) {
 
-    }
-
-    @Override
-    public boolean edit(NaviPanel naviPanel) {
-        TaskEditPanel panel = new TaskEditPanel(naviPanel.getFrame().getTaskFactory().getTmd().getTableSpace().getTable());
-        panel.load(this.task);
-        int code = JOptionPane.showConfirmDialog(naviPanel.getFrame(), panel, "Configure Task", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-        if (code == JOptionPane.YES_OPTION) {
-            panel.save();
-            return true;
-        }
-        return false;
     }
 
     @Override

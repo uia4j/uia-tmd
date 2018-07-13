@@ -24,7 +24,7 @@ public class TaskSpaceNodeValue implements NodeValue {
     }
 
     @Override
-    public void appendNode(NaviPanel panel) {
+    public void append(NaviPanel panel) {
         panel.appendTask();
     }
 

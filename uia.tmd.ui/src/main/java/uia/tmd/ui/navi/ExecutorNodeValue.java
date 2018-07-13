@@ -6,21 +6,21 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import uia.tmd.model.xml.ExecutorType;
+import uia.tmd.model.xml.JobType;
 import uia.tmd.ui.NaviPanel;
 import uia.tmd.ui.edit.ExecutorEditPanel;
 
 public class ExecutorNodeValue implements NodeValue {
 
-    public final ExecutorType executor;
+    public final JobType executor;
 
-    public ExecutorNodeValue(ExecutorType executor) {
+    public ExecutorNodeValue(JobType executor) {
         this.executor = executor;
     }
 
     @Override
     public String getName() {
-        return this.executor.getTask();
+        return this.executor.getName();
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ExecutorNodeValue implements NodeValue {
     }
 
     @Override
-    public void appendNode(NaviPanel naviPanel) {
+    public void append(NaviPanel naviPanel) {
     }
 
     @Override
@@ -42,9 +42,10 @@ public class ExecutorNodeValue implements NodeValue {
         LinkedHashMap<String, String> props = new LinkedHashMap<String, String>();
         props.put("Node Type", "Executor");
         props.put("Name", this.executor.getName());
-        props.put("Task Name", this.executor.getTask());
         props.put("DB Source", this.executor.getSource());
         props.put("DB Target", this.executor.getTarget());
+        props.put("Description", this.executor.getDesc());
+        props.put("Item Count", "" + this.executor.getItem().size());
         naviPanel.updateProperties(props);
 
         naviPanel.nodeSelected(this.executor);

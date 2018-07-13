@@ -16,12 +16,11 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import uia.tmd.TaskExecutor;
-import uia.tmd.TaskExecutorListener;
-import uia.tmd.Where;
-import uia.tmd.ui.edit.ExecutorSimpleCriteriaPanel;
+import uia.tmd.JobRunner;
+import uia.tmd.TaskListener;
+import uia.tmd.ui.edit.TaskExecutorPanel;
 
-public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
+public class ExecutorRunPanel extends JPanel implements TaskListener {
 
     private static Logger LOGGER = Logger.getLogger(ExecutorRunPanel.class);
 
@@ -57,22 +56,22 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
         this.frame = frame;
     }
 
-    public void run(final TaskExecutor te) {
+    public void run(final JobRunner te) {
         this.messageArea.setText("");
-        final ExecutorSimpleCriteriaPanel panel = new ExecutorSimpleCriteriaPanel();
+        final TaskExecutorPanel panel = new TaskExecutorPanel();
         if (JOptionPane.showConfirmDialog(this, panel) != JOptionPane.YES_OPTION) {
             return;
         }
-        te.addListener(this);
+        te.addTaskListener(this);
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                FileAppender appender = createAppender(te.getName() + "_" + System.currentTimeMillis());
+                FileAppender appender = createAppender(te.getExecutorName() + "_" + System.currentTimeMillis());
                 LOGGER.addAppender(appender);
                 try {
                     ExecutorRunPanel.this.frame.setExecutable(false);
-                    te.run(panel.save().toArray(new Where[0]));
+                    te.run(panel.save());
                 }
                 catch (Exception ex) {
                     ex.printStackTrace();
@@ -100,10 +99,10 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
         }
     }
 
-    private void append(final TaskExecutorEvent evt) {
+    private void append(final TaskEvent evt) {
         if (SwingUtilities.isEventDispatchThread()) {
             this.messageArea.setText(this.messageArea.getText() + String.format("RUN> %s (%s)\n",
-                    evt.path,
+                    evt.parentPath + "/" + evt.taskName,
                     evt.count));
             this.messageArea.setText(this.messageArea.getText() + String.format("     %s\n", evt.sql));
         }
@@ -119,39 +118,38 @@ public class ExecutorRunPanel extends JPanel implements TaskExecutorListener {
     }
 
     @Override
-    public void sourceSelected(TaskExecutor executor, TaskExecutorEvent evt) {
-        LOGGER.info(String.format("QRY> %s(%s)\n%50s - %s\n%50s - %s", evt.path, evt.count, "", evt.sql, "", evt.criteria));
+    public void sourceSelected(Object executor, TaskEvent evt) {
+        LOGGER.info(String.format("QRY> %s", evt));
         appendMessage("");
         append(evt);
     }
 
     @Override
-    public void sourceDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
-        LOGGER.info(String.format("DEL> %s(%s)\n%50s - %s\n%50s - %s", evt.path, evt.count, "", evt.sql, "", evt.criteria));
+    public void sourceDeleted(Object executor, TaskEvent evt) {
+        LOGGER.info(String.format("DEL> %s", evt));
     }
 
     @Override
-    public void targetInserted(TaskExecutor executor, TaskExecutorEvent evt) {
-        LOGGER.info(String.format("INS> %s\n%50s - %s", evt.path, "", evt.sql));
+    public void targetInserted(Object executor, TaskEvent evt) {
+        LOGGER.info(String.format("INS>  %s", evt));
         append(evt);
     }
 
     @Override
-    public void targetDeleted(TaskExecutor executor, TaskExecutorEvent evt) {
-        LOGGER.info(String.format("DEL> %s(%s)\n%50s - %s\n%50s - %s", evt.path, evt.count, "", evt.sql, "", evt.criteria));
+    public void targetDeleted(Object executor, TaskEvent evt) {
+        LOGGER.info(String.format("DEL>  %s", evt));
         append(evt);
     }
 
     @Override
-    public void executeFailure(TaskExecutor executor, TaskExecutorEvent evt, SQLException ex) {
-        LOGGER.error(String.format("%s> %s", evt.path, evt.sql));
-        LOGGER.error(String.format("%s> %s", evt.path, evt.criteria), ex);
-        appendMessage(String.format("RUN> %s failed\n", evt.path));
+    public void executeFailure(Object executor, TaskEvent evt, SQLException ex) {
+        LOGGER.error(String.format("%s> %s", evt), ex);
+        appendMessage(String.format("RUN> %s failed\n", evt.parentPath + "/" + evt.taskName));
         appendMessage(ex.getMessage() + "\n");
     }
 
     @Override
-    public void done(TaskExecutor executor) {
+    public void done(Object executor) {
 
     }
 

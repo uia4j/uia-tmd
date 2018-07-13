@@ -6,15 +6,15 @@ import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import uia.tmd.model.xml.ExecutorSpaceType;
-import uia.tmd.model.xml.ExecutorType;
+import uia.tmd.model.xml.JobSpaceType;
+import uia.tmd.model.xml.JobType;
 import uia.tmd.ui.NaviPanel;
 
 public class ExecutorSpaceNodeValue implements NodeValue {
 
-    private ExecutorSpaceType es;
+    private JobSpaceType es;
 
-    public ExecutorSpaceNodeValue(ExecutorSpaceType es) {
+    public ExecutorSpaceNodeValue(JobSpaceType es) {
         this.es = es;
     }
 
@@ -30,8 +30,8 @@ public class ExecutorSpaceNodeValue implements NodeValue {
 
     @Override
     public boolean appendable(String executorName) {
-        List<ExecutorType> executors = this.es.getExecutor();
-        for (ExecutorType executor : executors) {
+        List<JobType> executors = this.es.getJob();
+        for (JobType executor : executors) {
             if (executorName.equals(executor.getName())) {
                 return false;
             }
@@ -40,7 +40,7 @@ public class ExecutorSpaceNodeValue implements NodeValue {
     }
 
     @Override
-    public void appendNode(NaviPanel naviPanel) {
+    public void append(NaviPanel naviPanel) {
         naviPanel.appendExecutor();
     }
 

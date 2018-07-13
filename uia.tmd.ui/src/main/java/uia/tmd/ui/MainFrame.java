@@ -25,8 +25,8 @@ import org.apache.log4j.PropertyConfigurator;
 
 import uia.tmd.TaskFactory;
 import uia.tmd.model.TmdTypeHelper;
+import uia.tmd.model.xml.AbstractTableType;
 import uia.tmd.model.xml.SourceSelectType;
-import uia.tmd.model.xml.TableType;
 import uia.tmd.model.xml.TargetUpdateType;
 import uia.tmd.model.xml.TaskType;
 
@@ -87,7 +87,7 @@ public class MainFrame extends JFrame implements WindowListener {
     }
 
     public MainFrame() {
-        setTitle("Database Migration Tool");
+        setTitle("Data Migration Tool");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(1200, 700);
         setLocation(100, 100);
@@ -117,7 +117,7 @@ public class MainFrame extends JFrame implements WindowListener {
         initialMenu();
     }
 
-    public void createTask(TableType table) {
+    public void createTask(AbstractTableType table) {
         TaskType task = new TaskType();
         task.setName(table.getName());
         task.setSourceSelect(new SourceSelectType());
@@ -175,7 +175,7 @@ public class MainFrame extends JFrame implements WindowListener {
 
     @Override
     public void windowOpened(WindowEvent evt) {
-        load("conf\\wip.xml");
+        load("conf\\archive.xml");
     }
 
     private void load(String filePath) {

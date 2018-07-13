@@ -14,7 +14,7 @@ public interface NodeValue {
 
     public void execute(NaviPanel naviPanel);
 
-    public void appendNode(NaviPanel naviPanel);
+    public void append(NaviPanel naviPanel);
 
     public void select(NaviPanel naviPanel);
 

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd xmlns="http://tmd.uia/model/xml">
+	<jobSpace>
+		<job name="INITIAL_TEST" source="HANA_DEV" target="IDLE">
+			<item taskName="ItemGroup"></item>
+			<item taskName="Item"></item>
+			<item taskName="ItemGroupMember"></item>
+			<item taskName="CustomFields"></item>
+			<item taskName="ItemShopOrderType"></item>
+
+			<item taskName="ZdCarrier"></item>
+			<item taskName="ZdDcop"></item>
+			<item taskName="ZdDcopParameter"></item>
+			<item taskName="ZdFutureActionDef"></item>
+			<item taskName="ZdItemOperation"></item>
+			<item taskName="ZdItemOperationProp"></item>
+			<item taskName="ZdLookup"></item>
+			<item taskName="ZdPkgContainerRule"></item>
+			<item taskName="ZdPkgPackingPlan"></item>
+			<item taskName="ZdQueueTime"></item>
+			<item taskName="ZdResource"></item>
+			<item taskName="ZdResourceRunBlock"></item>
+			<item taskName="ZdRmsMatrix"></item>
+			<item taskName="ZdRmsMatrixFactorDef"></item>
+			<item taskName="ZdRmsMatrixRecipe"></item>
+			<item taskName="ZdRmsMatrixRecipeFactor"></item>
+			<item taskName="ZdRmsPattern"></item>
+			<item taskName="ZdRmsPatternFactorDef"></item>
+		</job>
+		<job name="INITIAL_PG" source="HANA_DEV" target="PG">
+			<item taskName="ItemGroup"></item>
+			<item taskName="Item"></item>
+			<item taskName="ItemGroupMember"></item>
+			<item taskName="CustomFields"></item>
+			<item taskName="ItemShopOrderType"></item>
+
+			<item taskName="ZdCarrier"></item>
+			<item taskName="ZdDcop"></item>
+			<item taskName="ZdDcopParameter"></item>
+			<item taskName="ZdFutureActionDef"></item>
+			<item taskName="ZdItemOperation"></item>
+			<item taskName="ZdItemOperationProp"></item>
+			<item taskName="ZdLookup"></item>
+			<item taskName="ZdPkgContainerRule"></item>
+			<item taskName="ZdPkgPackingPlan"></item>
+			<item taskName="ZdQueueTime"></item>
+			<item taskName="ZdResource"></item>
+			<item taskName="ZdResourceRunBlock"></item>
+			<item taskName="ZdRmsMatrix"></item>
+			<item taskName="ZdRmsMatrixFactorDef"></item>
+			<item taskName="ZdRmsMatrixRecipe"></item>
+			<item taskName="ZdRmsMatrixRecipeFactor"></item>
+			<item taskName="ZdRmsPattern"></item>
+			<item taskName="ZdRmsPatternFactorDef"></item>
+		</job>
+	</jobSpace>
+	<taskSpace>
+		<task name="ZdCarrier">
+			<sourceSelect table="ZD_CARRIER" />
+			<targetUpdate />
+		</task>
+		<task name="ZdDcop">
+			<sourceSelect table="ZD_DCOP" />
+			<targetUpdate />
+		</task>
+		<task name="ZdDcopParameter">
+			<sourceSelect table="ZD_DCOP_PARAMETER" />
+			<targetUpdate />
+		</task>
+		<task name="ZdFutureActionDef">
+			<sourceSelect table="ZD_FUTURE_ACTION_DEF" />
+			<targetUpdate />
+		</task>
+		<task name="ZdItemOperation">
+			<sourceSelect table="ZD_ITEM_OPERATION" />
+			<targetUpdate />
+		</task>
+		<task name="ZdItemOperationProp">
+			<sourceSelect table="ZD_OPERATION_PROP" />
+			<targetUpdate />
+		</task>
+		<task name="ZdLookup">
+			<sourceSelect table="ZD_LOOK_UP" />
+			<targetUpdate />
+		</task>
+		<task name="ZdPkgContainerRule">
+			<sourceSelect table="ZD_PKG_CONTAINER_RULE" />
+			<targetUpdate />
+		</task>  
+		<task name="ZdPkgPackingPlan">
+			<sourceSelect table="ZD_PKG_PACKING_PLAN" />
+			<targetUpdate />
+		</task>
+		<task name="ZdQueueTime">
+			<sourceSelect table="ZD_QUEUE_TIME" />
+			<targetUpdate />
+		</task>
+		<task name="ZdResource">
+			<sourceSelect table="ZD_RESOURCE" />
+			<targetUpdate />
+		</task>
+		<task name="ZdResourceRunBlock">
+			<sourceSelect table="ZD_RESOURCE_RUN_BLOCK" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsMatrix">
+			<sourceSelect table="ZD_RMS_MATRIX" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsMatrixFactorDef">
+			<sourceSelect table="ZD_RMS_MATRIX_FACTOR_DEF" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsMatrixRecipe">
+			<sourceSelect table="ZD_RMS_MATRIX_RECIPE" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsMatrixRecipeFactor">
+			<sourceSelect table="ZD_RMS_MATRIX_RECIPE_FACTOR" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsPattern">
+			<sourceSelect table="ZD_RMS_PATTERN" />
+			<targetUpdate />
+		</task>
+		<task name="ZdRmsPatternFactorDef">
+			<sourceSelect table="ZD_RMS_PATTERN_FACTOR_DEF" />
+			<targetUpdate />
+		</task>
+
+		<task name="ZhDcType">
+			<sourceSelect table="ZH_DC_TYPE" />
+			<targetUpdate />
+		</task>
+
+		<task name="Item">
+			<sourceSelect table="ITEM" />
+			<targetUpdate />
+		</task>
+		<task name="ItemGroup">
+			<sourceSelect table="ITEM_GROUP" />
+			<targetUpdate />
+		</task>
+		<task name="ItemGroupMember">
+			<sourceSelect table="ITEM_GROUP_MEMBER" />
+			<targetUpdate />
+		</task>
+		<task name="CustomFields">
+			<sourceSelect table="CUSTOM_FIELDS" />
+			<targetUpdate />
+		</task>
+		<task name="ItemShopOrderType">
+			<sourceSelect table="ITEM_SHOP_ORDER_TYPE" />
+			<targetUpdate />
+		</task>
+
+		<task name="ZLogic">
+			<sourceSelect table="Z_LOGIC" />
+			<targetUpdate />
+		</task>
+		<task name="ZNextNumber">
+			<sourceSelect table="Z_NEXT_NUMBER" />
+			<targetUpdate />
+		</task>
+	</taskSpace>
+	<tableSpace>
+		<table name="ITEM">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="ITEM_GROUP">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="ITEM_GROUP_MEMBER">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="CUSTOM_FIELDS">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+		<table name="ITEM_SHOP_ORDER_TYPE">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
+	</tableSpace>
+	<databaseSpace>
+		<database>
+			<id>ORACLE_DEV</id>
+			<host>10.160.1.48</host>
+			<port>1521</port>
+			<dbName>MESDEV</dbName>
+			<user>WIP</user>
+			<password>wip</password>
+			<driverClass>uia.tmd.access.ORAAccess</driverClass>
+		</database>
+		<database>
+			<id>HANA_DEV</id>
+			<host>10.160.1.52</host>
+			<port>39015</port>
+			<dbName>WIP</dbName>
+			<user>WIP</user>
+			<password>Hdb12345</password>
+			<driverClass>uia.tmd.access.HanaAccess</driverClass>
+		</database>
+		<database>
+			<id>HANA_TEST</id>
+			<host>10.160.2.23</host>
+			<port>31015</port>
+			<dbName>WIP</dbName>
+			<user>WIP</user>
+			<password>Sap12345</password>
+			<driverClass>uia.tmd.access.HanaAccess</driverClass>
+		</database>
+		<database>
+			<id>PG</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>wip</dbName>
+			<user>postgres</user>
+			<password>pgAdmin</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+		<database>
+			<id>IDLE</id>
+			<host>0.0.0.0</host>
+			<port>0</port>
+			<dbName>IDLE</dbName>
+			<user></user>
+			<password></password>
+			<driverClass>uia.tmd.IdleAccess</driverClass>
+		</database>
+	</databaseSpace>
+</tmd>

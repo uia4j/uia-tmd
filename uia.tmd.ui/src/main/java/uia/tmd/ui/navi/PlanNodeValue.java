@@ -4,11 +4,13 @@ import java.util.LinkedHashMap;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
-import uia.tmd.model.xml.ColumnType;
+import uia.tmd.model.xml.ParamType;
 import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.ui.NaviPanel;
+import uia.tmd.ui.edit.PlanEditPanel;
 
 public class PlanNodeValue implements NodeValue {
 
@@ -37,7 +39,7 @@ public class PlanNodeValue implements NodeValue {
     }
 
     @Override
-    public void appendNode(NaviPanel panel) {
+    public void append(NaviPanel panel) {
 
     }
 
@@ -45,20 +47,30 @@ public class PlanNodeValue implements NodeValue {
     public void select(NaviPanel panel) {
         LinkedHashMap<String, String> props = new LinkedHashMap<String, String>();
         props.put("Node Type", "Plan");
-        if (this.plan.getJoin() != null) {
-            int i = 1;
-            for (ColumnType col : this.plan.getJoin().getColumn()) {
-                props.put("Join" + i, String.format("%s.%s = %s.%s",
-                        this.task.getName(),
-                        col.getSource(),
-                        this.plan.getTaskName(),
-                        col.getValue()));
-                i++;
+        props.put("Task", this.plan.getTaskName());
+        props.put("Where", this.plan.getWhere());
+        int i = 1;
+        for (ParamType param : this.plan.getParam()) {
+            String text = "";
+            if (param.getSourceColumn() != null) {
+                text = "${" + param.getSourceColumn() + "}";
             }
+            else {
+                text = param.getText();
+            }
+            if (param.getPrefix() != null) {
+                text = "'" + param.getPrefix() + "' + " + text;
+            }
+            if (param.getPostfix() != null) {
+                text = text + " + '" + param.getPostfix() + "'";
+            }
+            props.put("Param" + i, text);
+            i++;
         }
-        panel.updateProperties(props);
 
+        panel.updateProperties(props);
         panel.nodeSelected(this.plan);
+
     }
 
     @Override
@@ -82,7 +94,15 @@ public class PlanNodeValue implements NodeValue {
     }
 
     @Override
-    public boolean edit(NaviPanel panel) {
+    public boolean edit(NaviPanel naviPanel) {
+        PlanEditPanel panel = new PlanEditPanel();
+        panel.configure(naviPanel.getFrame().getTaskFactory());
+        panel.load(this.plan);
+        int code = JOptionPane.showConfirmDialog(naviPanel.getFrame(), panel, "Configure Task", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        if (code == JOptionPane.YES_OPTION) {
+            panel.save();
+            return true;
+        }
         return false;
     }
 

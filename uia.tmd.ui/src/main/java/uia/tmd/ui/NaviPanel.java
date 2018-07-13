@@ -3,8 +3,6 @@ package uia.tmd.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -20,22 +18,20 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 
 import uia.tmd.model.xml.DatabaseSpaceType;
-import uia.tmd.model.xml.DbServerType;
-import uia.tmd.model.xml.ExecutorSpaceType;
-import uia.tmd.model.xml.ExecutorType;
+import uia.tmd.model.xml.DatabaseType;
+import uia.tmd.model.xml.JobSpaceType;
+import uia.tmd.model.xml.JobType;
 import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.TaskSpaceType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
-import uia.tmd.ui.edit.DbServerEditPanel;
+import uia.tmd.ui.edit.DatabaseEditPanel;
 import uia.tmd.ui.edit.ExecutorEditPanel;
 import uia.tmd.ui.edit.PlanEditPanel;
 import uia.tmd.ui.edit.TaskEditPanel;
@@ -51,34 +47,13 @@ import uia.tmd.ui.navi.TmdNodeValue;
 
 public class NaviPanel extends JPanel {
 
-    static enum AddModeType {
-        EXECUTOR,
-        TASK,
-        PLAN,
-        DATABASE
-    }
-
-    private static final int WIDTH = 350;
-
     private static final long serialVersionUID = -1389167781459992146L;
+
+    private static final int WIDTH = 420;
 
     private MainFrame frame;
 
-    private TmdType tmdType;
-
     private JTree spaceTree;
-
-    private String[] propKeys;
-
-    private Map<String, String> propValues;
-
-    private ExecutorType selectedExecutor;
-
-    private DbServerType selectedDbServer;
-
-    private TaskType selectedTask;
-
-    private PlanType selectedPlan;
 
     private JButton addButton;
 
@@ -93,10 +68,20 @@ public class NaviPanel extends JPanel {
     private DefaultMutableTreeNode executorSpaceNode;
 
     private DefaultMutableTreeNode taskSpaceNode;
-    
+
     private DefaultMutableTreeNode databaseSpaceNode;
 
-    private AddModeType addMode;
+    private TmdType tmdType;
+
+    private String[] propKeys;
+
+    private Map<String, String> propValues;
+
+    private JobType selectedExecutor;
+
+    private DatabaseType selectedDbServer;
+
+    private TaskType selectedTask;
 
     public NaviPanel() {
         this.propKeys = new String[0];
@@ -115,13 +100,8 @@ public class NaviPanel extends JPanel {
         this.addButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/resources/images/add-small.png")));
         this.addButton.setToolTipText("Add new task");
         this.addButton.setBounds(0, 3, 24, 24);
-        this.addButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                getSelectedTreeNodeValue().appendNode(NaviPanel.this);
-            }
-
+        this.addButton.addActionListener(evt -> {
+            getSelectedTreeNodeValue().append(NaviPanel.this);
         });
         toolbarPanel.add(this.addButton);
 
@@ -130,13 +110,8 @@ public class NaviPanel extends JPanel {
         this.removeButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/resources/images/remove-small.png")));
         this.removeButton.setToolTipText("Remove selected task");
         this.removeButton.setBounds(26, 3, 24, 24);
-        this.removeButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                getSelectedTreeNodeValue().delete(NaviPanel.this);
-            }
-
+        this.removeButton.addActionListener(evt -> {
+            getSelectedTreeNodeValue().delete(NaviPanel.this);
         });
         toolbarPanel.add(this.removeButton);
 
@@ -144,33 +119,26 @@ public class NaviPanel extends JPanel {
         this.runButton.setEnabled(false);
         this.runButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/resources/images/run-small.png")));
         this.runButton.setToolTipText("Remove selected task");
-        this.runButton.setBounds(52, 3, 24, 24);
-        this.runButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                NaviPanel.this.frame.runExecutor(NaviPanel.this.selectedExecutor.getName());
-            }
+        this.runButton.setBounds(73, 3, 24, 24);
+        this.runButton.addActionListener(a -> {
+            NaviPanel.this.frame.runExecutor(NaviPanel.this.selectedExecutor.getName());
         });
         toolbarPanel.add(this.runButton);
 
         JScrollPane spaceScroll = new JScrollPane();
         spaceScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
         add(spaceScroll);
 
         this.spaceTree = new JTree();
-        this.spaceTree.addTreeSelectionListener(new TreeSelectionListener() {
-
-            @Override
-            public void valueChanged(TreeSelectionEvent evt) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) NaviPanel.this.spaceTree.getLastSelectedPathComponent();
-                if (node == null || node.getUserObject() == null) {
-                    return;
-                }
-
-                ((NodeValue) node.getUserObject()).select(NaviPanel.this);
-                ((NodeValue) node.getUserObject()).expand(NaviPanel.this);
+        this.spaceTree.addTreeSelectionListener(evt -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) NaviPanel.this.spaceTree.getLastSelectedPathComponent();
+            if (node == null || node.getUserObject() == null) {
+                return;
             }
+
+            ((NodeValue) node.getUserObject()).select(NaviPanel.this);
+            ((NodeValue) node.getUserObject()).expand(NaviPanel.this);
 
         });
         this.spaceTree.addMouseListener(new MouseAdapter() {
@@ -215,8 +183,9 @@ public class NaviPanel extends JPanel {
         this.propsTable.setRowHeight(25);
         this.propsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         this.propsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        this.propsTable.setModel(new PropertiesModel());
-        this.propsTable.getColumnModel().getColumn(1).setPreferredWidth(300);
+        this.propsTable.setModel(new PropertiesTableModel());
+        this.propsTable.getColumnModel().getColumn(0).setPreferredWidth(80);
+        this.propsTable.getColumnModel().getColumn(1).setPreferredWidth(320);
         this.propsScroll.setViewportView(this.propsTable);
     }
 
@@ -242,9 +211,9 @@ public class NaviPanel extends JPanel {
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new TmdNodeValue(this.tmdType));
 
         // executor
-        this.executorSpaceNode = new DefaultMutableTreeNode(new ExecutorSpaceNodeValue(this.tmdType.getExecutorSpace()));
+        this.executorSpaceNode = new DefaultMutableTreeNode(new ExecutorSpaceNodeValue(this.tmdType.getJobSpace()));
         rootNode.add(this.executorSpaceNode);
-        for (ExecutorType value : this.tmdType.getExecutorSpace().getExecutor()) {
+        for (JobType value : this.tmdType.getJobSpace().getJob()) {
             DefaultMutableTreeNode executorNode = new DefaultMutableTreeNode(new ExecutorNodeValue(value));
             this.executorSpaceNode.add(executorNode);
         }
@@ -266,7 +235,7 @@ public class NaviPanel extends JPanel {
         // database
         this.databaseSpaceNode = new DefaultMutableTreeNode(new DatabaseSpaceNodeValue(this.tmdType.getDatabaseSpace()));
         rootNode.add(this.databaseSpaceNode);
-        for (DbServerType value : this.tmdType.getDatabaseSpace().getDbServer()) {
+        for (DatabaseType value : this.tmdType.getDatabaseSpace().getDatabase()) {
             DefaultMutableTreeNode dbserverNode = new DefaultMutableTreeNode(new DbServerNodeValue(value));
             this.databaseSpaceNode.add(dbserverNode);
         }
@@ -279,31 +248,26 @@ public class NaviPanel extends JPanel {
         this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = null;
-        this.selectedPlan = null;
 
         this.addButton.setEnabled(false);
         this.removeButton.setEnabled(false);
         this.runButton.setEnabled(false);
     }
 
-    public void nodeSelected(ExecutorSpaceType executor) {
-        this.addMode = AddModeType.EXECUTOR;
+    public void nodeSelected(JobSpaceType executor) {
         this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = null;
-        this.selectedPlan = null;
 
         this.addButton.setEnabled(true);
         this.removeButton.setEnabled(false);
         this.runButton.setEnabled(false);
     }
 
-    public void nodeSelected(ExecutorType executor) {
-        this.addMode = null;
+    public void nodeSelected(JobType executor) {
         this.selectedDbServer = null;
         this.selectedExecutor = executor;
         this.selectedTask = null;
-        this.selectedPlan = null;
 
         this.addButton.setEnabled(false);
         this.removeButton.setEnabled(true);
@@ -311,11 +275,9 @@ public class NaviPanel extends JPanel {
     }
 
     public void nodeSelected(TaskSpaceType ts) {
-        this.addMode = AddModeType.TASK;
         this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = null;
-        this.selectedPlan = null;
 
         this.addButton.setEnabled(true);
         this.removeButton.setEnabled(false);
@@ -323,11 +285,9 @@ public class NaviPanel extends JPanel {
     }
 
     public void nodeSelected(TaskType task) {
-        this.addMode = null;
         this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = task;
-        this.selectedPlan = null;
 
         this.addButton.setEnabled(true);
         this.removeButton.setEnabled(true);
@@ -335,11 +295,8 @@ public class NaviPanel extends JPanel {
     }
 
     public void nodeSelected(PlanType plan) {
-        this.addMode = AddModeType.PLAN;
         this.selectedDbServer = null;
         this.selectedExecutor = null;
-        this.selectedTask = null;
-        this.selectedPlan = plan;
 
         this.addButton.setEnabled(false);
         this.removeButton.setEnabled(true);
@@ -347,24 +304,19 @@ public class NaviPanel extends JPanel {
     }
 
     public void nodeSelected(DatabaseSpaceType ds) {
-        this.addMode = AddModeType.DATABASE;
         this.selectedDbServer = null;
         this.selectedExecutor = null;
         this.selectedTask = null;
-        this.selectedPlan = null;
 
         this.addButton.setEnabled(true);
         this.removeButton.setEnabled(false);
         this.runButton.setEnabled(false);
     }
 
-
-    public void nodeSelected(DbServerType dbServer) {
-    	this.addMode = AddModeType.DATABASE;
-    	this.selectedDbServer = dbServer;
+    public void nodeSelected(DatabaseType dbServer) {
+        this.selectedDbServer = dbServer;
         this.selectedExecutor = null;
         this.selectedTask = null;
-        this.selectedPlan = null;
 
         this.addButton.setEnabled(false);
         this.removeButton.setEnabled(true);
@@ -380,7 +332,7 @@ public class NaviPanel extends JPanel {
         }
     }
 
-    public void appendExecutor(ExecutorType executor) {
+    public void appendExecutor(JobType executor) {
         NodeValue nv = (NodeValue) this.executorSpaceNode.getUserObject();
         if (!nv.appendable(executor.getName())) {
             JOptionPane.showMessageDialog(this.frame, executor.getName() + " exists.", "Information", JOptionPane.WARNING_MESSAGE);
@@ -392,40 +344,41 @@ public class NaviPanel extends JPanel {
         this.spaceTree.updateUI();
     }
 
-    public void removeExecutor(ExecutorType executor) {
+    public void removeExecutor(JobType executor) {
         this.executorSpaceNode.remove(getSelectedTreeNode());
         this.frame.getTaskFactory().removeExecutor(this.selectedExecutor);
         this.spaceTree.updateUI();
     }
 
     public void appendDatabase() {
-        DbServerEditPanel panel = new DbServerEditPanel();
+        DatabaseEditPanel panel = new DatabaseEditPanel();
         int button = JOptionPane.showConfirmDialog(this.frame, panel, "Select one task", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (button == JOptionPane.YES_OPTION) {
             appendDatabase(panel.save());
         }
     }
 
-    public void appendDatabase(DbServerType dbServer) {
+    public void appendDatabase(DatabaseType dbServer) {
         NodeValue nv = (NodeValue) this.databaseSpaceNode.getUserObject();
         if (!nv.appendable(dbServer.getDbName())) {
             JOptionPane.showMessageDialog(this.frame, dbServer.getDbName() + " exists.", "Information", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        this.frame.getTaskFactory().addDbServer(dbServer);
+        this.frame.getTaskFactory().addDatabase(dbServer);
         this.databaseSpaceNode.add(new DefaultMutableTreeNode(new DbServerNodeValue(dbServer)));
 
         this.spaceTree.updateUI();
     }
 
-    public void removeDatabase(DbServerType dbServer) {
+    public void removeDatabase(DatabaseType dbServer) {
         this.databaseSpaceNode.remove(getSelectedTreeNode());
-        this.frame.getTaskFactory().removeDbServer(this.selectedDbServer);
+        this.frame.getTaskFactory().removeDatabase(this.selectedDbServer);
         this.spaceTree.updateUI();
     }
 
     public void appendTask() {
-        TaskEditPanel panel = new TaskEditPanel(this.tmdType.getTableSpace().getTable());
+        TaskEditPanel panel = new TaskEditPanel();
+        panel.configure(getFrame().getTaskFactory());
         int button = JOptionPane.showConfirmDialog(this.frame, panel, "Select one task", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (button == JOptionPane.YES_OPTION) {
             appendTask(panel.save());
@@ -453,11 +406,11 @@ public class NaviPanel extends JPanel {
     public void appendPlan(TaskType task) {
         PlanEditPanel panel = new PlanEditPanel();
         panel.configure(this.frame.getTaskFactory());
-        panel.load(task);
         int button = JOptionPane.showConfirmDialog(this.frame, panel, "Add a plan", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (button == JOptionPane.YES_OPTION) {
 
             PlanType plan = panel.save();
+            task.getNext().getPlan().add(plan);
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(new PlanNodeValue(task, plan));
             getSelectedTreeNode().add(child);
         }
@@ -480,6 +433,12 @@ public class NaviPanel extends JPanel {
         }
     }
 
+    public void removePlan(PlanType plan) {
+        this.taskSpaceNode.remove(getSelectedTreeNode());
+        this.selectedTask.getNext().getPlan().remove(plan);
+        this.spaceTree.updateUI();
+    }
+
     public void updateProperties(Map<String, String> props) {
         this.propValues = props == null ? new TreeMap<String, String>() : props;
         this.propKeys = this.propValues.keySet().toArray(new String[0]);
@@ -500,7 +459,7 @@ public class NaviPanel extends JPanel {
      * @author Kan Lin
      *
      */
-    class PropertiesModel extends AbstractTableModel {
+    class PropertiesTableModel extends AbstractTableModel {
 
         private static final long serialVersionUID = -3553978563489256767L;
 
