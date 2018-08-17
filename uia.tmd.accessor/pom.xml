@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uia</groupId>
 	<artifactId>uia.tmd.access</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>uia.tmd.accessor</name>
 	<url>http://maven.apache.org</url>
