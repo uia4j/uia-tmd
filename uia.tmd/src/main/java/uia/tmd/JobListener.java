@@ -7,11 +7,11 @@ package uia.tmd;
  */
 public interface JobListener {
 
-    public void itemBegin(JobRunner executor, ExecutorEvent evt);
+    public void itemBegin(JobRunner jobRunner, JobEvent evt);
 
-    public void itemEnd(JobRunner executor, ExecutorEvent evt);
+    public void itemEnd(JobRunner jobRunner, JobEvent evt);
 
-    public static class ExecutorEvent {
+    public static class JobEvent {
 
         public final String taskName;
 
@@ -19,7 +19,7 @@ public interface JobListener {
 
         public final String criteria;
 
-        public ExecutorEvent(String taskName, String tableName, String criteria) {
+        public JobEvent(String taskName, String tableName, String criteria) {
             this.taskName = taskName;
             this.tableName = tableName;
             this.criteria = criteria;

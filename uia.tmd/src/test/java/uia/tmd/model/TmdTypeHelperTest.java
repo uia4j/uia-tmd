@@ -5,6 +5,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
+import uia.tmd.model.xml.JobType;
 import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
@@ -14,7 +15,18 @@ public class TmdTypeHelperTest {
     @Test
     public void testSample() throws Exception {
         TmdType tmd = TmdTypeHelper.load(new File(TmdTypeHelperTest.class.getResource("Sample.xml").toURI()));
+
         Assert.assertEquals(3, tmd.getJobSpace().getJob().size());
+        JobType job1 = tmd.getJobSpace().getJob().get(0);   // '>'
+        Assert.assertEquals(
+                "SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 90)",
+                job1.getItem().get(0).getWhere());
+        JobType job2 = tmd.getJobSpace().getJob().get(1);   // translate '&lt;' to '<'
+        Assert.assertEquals(
+                "SITE='1020' and ACTUAL_COMP_DATE is not null and now()<add_days(ACTUAL_COMP_DATE, 90)",
+                job2.getItem().get(0).getWhere());
+        JobType job3 = tmd.getJobSpace().getJob().get(2);
+        Assert.assertEquals(3, job3.getItem().size());
 
         Assert.assertEquals(4, tmd.getTaskSpace().getTask().size());
         // Task1

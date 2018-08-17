@@ -14,37 +14,37 @@ public class WIPTest implements TaskListener {
     public void testInitialTest() throws URISyntaxException, Exception {
         TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("wip.xml").toURI()));
 
-        JobRunner executor = factory.createExecutor("INITIAL_TEST");
-        executor.addTaskListener(this);
-        System.out.println(String.format("Execute:%s(%s)", executor.run((String) null), this.rc));
+        JobRunner runner = factory.createRunner("INITIAL_TEST");
+        runner.addTaskListener(this);
+        System.out.println(String.format("Execute:%s(%s)", runner.run((String) null), this.rc));
     }
 
     @Override
-    public void sourceSelected(Object executor, TaskEvent evt) {
+    public void sourceSelected(JobRunner jobRunner, TaskEvent evt) {
         this.rc += evt.count;
         System.out.println(evt);
     }
 
     @Override
-    public void sourceDeleted(Object executor, TaskEvent evt) {
+    public void sourceDeleted(JobRunner jobRunner, TaskEvent evt) {
         System.out.println(evt);
     }
 
     @Override
-    public void targetDeleted(Object executor, TaskEvent evt) {
+    public void targetDeleted(JobRunner jobRunner, TaskEvent evt) {
     }
 
     @Override
-    public void targetInserted(Object executor, TaskEvent evt) {
+    public void targetInserted(JobRunner jobRunner, TaskEvent evt) {
     }
 
     @Override
-    public void executeFailure(Object executor, TaskEvent evt, SQLException ex) {
+    public void failed(JobRunner jobRunner, TaskEvent evt, SQLException ex) {
         System.out.println(evt);
         ex.printStackTrace();
     }
 
     @Override
-    public void done(Object executor) {
+    public void done(JobRunner jobRunner) {
     }
 }

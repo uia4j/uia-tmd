@@ -5,12 +5,12 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-public class TmdExecutorLogDaoTest extends AbstractDao {
+public class ExecutorLogDaoTest extends AbstractDao {
 
     @Test
     public void test() throws SQLException {
         try (Connection conn = createConn()) {
-            TmdExecutorLogDao dao = new TmdExecutorLogDao(conn);
+            ExecJobDao dao = new ExecJobDao(conn);
             dao.selectAll().forEach(System.out::println);
 
         }

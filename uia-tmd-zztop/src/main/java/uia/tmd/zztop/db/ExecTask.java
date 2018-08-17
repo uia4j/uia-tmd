@@ -2,13 +2,13 @@ package uia.tmd.zztop.db;
 
 import java.util.UUID;
 
-public class TmdTaskLog {
+public class ExecTask {
 
     private String id;
 
     private String tmdTaskBo;
 
-    private String tmdExecutorLogBo;
+    private String execJobBo;
 
     private String tableName;
 
@@ -20,14 +20,14 @@ public class TmdTaskLog {
 
     private String taskPath;
 
-    public TmdTaskLog() {
+    public ExecTask() {
         this.id = System.currentTimeMillis() + "-" + UUID.randomUUID().toString();
     }
 
-    public TmdTaskLog(TmdTaskLog data) {
+    public ExecTask(ExecTask data) {
         this.id = data.id;
         this.tmdTaskBo = data.tmdTaskBo;
-        this.tmdExecutorLogBo = data.tmdExecutorLogBo;
+        this.execJobBo = data.execJobBo;
         this.tableName = data.tableName;
         this.sqlWhere = data.sqlWhere;
         this.triggeredBy = data.triggeredBy;
@@ -51,12 +51,12 @@ public class TmdTaskLog {
         this.tmdTaskBo = tmdTaskBo;
     }
 
-    public String getTmdExecutorLogBo() {
-        return this.tmdExecutorLogBo;
+    public String getExecJobBo() {
+        return this.execJobBo;
     }
 
-    public void setTmdExecutorLogBo(String tmdExecutorLogBo) {
-        this.tmdExecutorLogBo = tmdExecutorLogBo;
+    public void setExecJobBo(String execJobBo) {
+        this.execJobBo = execJobBo;
     }
 
     public String getTableName() {
@@ -100,8 +100,8 @@ public class TmdTaskLog {
     }
 
     @Override
-    public TmdTaskLog clone() {
-        return new TmdTaskLog(this);
+    public ExecTask clone() {
+        return new ExecTask(this);
     }
 
     @Override

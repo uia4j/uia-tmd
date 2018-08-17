@@ -2,7 +2,7 @@ package uia.tmd.zztop.db;
 
 import java.util.Date;
 
-public class TmdTxKey {
+public class TxKey {
 
     private String id;
 
@@ -10,10 +10,10 @@ public class TmdTxKey {
 
     private String tableName;
 
-    public TmdTxKey() {
+    public TxKey() {
     }
 
-    public TmdTxKey(TmdTxKey data) {
+    public TxKey(TxKey data) {
         this.id = data.id;
         this.txTime = data.txTime;
         this.tableName = data.tableName;
@@ -44,8 +44,8 @@ public class TmdTxKey {
     }
 
     @Override
-    public TmdTxKey clone() {
-        return new TmdTxKey(this);
+    public TxKey clone() {
+        return new TxKey(this);
     }
 
     @Override

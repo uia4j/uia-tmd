@@ -3,7 +3,7 @@ package uia.tmd.zztop.db;
 import java.util.Date;
 import java.util.UUID;
 
-public class TmdTxTable {
+public class TxTable {
 
     private String id;
 
@@ -11,18 +11,18 @@ public class TmdTxTable {
 
     private String tableName;
 
-    public TmdTxTable() {
+    public TxTable() {
         this.id = System.currentTimeMillis() + "-" + UUID.randomUUID().toString();
         this.txTime = new Date();
     }
 
-    public TmdTxTable(String tableName) {
+    public TxTable(String tableName) {
         this.id = System.currentTimeMillis() + "-" + UUID.randomUUID().toString();
         this.txTime = new Date();
         this.tableName = tableName;
     }
 
-    public TmdTxTable(TmdTxTable data) {
+    public TxTable(TxTable data) {
         this.id = data.id;
         this.txTime = data.txTime;
         this.tableName = data.tableName;
@@ -53,8 +53,8 @@ public class TmdTxTable {
     }
 
     @Override
-    public TmdTxTable clone() {
-        return new TmdTxTable(this);
+    public TxTable clone() {
+        return new TxTable(this);
     }
 
     @Override

@@ -70,6 +70,13 @@ public interface DataAccess {
     public int delete(String tableName, List<Map<String, Object>> rows) throws SQLException;
 
     /**
+     * Truncate table.
+     * @param tableName Table name.
+     * @throws SQLException SQL exception.
+     */
+    public void truncate(String tableName) throws SQLException;
+
+    /**
      * Prepare column information of specific table.
      * @param tableName Table name.
      * @return Column information.

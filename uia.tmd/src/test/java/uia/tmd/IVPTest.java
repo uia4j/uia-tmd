@@ -12,12 +12,12 @@ public class IVPTest implements JobListener, TaskListener {
     public void testIdle() throws URISyntaxException, Exception {
         TaskFactory factory = new TaskFactory(new File(IVPTest.class.getResource("IVP.xml").toURI()));
 
-        JobRunner executor = factory.createExecutor("MVSDB_ALL_IDLE");
-        executor.addExecutorListener(this);
-        executor.addTaskListener(this);
+        JobRunner runner = factory.createRunner("MVSDB_ALL_IDLE");
+        runner.addJobListener(this);
+        runner.addTaskListener(this);
 
         long t1 = System.currentTimeMillis();
-        executor.run(null);
+        runner.run(null);
         long t2 = System.currentTimeMillis();
         System.out.println(t2 - t1);
     }
@@ -26,51 +26,51 @@ public class IVPTest implements JobListener, TaskListener {
     public void testIvp2() throws URISyntaxException, Exception {
         TaskFactory factory = new TaskFactory(new File(IVPTest.class.getResource("IVP.xml").toURI()));
 
-        JobRunner executor = factory.createExecutor("MVSDB_ALL_IVP2");
-        executor.addTaskListener(this);
+        JobRunner runner = factory.createRunner("MVSDB_ALL_IVP2");
+        runner.addTaskListener(this);
 
         long t1 = System.currentTimeMillis();
-        executor.run(null);
+        runner.run(null);
         long t2 = System.currentTimeMillis();
         System.out.println(t2 - t1);
     }
 
     @Override
-    public void sourceSelected(Object executor, TaskEvent evt) {
+    public void sourceSelected(JobRunner jobRunner, TaskEvent evt) {
         System.out.println(evt);
     }
 
     @Override
-    public void sourceDeleted(Object executor, TaskEvent evt) {
+    public void sourceDeleted(JobRunner jobRunner, TaskEvent evt) {
         System.out.println(evt);
     }
 
     @Override
-    public void targetDeleted(Object executor, TaskEvent evt) {
+    public void targetDeleted(JobRunner jobRunner, TaskEvent evt) {
         System.out.println(evt);
     }
 
     @Override
-    public void targetInserted(Object executor, TaskEvent evt) {
+    public void targetInserted(JobRunner jobRunner, TaskEvent evt) {
         System.out.println(evt);
     }
 
     @Override
-    public void executeFailure(Object executor, TaskEvent evt, SQLException ex) {
+    public void failed(JobRunner jobRunner, TaskEvent evt, SQLException ex) {
         System.out.println(evt);
     }
 
     @Override
-    public void done(Object executor) {
+    public void done(JobRunner jobRunner) {
     }
 
     @Override
-    public void itemBegin(JobRunner executor, ExecutorEvent evt) {
+    public void itemBegin(JobRunner executor, JobEvent evt) {
         System.out.println(evt);
 
     }
 
     @Override
-    public void itemEnd(JobRunner executor, ExecutorEvent evt) {
+    public void itemEnd(JobRunner executor, JobEvent evt) {
     }
 }

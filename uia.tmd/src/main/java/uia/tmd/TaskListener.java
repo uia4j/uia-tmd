@@ -13,45 +13,45 @@ public interface TaskListener {
 
     /**
      * Source to be selected.
-     * @param executor Executor.
+     * @param job job.
      * @param evt Event.
      */
-    public void sourceSelected(Object executor, TaskEvent evt);
+    public void sourceSelected(JobRunner jobRunner, TaskEvent evt);
 
     /**
      * Source to be selected.
-     * @param executor Executor.
+     * @param job job.
      * @param evt Event.
      */
-    public void sourceDeleted(Object executor, TaskEvent evt);
+    public void sourceDeleted(JobRunner jobRunner, TaskEvent evt);
 
     /**
      * Target to be inserted.
-     * @param executor Executor.
+     * @param job job.
      * @param evt Event.
      */
-    public void targetInserted(Object executor, TaskEvent evt);
+    public void targetInserted(JobRunner jobRunner, TaskEvent evt);
 
     /**
      * Target to be deleted.
-     * @param executor Executor.
+     * @param job job.
      * @param evt Event.
      */
-    public void targetDeleted(Object executor, TaskEvent evt);
+    public void targetDeleted(JobRunner jobRunner, TaskEvent evt);
 
     /**
      * Failed to be executed.
-     * @param executor Executor.
+     * @param job job.
      * @param evt Event.
      * @param ex Exception.
      */
-    public void executeFailure(Object executor, TaskEvent evt, SQLException ex);
+    public void failed(JobRunner jobRunner, TaskEvent evt, SQLException ex);
 
     /**
      *
      * @param task
      */
-    public void done(Object executor);
+    public void done(JobRunner jobRunner);
 
     /**
      *

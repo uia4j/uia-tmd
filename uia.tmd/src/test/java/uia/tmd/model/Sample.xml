@@ -2,12 +2,14 @@
 <tmd xmlns="http://tmd.uia/model/xml"> 
 	<jobSpace>
 		<job name="Case1" source="HANA_DEV" target="IDLE">
-			<item taskName="Task1" />
+			<item taskName="Task1" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 90)" />
 		</job>
 		<job name="Case2" source="HANA_DEV" target="PG">
-			<item taskName="Task2" />
+			<item taskName="Task2" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()&lt;add_days(ACTUAL_COMP_DATE, 90)" />
 		</job> 
 		<job name="Case3" source="HANA_DEV" target="PG">
+			<item taskName="Task1" />
+			<item taskName="Task2" />
 			<item taskName="Task3" />
 		</job> 
 	</jobSpace>

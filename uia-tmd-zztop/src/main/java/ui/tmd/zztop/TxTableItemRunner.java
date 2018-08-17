@@ -2,57 +2,54 @@ package ui.tmd.zztop;
 
 import java.sql.Connection;
 import java.util.Arrays;
-import java.util.Date;
 
-import uia.tmd.JobRunner;
 import uia.tmd.ItemRunner;
+import uia.tmd.JobRunner;
 import uia.tmd.TaskRunner;
 import uia.tmd.TmdException;
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
-import uia.tmd.zztop.db.TmdTxTable;
-import uia.tmd.zztop.db.dao.TmdTxTableDao;
+import uia.tmd.zztop.db.TxTable;
+import uia.tmd.zztop.db.dao.TxTableDao;
 
 public class TxTableItemRunner implements ItemRunner {
 
-    private Date txBeginTime;
-
     public TxTableItemRunner() {
-        this.txBeginTime = new Date();
     }
 
     @Override
-    public String prepare(JobRunner executor, ItemType itemType, TaskType taskType) throws TmdException {
+    public WhereType prepare(JobRunner executor, ItemType itemType, TaskType taskType, String whereBase) throws TmdException {
         if (itemType.getArgs().getArg().size() == 0) {
-            throw new TmdException("Argument missing");
+            throw new TmdException("Argument missing, args(0): column name");
         }
 
         try (Connection conn = DB.create()) {
-            TmdTxTable txTable = new TmdTxTableDao(conn).selectLastByTable(taskType.getSourceSelect().getTable());
-            if (txTable != null) {
-                this.txBeginTime = txTable.getTxTime();
+            TxTable txTable = new TxTableDao(conn).selectLastByTable(taskType.getSourceSelect().getTable());
+            if (txTable == null) {
+                return new WhereType(null)
+                        .and(whereBase)
+                        .and(itemType.getWhere());
             }
+
+            // 同步 指定欄位 特定時間區間 的資料
+            String where = String.format("%s>? and %s<=?",
+                    itemType.getArgs().getArg().get(0),
+                    itemType.getArgs().getArg().get(0));
+
+            return new WhereType(where, txTable.getTxTime(), executor.getTxTime())
+                    .and(whereBase)
+                    .and(itemType.getWhere());
         }
         catch (Exception ex) {
             throw new TmdException(ex);
         }
-
-        return String.format("%s>'%s' and %s<='%s'",
-                itemType.getArgs().getArg().get(0),
-                this.txBeginTime,
-                itemType.getArgs().getArg().get(0),
-                executor.getTxTime());
     }
 
     @Override
-    public void run(JobRunner executorRunner, ItemType itemType, TaskType taskType, TaskRunner taskRunner) throws TmdException {
+    public void run(JobRunner executorRunner, ItemType itemType, TaskType taskType, TaskRunner taskRunner, WhereType where) throws TmdException {
         try (Connection conn = DB.create()) {
-            TmdTxTable txTable = new TmdTxTableDao(conn).selectLastByTable(taskType.getSourceSelect().getTable());
-            if (txTable != null) {
-                String where = String.format("%s>? and %s<=?",
-                        itemType.getArgs().getArg().get(0),
-                        itemType.getArgs().getArg().get(0));
-                taskRunner.run(taskType, "/", where, Arrays.asList(this.txBeginTime, executorRunner.getTxTime()), null);
+            if (where.sql != null) {
+                taskRunner.run(taskType, "/", where.sql, Arrays.asList(where.paramValues), null);
             }
             else {
                 taskRunner.run(taskType, "/", null, null);

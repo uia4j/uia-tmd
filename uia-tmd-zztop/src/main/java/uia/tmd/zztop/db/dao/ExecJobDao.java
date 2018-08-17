@@ -8,26 +8,26 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import uia.tmd.zztop.db.TmdExecutorLog;
+import uia.tmd.zztop.db.ExecJob;
 
-public class TmdExecutorLogDao {
+public class ExecJobDao {
 
-    private static final String SQL_INS = "INSERT INTO tmd_executor_log(id,tmd_executor_bo,database_source,database_target,tmd_task_log_bo,executed_date,executed_time,executed_result,run_state,delete_after) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    private static final String SQL_INS = "INSERT INTO zzt_exec_job(id,tmd_job_bo,database_source,database_target,tmd_task_log_bo,executed_date,executed_time,executed_result,run_state,delete_after) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
-    private static final String SQL_UPD = "UPDATE tmd_executor_log SET tmd_executor_bo=?,database_source=?,database_target=?,tmd_task_log_bo=?,executed_date=?,executed_time=?,executed_result=?,run_state=?,delete_after=? WHERE id=?";
+    private static final String SQL_UPD = "UPDATE zzt_exec_job SET tmd_job_bo=?,database_source=?,database_target=?,tmd_task_log_bo=?,executed_date=?,executed_time=?,executed_result=?,run_state=?,delete_after=? WHERE id=?";
 
-    private static final String SQL_SEL = "SELECT id,tmd_executor_bo,database_source,database_target,tmd_task_log_bo,executed_date,executed_time,executed_result,run_state,delete_after FROM tmd_executor_log ";
+    private static final String SQL_SEL = "SELECT id,tmd_job_bo,database_source,database_target,tmd_task_log_bo,executed_date,executed_time,executed_result,run_state,delete_after FROM zzt_exec_job ";
 
     private final Connection conn;
 
-    public TmdExecutorLogDao(Connection conn) {
+    public ExecJobDao(Connection conn) {
         this.conn = conn;
     }
 
-    public int insert(TmdExecutorLog data) throws SQLException {
+    public int insert(ExecJob data) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {
             ps.setString(1, data.getId());
-            ps.setString(2, data.getTmdExecutorBo());
+            ps.setString(2, data.getTmdJobBo());
             ps.setString(3, data.getDatabaseSource());
             ps.setString(4, data.getDatabaseTarget());
             ps.setString(5, data.getTmdTaskLogBo());
@@ -46,11 +46,11 @@ public class TmdExecutorLogDao {
         }
     }
 
-    public int insert(List<TmdExecutorLog> dataList) throws SQLException {
+    public int insert(List<ExecJob> dataList) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {
-            for (TmdExecutorLog data : dataList) {
+            for (ExecJob data : dataList) {
                 ps.setString(1, data.getId());
-                ps.setString(2, data.getTmdExecutorBo());
+                ps.setString(2, data.getTmdJobBo());
                 ps.setString(3, data.getDatabaseSource());
                 ps.setString(4, data.getDatabaseTarget());
                 ps.setString(5, data.getTmdTaskLogBo());
@@ -71,9 +71,9 @@ public class TmdExecutorLogDao {
         }
     }
 
-    public int update(TmdExecutorLog data) throws SQLException {
+    public int update(ExecJob data) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_UPD)) {
-            ps.setString(1, data.getTmdExecutorBo());
+            ps.setString(1, data.getTmdJobBo());
             ps.setString(2, data.getDatabaseSource());
             ps.setString(3, data.getDatabaseTarget());
             ps.setString(4, data.getTmdTaskLogBo());
@@ -93,10 +93,10 @@ public class TmdExecutorLogDao {
         }
     }
 
-    public int update(List<TmdExecutorLog> dataList) throws SQLException {
+    public int update(List<ExecJob> dataList) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_UPD)) {
-            for (TmdExecutorLog data : dataList) {
-                ps.setString(1, data.getTmdExecutorBo());
+            for (ExecJob data : dataList) {
+                ps.setString(1, data.getTmdJobBo());
                 ps.setString(2, data.getDatabaseSource());
                 ps.setString(3, data.getDatabaseTarget());
                 ps.setString(4, data.getTmdTaskLogBo());
@@ -119,15 +119,15 @@ public class TmdExecutorLogDao {
     }
 
     public int delete(String id) throws SQLException {
-        try (PreparedStatement ps = this.conn.prepareStatement("DELETE FROM tmd_executor_log WHERE id=?")) {
+        try (PreparedStatement ps = this.conn.prepareStatement("DELETE FROM zzt_exec_job WHERE id=?")) {
             ps.setString(1, id);
 
             return ps.executeUpdate();
         }
     }
 
-    public TmdExecutorLog selectByPK(String id) throws SQLException {
-        TmdExecutorLog result = null;
+    public ExecJob selectByPK(String id) throws SQLException {
+        ExecJob result = null;
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_SEL + "WHERE id=?")) {
             ps.setString(1, id);
 
@@ -139,8 +139,8 @@ public class TmdExecutorLogDao {
         }
     }
 
-    public List<TmdExecutorLog> selectAll() throws SQLException {
-        ArrayList<TmdExecutorLog> result = new ArrayList<TmdExecutorLog>();
+    public List<ExecJob> selectAll() throws SQLException {
+        ArrayList<ExecJob> result = new ArrayList<ExecJob>();
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_SEL)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -150,12 +150,12 @@ public class TmdExecutorLogDao {
         }
     }
 
-    private TmdExecutorLog convert(ResultSet rs) throws SQLException {
-        TmdExecutorLog data = new TmdExecutorLog();
+    private ExecJob convert(ResultSet rs) throws SQLException {
+        ExecJob data = new ExecJob();
 
         int index = 1;
         data.setId(rs.getString(index++));
-        data.setTmdExecutorBo(rs.getString(index++));
+        data.setTmdJobBo(rs.getString(index++));
         data.setDatabaseSource(rs.getString(index++));
         data.setDatabaseTarget(rs.getString(index++));
         data.setTmdTaskLogBo(rs.getString(index++));

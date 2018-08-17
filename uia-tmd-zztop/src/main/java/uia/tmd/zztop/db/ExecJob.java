@@ -3,11 +3,11 @@ package uia.tmd.zztop.db;
 import java.util.Date;
 import java.util.UUID;
 
-public class TmdExecutorLog {
+public class ExecJob {
 
     private String id;
 
-    private String tmdExecutorBo;
+    private String tmdJobBo;
 
     private String databaseSource;
 
@@ -25,7 +25,7 @@ public class TmdExecutorLog {
 
     private Date deleteAfter;
 
-    public TmdExecutorLog() {
+    public ExecJob() {
         this.executedDate = new Date();
         this.executedTime = this.executedDate;
         this.id = this.executedDate.getTime() + "-" + UUID.randomUUID().toString();
@@ -33,9 +33,9 @@ public class TmdExecutorLog {
         this.runState = "RUN";
     }
 
-    public TmdExecutorLog(TmdExecutorLog data) {
+    public ExecJob(ExecJob data) {
         this.id = data.id;
-        this.tmdExecutorBo = data.tmdExecutorBo;
+        this.tmdJobBo = data.tmdJobBo;
         this.databaseSource = data.databaseSource;
         this.databaseTarget = data.databaseTarget;
         this.tmdTaskLogBo = data.tmdTaskLogBo;
@@ -53,12 +53,12 @@ public class TmdExecutorLog {
         this.id = id;
     }
 
-    public String getTmdExecutorBo() {
-        return this.tmdExecutorBo;
+    public String getTmdJobBo() {
+        return this.tmdJobBo;
     }
 
-    public void setTmdExecutorBo(String tmdExecutorBo) {
-        this.tmdExecutorBo = tmdExecutorBo;
+    public void setTmdJobBo(String tmdJobBo) {
+        this.tmdJobBo = tmdJobBo;
     }
 
     public String getDatabaseSource() {
@@ -126,8 +126,8 @@ public class TmdExecutorLog {
     }
 
     @Override
-    public TmdExecutorLog clone() {
-        return new TmdExecutorLog(this);
+    public ExecJob clone() {
+        return new ExecJob(this);
     }
 
     @Override

@@ -8,23 +8,23 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import uia.tmd.zztop.db.TmdTxKey;
+import uia.tmd.zztop.db.TxKey;
 
-public class TmdTxKeyDao {
+public class TxKeyDao {
 
-    private static final String SQL_INS = "INSERT INTO tmd_tx_key(id,tx_time,table_name) VALUES (?,?,?)";
+    private static final String SQL_INS = "INSERT INTO zzt_tx_key(id,tx_time,table_name) VALUES (?,?,?)";
 
-    private static final String SQL_UPD = "UPDATE tmd_tx_key SET tx_time=?,table_name=? WHERE id=?";
+    private static final String SQL_UPD = "UPDATE zzt_tx_key SET tx_time=?,table_name=? WHERE id=?";
 
-    private static final String SQL_SEL = "SELECT id,tx_time,table_name FROM tmd_tx_key ";
+    private static final String SQL_SEL = "SELECT id,tx_time,table_name FROM zzt_tx_key ";
 
     private final Connection conn;
 
-    public TmdTxKeyDao(Connection conn) {
+    public TxKeyDao(Connection conn) {
         this.conn = conn;
     }
 
-    public int insert(TmdTxKey data) throws SQLException {
+    public int insert(TxKey data) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {
             ps.setString(1, data.getId());
             ps.setTimestamp(2, new Timestamp(data.getTxTime().getTime()));
@@ -34,9 +34,9 @@ public class TmdTxKeyDao {
         }
     }
 
-    public int insert(List<TmdTxKey> dataList) throws SQLException {
+    public int insert(List<TxKey> dataList) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {
-            for (TmdTxKey data : dataList) {
+            for (TxKey data : dataList) {
                 ps.setString(1, data.getId());
                 ps.setTimestamp(2, new Timestamp(data.getTxTime().getTime()));
                 ps.setString(3, data.getTableName());
@@ -47,7 +47,7 @@ public class TmdTxKeyDao {
         }
     }
 
-    public int update(TmdTxKey data) throws SQLException {
+    public int update(TxKey data) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_UPD)) {
             ps.setTimestamp(1, new Timestamp(data.getTxTime().getTime()));
             ps.setString(2, data.getTableName());
@@ -57,9 +57,9 @@ public class TmdTxKeyDao {
         }
     }
 
-    public int update(List<TmdTxKey> dataList) throws SQLException {
+    public int update(List<TxKey> dataList) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_UPD)) {
-            for (TmdTxKey data : dataList) {
+            for (TxKey data : dataList) {
                 ps.setTimestamp(1, new Timestamp(data.getTxTime().getTime()));
                 ps.setString(2, data.getTableName());
                 ps.setString(3, data.getId());
@@ -71,15 +71,15 @@ public class TmdTxKeyDao {
     }
 
     public int delete(String id) throws SQLException {
-        try (PreparedStatement ps = this.conn.prepareStatement("DELETE FROM tmd_tx_key WHERE id=?")) {
+        try (PreparedStatement ps = this.conn.prepareStatement("DELETE FROM zzt_tx_key WHERE id=?")) {
             ps.setString(1, id);
 
             return ps.executeUpdate();
         }
     }
 
-    public TmdTxKey selectByPK(String id) throws SQLException {
-        TmdTxKey result = null;
+    public TxKey selectByPK(String id) throws SQLException {
+        TxKey result = null;
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_SEL + "WHERE id=?")) {
             ps.setString(1, id);
 
@@ -91,8 +91,8 @@ public class TmdTxKeyDao {
         }
     }
 
-    public List<TmdTxKey> selectAll() throws SQLException {
-        ArrayList<TmdTxKey> result = new ArrayList<TmdTxKey>();
+    public List<TxKey> selectAll() throws SQLException {
+        ArrayList<TxKey> result = new ArrayList<TxKey>();
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_SEL)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -102,8 +102,8 @@ public class TmdTxKeyDao {
         }
     }
 
-    public List<TmdTxKey> selectByTable(String tableName) throws SQLException {
-        ArrayList<TmdTxKey> result = new ArrayList<TmdTxKey>();
+    public List<TxKey> selectByTable(String tableName) throws SQLException {
+        ArrayList<TxKey> result = new ArrayList<TxKey>();
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_SEL + "WHERE table_name=?")) {
             ps.setString(1, tableName);
             ResultSet rs = ps.executeQuery();
@@ -114,8 +114,8 @@ public class TmdTxKeyDao {
         }
     }
 
-    private TmdTxKey convert(ResultSet rs) throws SQLException {
-        TmdTxKey data = new TmdTxKey();
+    private TxKey convert(ResultSet rs) throws SQLException {
+        TxKey data = new TxKey();
 
         int index = 1;
         data.setId(rs.getString(index++));

@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import uia.tmd.JobListener.ExecutorEvent;
+import uia.tmd.ItemRunner.WhereType;
+import uia.tmd.JobListener.JobEvent;
 import uia.tmd.TaskListener.TaskEvent;
 import uia.tmd.model.xml.DatabaseType;
 import uia.tmd.model.xml.ItemType;
@@ -36,7 +38,7 @@ public final class JobRunner {
 
     private final DatabaseType targetType;
 
-    private final ArrayList<JobListener> executorListeners;
+    private final ArrayList<JobListener> jobListeners;
 
     private final ArrayList<TaskListener> taskListeners;
 
@@ -52,16 +54,32 @@ public final class JobRunner {
         this.sourceAccess.initial(this.sourceType, factory.getTables());
         this.targetAccess.initial(this.targetType, factory.getTables());
 
-        this.executorListeners = new ArrayList<JobListener>();
+        this.jobListeners = new ArrayList<JobListener>();
         this.taskListeners = new ArrayList<TaskListener>();
-        this.txPool = new TxPool();
+        this.txPool = new TxPool(jobType.getName());
+    }
+
+    public List<String> pkInSource(String tableName) throws SQLException {
+        return this.sourceAccess.prepareTable(tableName)
+                .selectPk()
+                .stream()
+                .map(c -> c.getColumnName())
+                .collect(Collectors.toList());
+    }
+
+    public List<String> pkInTarget(String tableName) throws SQLException {
+        return this.targetAccess.prepareTable(tableName)
+                .selectPk()
+                .stream()
+                .map(c -> c.getColumnName())
+                .collect(Collectors.toList());
     }
 
     public Date getTxTime() {
         return this.txTime;
     }
 
-    public String getExecutorName() {
+    public String getJobName() {
         return this.jobType.getName();
     }
 
@@ -77,12 +95,12 @@ public final class JobRunner {
         return this.jobType.isSourceDelete();
     }
 
-    public void addExecutorListener(JobListener listener) {
+    public void addJobListener(JobListener listener) {
         if (listener == null) {
             return;
         }
-        if (!this.executorListeners.contains(listener)) {
-            this.executorListeners.add(listener);
+        if (!this.jobListeners.contains(listener)) {
+            this.jobListeners.add(listener);
         }
     }
 
@@ -104,22 +122,29 @@ public final class JobRunner {
 
             boolean success = true;
             for (ItemType itemType : this.jobType.getItem()) {
+                if (!itemType.isEnabled()) {
+                    continue;
+                }
+
+                ItemRunner itemRunner;
+                if (itemType.getDriverName() != null) {
+                    itemRunner = (ItemRunner) Class.forName(itemType.getDriverName()).newInstance();
+                }
+                else if (this.jobType.getItemRunner() != null) {
+                    itemRunner = (ItemRunner) Class.forName(this.jobType.getItemRunner()).newInstance();
+                }
+                else {
+                    itemRunner = new ItemRunnerImpl();
+                }
+
                 TaskType taskType = this.factory.getTask(itemType.getTaskName());
                 String tableName = taskType.getSourceSelect().getTable();
+                WhereType whereType = itemRunner.prepare(this, itemType, taskType, where);
+
                 TaskRunner taskRunner = new TaskRunner(this);
-                if (itemType.getDriverName() != null) {
-                    ItemRunner item = (ItemRunner) Class.forName(itemType.getDriverName()).newInstance();
-                    String criteria = item.prepare(this, itemType, taskType);
-
-                    raiseItemBegin(new ExecutorEvent(itemType.getTaskName(), tableName, criteria));
-                    item.run(this, itemType, taskType, taskRunner);
-                    raiseItemEnd(new ExecutorEvent(itemType.getTaskName(), tableName, criteria));
-                }
-                else {
-                    raiseItemBegin(new ExecutorEvent(itemType.getTaskName(), tableName, where));
-                    taskRunner.run(taskType, "/", where, null);
-                    raiseItemEnd(new ExecutorEvent(itemType.getTaskName(), tableName, where));
-                }
+                raiseItemBegin(new JobEvent(itemType.getTaskName(), tableName, whereType.toString()));
+                itemRunner.run(this, itemType, taskType, taskRunner, whereType);
+                raiseItemEnd(new JobEvent(itemType.getTaskName(), tableName, whereType.toString()));
             }
 
             if (success) {
@@ -141,48 +166,8 @@ public final class JobRunner {
         }
     }
 
-    public boolean run(String where, List<Object> paramValues) throws Exception {
-        try {
-            this.sourceAccess.connect();
-            if (this.targetType != null) {  // TODO: good?
-                this.targetAccess.connect();
-            }
-
-            boolean success = true;
-            for (ItemType itemType : this.jobType.getItem()) {
-                TaskType taskType = this.factory.getTask(itemType.getTaskName());
-                TaskRunner task = new TaskRunner(this);
-                if (itemType.getDriverName() != null) {
-                    ItemRunner item = (ItemRunner) Class.forName(itemType.getDriverName()).newInstance();
-                    item.prepare(this, itemType, taskType);
-                    item.run(this, itemType, taskType, task);
-                }
-                else {
-                    task.run(taskType, "/", where, paramValues, null);
-                }
-            }
-
-            if (success) {
-                this.txPool.commitInsert(this.targetAccess);
-                this.txPool.commitDelete(this.sourceAccess);
-                raiseDone();
-            }
-
-            return success;
-        }
-        finally {
-            try {
-                this.sourceAccess.disconnect();
-                this.targetAccess.disconnect();
-            }
-            catch (Exception ex) {
-
-            }
-        }
-    }
-
-    void raiseItemBegin(ExecutorEvent event) {
-        for (JobListener l : this.executorListeners) {
+    void raiseItemBegin(JobEvent event) {
+        for (JobListener l : this.jobListeners) {
             try {
                 l.itemBegin(this, event);
             }
@@ -192,8 +177,8 @@ public final class JobRunner {
         }
     }
 
-    void raiseItemEnd(ExecutorEvent event) {
-        for (JobListener l : this.executorListeners) {
+    void raiseItemEnd(JobEvent event) {
+        for (JobListener l : this.jobListeners) {
             try {
                 l.itemEnd(this, event);
             }
@@ -247,10 +232,10 @@ public final class JobRunner {
         }
     }
 
-    void raiseExecuteFailure(TaskEvent evt, SQLException ex) {
+    void raiseJobFailure(TaskEvent evt, SQLException ex) {
         for (TaskListener l : this.taskListeners) {
             try {
-                l.executeFailure(this, evt, ex);
+                l.failed(this, evt, ex);
             }
             catch (Exception ex2) {
 

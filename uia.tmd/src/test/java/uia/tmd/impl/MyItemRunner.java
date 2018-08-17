@@ -1,11 +1,10 @@
 package uia.tmd.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import uia.tmd.JobRunner;
 import uia.tmd.ItemRunner;
+import uia.tmd.JobRunner;
 import uia.tmd.TaskRunner;
 import uia.tmd.TmdException;
 import uia.tmd.model.xml.ItemType;
@@ -20,26 +19,27 @@ public class MyItemRunner implements ItemRunner {
     }
 
     @Override
-    public String prepare(JobRunner executor, ItemType itemType, TaskType taskType) throws TmdException {
+    public WhereType prepare(JobRunner executor, ItemType itemType, TaskType taskType, String whereBase) throws TmdException {
         if (itemType.getArgs().getArg().size() == 0) {
             throw new TmdException("Argument missing");
         }
 
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        return String.format("%s>'%s' and %s<='%s'",
-                itemType.getArgs().getArg().get(0),
-                fmt.format(this.txBeginTime),
-                itemType.getArgs().getArg().get(0),
-                fmt.format(executor.getTxTime()));
+        String where = whereBase == null
+                ? String.format("%s>? and %s<=?",
+                        itemType.getArgs().getArg().get(0),
+                        itemType.getArgs().getArg().get(0))
+                : String.format("%s and %s>? and %s<=?",
+                        whereBase,
+                        itemType.getArgs().getArg().get(0),
+                        itemType.getArgs().getArg().get(0));
+
+        return new WhereType(where, this.txBeginTime, executor.getTxTime());
     }
 
     @Override
-    public void run(JobRunner executorRunner, ItemType itemType, TaskType taskType, TaskRunner taskRunner) throws TmdException {
+    public void run(JobRunner executorRunner, ItemType itemType, TaskType taskType, TaskRunner taskRunner, WhereType whereType) throws TmdException {
         try {
-            String where = String.format("%s>? and %s<=?",
-                    itemType.getArgs().getArg().get(0),
-                    itemType.getArgs().getArg().get(0));
-            taskRunner.run(taskType, "/", where, Arrays.asList(this.txBeginTime, executorRunner.getTxTime()), null);
+            taskRunner.run(taskType, "/", whereType.sql, Arrays.asList(whereType.paramValues), null);
         }
         catch (Exception ex) {
             throw new TmdException(ex);

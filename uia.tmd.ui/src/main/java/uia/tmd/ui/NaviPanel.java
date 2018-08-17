@@ -338,7 +338,7 @@ public class NaviPanel extends JPanel {
             JOptionPane.showMessageDialog(this.frame, executor.getName() + " exists.", "Information", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        this.frame.getTaskFactory().addExecutor(executor);
+        this.frame.getTaskFactory().addJob(executor);
         this.executorSpaceNode.add(new DefaultMutableTreeNode(new ExecutorNodeValue(executor)));
 
         this.spaceTree.updateUI();
@@ -346,7 +346,7 @@ public class NaviPanel extends JPanel {
 
     public void removeExecutor(JobType executor) {
         this.executorSpaceNode.remove(getSelectedTreeNode());
-        this.frame.getTaskFactory().removeExecutor(this.selectedExecutor);
+        this.frame.getTaskFactory().removeJob(this.selectedExecutor);
         this.spaceTree.updateUI();
     }
 

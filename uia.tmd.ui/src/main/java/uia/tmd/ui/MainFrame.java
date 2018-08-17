@@ -128,7 +128,7 @@ public class MainFrame extends JFrame implements WindowListener {
 
     public void runExecutor(String executorName) {
         try {
-            this.resultPanel.run(this.factory.createExecutor(executorName));
+            this.resultPanel.run(this.factory.createRunner(executorName));
         }
         catch (Exception e) {
             e.printStackTrace();

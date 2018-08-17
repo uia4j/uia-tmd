@@ -13,13 +13,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import uia.tmd.model.xml.AbstractTableType;
 import uia.tmd.model.xml.DatabaseType;
 import uia.utils.dao.ColumnType;
 import uia.utils.dao.Database;
 import uia.utils.dao.TableType;
+import uia.utils.dao.where.Where;
 
 public abstract class AbstractDataAccess implements DataAccess {
+
+    private static final Logger LOGGER = LogManager.getLogger(AbstractDataAccess.class);
 
     protected DatabaseType databaseType;
 
@@ -77,7 +83,7 @@ public abstract class AbstractDataAccess implements DataAccess {
             sql += (" WHERE " + where);
             useParams = true;
         }
-        //Connection conn = getDatabase().getConnection();
+
         try (Connection conn = getDatabase().getConnectionFromPool()) {
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 if (useParams) {
@@ -104,6 +110,10 @@ public abstract class AbstractDataAccess implements DataAccess {
                     }
                 }
             }
+        }
+        catch (SQLException ex) {
+            LOGGER.error("failed to run:" + Where.toString(sql, paramValues), ex);
+            throw ex;
         }
 
         return rows;
@@ -158,6 +168,15 @@ public abstract class AbstractDataAccess implements DataAccess {
             }
 
             return ps.executeBatch().length;
+        }
+    }
+
+    @Override
+    public synchronized void truncate(String tableName) throws SQLException {
+        try (PreparedStatement ps = getDatabase()
+                .getConnection()
+                .prepareStatement("delete from " + tableName)) {
+            ps.executeUpdate();
         }
     }
 

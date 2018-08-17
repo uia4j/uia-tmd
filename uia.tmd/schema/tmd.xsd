@@ -29,6 +29,7 @@
         <attribute name="source" type="string" use="required" />
         <attribute name="sourceDelete" type="boolean" default="false" />
         <attribute name="target" type="string" use="required" />
+        <attribute name="itemRunner" type="string" />
         <attribute name="desc" type="string" />
     </complexType>
     <complexType name="ItemType">
@@ -51,6 +52,8 @@
         <attribute name="taskName" type="string" use="required" />
         <attribute name="driverName" type="string" />
         <attribute name="desc" type="string" />
+        <attribute name="enabled" type="boolean" default="true" />
+        <attribute name="where" type="string" />
     </complexType>
     
     <complexType name="FilterType">
@@ -97,6 +100,7 @@
 			</element>
         </sequence>
         <attribute name="table" type="string" />
+        <attribute name="truncate" type="boolean" default="false" />
     </complexType>
     <complexType name="ColumnMappingType">
         <simpleContent>

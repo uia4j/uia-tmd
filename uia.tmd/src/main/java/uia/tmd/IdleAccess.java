@@ -49,6 +49,10 @@ public class IdleAccess implements DataAccess, Database {
     }
 
     @Override
+    public void truncate(String tableName) throws SQLException {
+    }
+
+    @Override
     public TableType prepareTable(String tableName) throws SQLException {
         return null;
     }

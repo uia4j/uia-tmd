@@ -21,8 +21,8 @@ public final class TaskRunner {
 
     private final JobRunner jobRunner;
 
-    public TaskRunner(JobRunner executor) {
-        this.jobRunner = executor;
+    public TaskRunner(JobRunner jobRunner) {
+        this.jobRunner = jobRunner;
     }
 
     public void run(final TaskType task, final String parentPath, String where, SourceSelectFilter filter) throws SQLException {
@@ -59,6 +59,7 @@ public final class TaskRunner {
     public void run(final TaskType task, final String parentPath, String where, List<Object> paramValues, SourceSelectFilter filter) throws SQLException {
         if (where == null || where.trim().isEmpty()) {
             run(task, parentPath, null, filter);
+            return;
         }
 
         // <sourceSelect>
@@ -156,16 +157,17 @@ public final class TaskRunner {
         }
 
         if (delete) {
-            this.jobRunner.txPool.delete(sourceSelect.getTable(), sourceRows);/**
-                                                                             this.sourceAccess.delete(sourceSelect.getTable(), sourceRows);
-                                                                             raiseSourceDeleted(new TaskExecutorEvent(
-                                                                                     task.getName(),
-                                                                                     parentPath,
-                                                                                     "SOURCE",
-                                                                                     sourceSelect.getTable(),
-                                                                                     "delete from " + sourceSelect.getTable().toUpperCase(),
-                                                                                     sourceRows.size()));
-                                                                              */
+            this.jobRunner.txPool.delete(sourceSelect.getTable(), sourceRows);
+            /**
+            this.sourceAccess.delete(sourceSelect.getTable(), sourceRows);
+            raiseSourceDeleted(new TaskExecutorEvent(
+                   task.getName(),
+                   parentPath,
+                   "SOURCE",
+                   sourceSelect.getTable(),
+                   "delete from " + sourceSelect.getTable().toUpperCase(),
+                   sourceRows.size()));
+            */
         }
     }
 
@@ -195,6 +197,11 @@ public final class TaskRunner {
                     .collect(Collectors.toMap(c -> c.getValue().toUpperCase(), c -> c.getSource().toUpperCase()));
             targetTable = this.jobRunner.targetAccess.prepareTable(targetUpdate.getTable());
             targetColumns = targetTable.getColumns();
+        }
+
+        // truncate, what a stupid implementation is.
+        if (targetUpdate.isTruncate()) {
+            this.jobRunner.targetAccess.truncate(targetTable.getTableName());
         }
 
         ArrayList<Map<String, Object>> targetRows = new ArrayList<Map<String, Object>>();

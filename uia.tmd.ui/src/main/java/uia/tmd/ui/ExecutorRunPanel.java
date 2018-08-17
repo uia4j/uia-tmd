@@ -67,7 +67,7 @@ public class ExecutorRunPanel extends JPanel implements TaskListener {
 
             @Override
             public void run() {
-                FileAppender appender = createAppender(te.getExecutorName() + "_" + System.currentTimeMillis());
+                FileAppender appender = createAppender(te.getJobName() + "_" + System.currentTimeMillis());
                 LOGGER.addAppender(appender);
                 try {
                     ExecutorRunPanel.this.frame.setExecutable(false);
@@ -118,38 +118,38 @@ public class ExecutorRunPanel extends JPanel implements TaskListener {
     }
 
     @Override
-    public void sourceSelected(Object executor, TaskEvent evt) {
+    public void sourceSelected(JobRunner jobRunner, TaskEvent evt) {
         LOGGER.info(String.format("QRY> %s", evt));
         appendMessage("");
         append(evt);
     }
 
     @Override
-    public void sourceDeleted(Object executor, TaskEvent evt) {
+    public void sourceDeleted(JobRunner jobRunner, TaskEvent evt) {
         LOGGER.info(String.format("DEL> %s", evt));
     }
 
     @Override
-    public void targetInserted(Object executor, TaskEvent evt) {
+    public void targetInserted(JobRunner jobRunner, TaskEvent evt) {
         LOGGER.info(String.format("INS>  %s", evt));
         append(evt);
     }
 
     @Override
-    public void targetDeleted(Object executor, TaskEvent evt) {
+    public void targetDeleted(JobRunner jobRunner, TaskEvent evt) {
         LOGGER.info(String.format("DEL>  %s", evt));
         append(evt);
     }
 
     @Override
-    public void executeFailure(Object executor, TaskEvent evt, SQLException ex) {
+    public void failed(JobRunner jobRunner, TaskEvent evt, SQLException ex) {
         LOGGER.error(String.format("%s> %s", evt), ex);
         appendMessage(String.format("RUN> %s failed\n", evt.parentPath + "/" + evt.taskName));
         appendMessage(ex.getMessage() + "\n");
     }
 
     @Override
-    public void done(Object executor) {
+    public void done(JobRunner jobRunner) {
 
     }
 

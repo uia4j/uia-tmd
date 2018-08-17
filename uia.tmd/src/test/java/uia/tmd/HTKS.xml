@@ -2,17 +2,17 @@
 <tmd xmlns="http://tmd.uia/model/xml">
 	<jobSpace>
 		<job name="ShopOrder" source="HANA_DEV" target="PG" desc="同步工單 (HANA to PostgreSQL)">
-			<item taskName="SHOP_ORDER" />		
-		</job>
-		<job name="ShopOrderTestHTKS" source="HANA_DEV" target="IDLE" desc="同步工單 (測試專用)">
 			<item taskName="SHOP_ORDER" />
 		</job>
+		<job name="ShopOrderTestHTKS" source="HANA_DEV" target="IDLE" desc="同步工單 (測試專用)">
+			<item taskName="SHOP_ORDER" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 90)>" />
+		</job>
 		<job name="ShopOrderTestPG" source="PG" target="IDLE" desc="同步工單 (測試專用)">
-			<item taskName="SHOP_ORDER" />		
+			<item taskName="SHOP_ORDER" />
 		</job>
 		<job name="ShopOrderDeletePG" source="PG" sourceDelete="true" target="IDLE" desc="刪除工單 (測試專用)">
-			<item taskName="SHOP_ORDER" />		
-		</job> 
+			<item taskName="SHOP_ORDER" />
+		</job>
 		<job name="ShopOrderDeletePG" source="PG" sourceDelete="true" target="IDLE" desc="刪除工單 (測試專用)">
 			<item taskName="SHOP_ORDER_DELETE" />
 		</job>
