@@ -6,56 +6,47 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import uia.tmd.model.TmdTypeHelper;
+import uia.tmd.model.xml.AbstractTableType;
 import uia.tmd.model.xml.DatabaseSpaceType;
-import uia.tmd.model.xml.DbServerType;
-import uia.tmd.model.xml.ExecutorSpaceType;
-import uia.tmd.model.xml.ExecutorType;
-import uia.tmd.model.xml.TableType;
+import uia.tmd.model.xml.DatabaseType;
+import uia.tmd.model.xml.ItemType;
+import uia.tmd.model.xml.JobSpaceType;
+import uia.tmd.model.xml.JobType;
+import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.TaskSpaceType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
 
-/**
- * Task factory.
- *
- * @author Kyle K. Lin
- *
- */
 public class TaskFactory {
 
     final TmdType tmd;
 
-    final TreeMap<String, ExecutorType> executors;
+    final TreeMap<String, JobType> jobs;
 
     final TreeMap<String, TaskType> tasks;
 
-    final TreeMap<String, DbServerType> dbServers;
+    final TreeMap<String, AbstractTableType> tables;
 
-    final TreeMap<String, TableType> tables;
+    final TreeMap<String, DatabaseType> databases;
 
-    /**
-     * Constructor.
-     * @param file TMD XML file.
-     * @throws Exception
-     */
     public TaskFactory(File file) throws Exception {
-        this.executors = new TreeMap<String, ExecutorType>();
+        this.jobs = new TreeMap<String, JobType>();
         this.tasks = new TreeMap<String, TaskType>();
-        this.tables = new TreeMap<String, TableType>();
-        this.dbServers = new TreeMap<String, DbServerType>();
+        this.tables = new TreeMap<String, AbstractTableType>();
+        this.databases = new TreeMap<String, DatabaseType>();
 
         this.tmd = TmdTypeHelper.load(file);
-        for (ExecutorType exec : this.tmd.getExecutorSpace().getExecutor()) {
-            this.executors.put(exec.getName(), exec);
+        for (JobType job : this.tmd.getJobSpace().getJob()) {
+            this.jobs.put(job.getName(), job);
         }
         for (TaskType task : this.tmd.getTaskSpace().getTask()) {
             this.tasks.put(task.getName(), task);
         }
-        for (TableType table : this.tmd.getTableSpace().getTable()) {
+        for (AbstractTableType table : this.tmd.getTableSpace().getTable()) {
             this.tables.put(table.getName(), table);
         }
-        for (DbServerType svr : this.tmd.getDatabaseSpace().getDbServer()) {
-            this.dbServers.put(svr.getId(), svr);
+        for (DatabaseType database : this.tmd.getDatabaseSpace().getDatabase()) {
+            this.databases.put(database.getId(), database);
         }
     }
 
@@ -81,62 +72,83 @@ public class TaskFactory {
         this.tmd.getTaskSpace().getTask().remove(task);
     }
 
-    public Set<String> getExecutorNames() {
-        return this.executors.keySet();
+    public Set<String> getJobNames() {
+        return this.jobs.keySet();
     }
 
-    public ExecutorSpaceType getExecutors() {
-        return this.tmd.getExecutorSpace();
+    public JobSpaceType getJobs() {
+        return this.tmd.getJobSpace();
     }
 
-    public void addExecutor(ExecutorType executor) {
-        this.executors.put(executor.getName(), executor);
-        this.tmd.getExecutorSpace().getExecutor().add(executor);
+    public void addJob(JobType jobType) {
+        this.jobs.put(jobType.getName(), jobType);
+        this.tmd.getJobSpace().getJob().add(jobType);
     }
 
-    public void removeExecutor(ExecutorType executor) {
-        this.executors.remove(executor.getName());
-        this.tmd.getExecutorSpace().getExecutor().remove(executor);
+    public void removeJob(JobType jobType) {
+        this.jobs.remove(jobType.getName());
+        this.tmd.getJobSpace().getJob().remove(jobType);
     }
 
-    public DatabaseSpaceType getDbServers() {
+    public DatabaseType getDatabase(String database) {
+        return this.databases.get(database);
+    }
+
+    public DatabaseSpaceType getDatabases() {
         return this.tmd.getDatabaseSpace();
     }
 
-    public DbServerType getDbServer(String dbName) {
-        return this.dbServers.get(dbName);
-    }
-    
-    public void addDbServer(DbServerType dbServer) {
-    	this.dbServers.put(dbServer.getDbName(), dbServer);
-    	this.tmd.getDatabaseSpace().getDbServer().add(dbServer);
-    }
-    
-    public void removeDbServer(DbServerType dbServer) {
-    	this.dbServers.remove(dbServer.getDbName());
-    	this.tmd.getDatabaseSpace().getDbServer().remove(dbServer);
+    public void addDatabase(DatabaseType databaese) {
+        this.databases.put(databaese.getDbName(), databaese);
+        this.tmd.getDatabaseSpace().getDatabase().add(databaese);
     }
 
-    public Map<String, TableType> getTables() {
+    public void removeDatabase(DatabaseType databaese) {
+        this.databases.remove(databaese.getDbName());
+        this.tmd.getDatabaseSpace().getDatabase().remove(databaese);
+    }
+
+    public Map<String, AbstractTableType> getTables() {
         return this.tables;
     }
 
-    public TableType getTable(String tableName) {
+    public AbstractTableType getTable(String tableName) {
         return this.tables.get(tableName);
     }
 
-    /**
-     * Create task executor.
-     * @param execName Task name defined in TMD XML file.
-     * @return Executor.
-     * @throws Exception
-     */
-    public TaskExecutor createExecutor(String execName) throws Exception {
-        ExecutorType executor = this.executors.get(execName);
-        if (executor == null) {
+    public JobRunner createRunner(String jobName) throws Exception {
+        JobType jobType = this.jobs.get(jobName);
+        if (jobType == null) {
             return null;
         }
 
-        return new SimpleTaskExecutor(this, executor);
+        return new JobRunner(this, jobType);
+    }
+
+    public void print(String jobName) {
+        JobType jobType = this.jobs.get(jobName);
+        for (ItemType itemType : jobType.getItem()) {
+            print(itemType.getTaskName(), 0);
+        }
+    }
+
+    private void print(String taskName, int deep) {
+        int b = Math.max(0, deep - 3);
+        for (int i = 0; i < b; i++) {
+            System.out.print(" ");
+        }
+        if (deep > 0) {
+            System.out.print("┖");
+        }
+        for (int i = b + 1; i < deep; i++) {
+            System.out.print("─");
+        }
+        System.out.println(taskName);
+        TaskType taskType = getTask(taskName);
+        if (taskType.getNext() != null && taskType.getNext().getPlan() != null) {
+            for (PlanType planType : taskType.getNext().getPlan()) {
+                print(planType.getTaskName(), deep + 3);
+            }
+        }
     }
 }

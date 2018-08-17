@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd xmlns="http://tmd.uia/model/xml">
+	<jobSpace>
+		<job name="MVSDB_ALL_IDLE" source="IVP1" target="IDLE" itemRunner="ui.tmd.zztop.TxKeyItemRunner">
+			<item taskName="hspt">
+				<args>
+					<arg>id</arg>
+				</args>
+			</item>
+			<item taskName="ivp">
+				<args>
+					<arg>id</arg>
+				</args>
+			</item>		
+			<item taskName="ivp_agent">
+				<args>
+					<arg>id</arg>
+				</args>
+			</item>				
+			<item taskName="ivp_dtu">
+				<args>
+					<arg>bid</arg>
+					<arg>nid</arg>
+				</args>
+			</item>		
+			<item taskName="ivp_event_def">
+				<args>
+					<arg>id</arg>
+				</args>
+			</item>
+			<item taskName="ivp_raw">
+				<args>
+					<arg>id</arg>
+				</args>
+			</item>
+			<item taskName="ivp_raw_event">
+				<args>
+					<arg>id</arg>
+				</args>
+			</item>
+			<item taskName="ivp_run_memo">
+				<args>
+					<arg>id</arg>
+				</args>
+			</item>
+		</job>
+		<job name="MVSDB_IVP_RUN_IDLE" source="IVP1" target="IDLE" itemRunner="ui.tmd.zztop.TxTableItemRunner">
+			<item taskName="ivp_run">
+				<args>
+					<arg>created_time</arg>
+				</args>
+			</item>
+			<item taskName="ivp_run_memo">
+				<args>
+					<arg>id</arg>
+				</args>
+			</item>
+		</job>
+	</jobSpace>
+	<taskSpace>
+		<task name="hspt">
+			<sourceSelect table="hspt" />
+			<targetUpdate />
+		</task>
+		<task name="ivp">
+			<sourceSelect table="ivp" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_agent">
+			<sourceSelect table="ivp_agent" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_dtu">
+			<sourceSelect table="ivp_dtu" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_event_def">
+			<sourceSelect table="ivp_event_def" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_raw">
+			<sourceSelect table="ivp_raw" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_raw_event">
+			<sourceSelect table="ivp_raw_event" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_run">
+			<sourceSelect table="ivp_run" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_run_memo">
+			<sourceSelect table="ivp_run_memo" />
+			<targetUpdate />
+		</task>
+	</taskSpace>
+	<tableSpace />
+	<databaseSpace>
+		<database>
+			<id>IDLE</id>
+			<host>0.0.0.0</host>
+			<port>0</port>
+			<dbName></dbName>
+			<user></user>
+			<password></password>
+			<driverClass>uia.tmd.IdleAccess</driverClass>
+		</database>
+		<database>
+			<id>IVP1</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>mvsdb</dbName>
+			<user>huede</user>
+			<password>huede</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+		<database>
+			<id>IVP2</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>mvsdb2</dbName>
+			<user>huede</user>
+			<password>huede</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+	</databaseSpace>
+</tmd>

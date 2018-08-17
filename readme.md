@@ -3,9 +3,9 @@ Data Migration Tool
 
 [Chinese](readme_tw.md)
 
-This API can move specific rows and their relative data from one source to another depending on customize definition.
+The purpose of this package is to move specific rows and their relative data from one source to another depending on customize definition.
 
-If tables don't have primary keys, this API provides extra configuration to redefine them.
+If tables don't have primary keys, this package provides extra configuration to redefine.
 
 - [Tutorial](tutorial.md)
 - XML Design Concept

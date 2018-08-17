@@ -6,15 +6,15 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import uia.tmd.model.xml.DbServerType;
+import uia.tmd.model.xml.DatabaseType;
 import uia.tmd.ui.NaviPanel;
-import uia.tmd.ui.edit.DbServerEditPanel;
+import uia.tmd.ui.edit.DatabaseEditPanel;
 
 public class DbServerNodeValue implements NodeValue {
 
-    public final DbServerType db;
+    public final DatabaseType db;
 
-    public DbServerNodeValue(DbServerType db) {
+    public DbServerNodeValue(DatabaseType db) {
         this.db = db;
     }
 
@@ -29,7 +29,7 @@ public class DbServerNodeValue implements NodeValue {
     }
 
     @Override
-    public void appendNode(NaviPanel naviPanel) {
+    public void append(NaviPanel naviPanel) {
 
     }
 
@@ -38,11 +38,11 @@ public class DbServerNodeValue implements NodeValue {
         LinkedHashMap<String, String> props = new LinkedHashMap<String, String>();
         props.put("Node Type", "DB Server");
         props.put("Name", this.db.getId());
-        props.put("DB Type", this.db.getDbType());
+        props.put("Driver", this.db.getDriverClass());
         props.put("Host", this.db.getHost());
         props.put("Port", "" + this.db.getPort());
         props.put("Database", this.db.getDbName());
-        props.put("Suser", this.db.getUser());
+        props.put("User", this.db.getUser());
         naviPanel.updateProperties(props);
         naviPanel.nodeSelected(this.db);
     }
@@ -69,7 +69,7 @@ public class DbServerNodeValue implements NodeValue {
 
     @Override
     public boolean edit(NaviPanel naviPanel) {
-        DbServerEditPanel panel = new DbServerEditPanel();
+        DatabaseEditPanel panel = new DatabaseEditPanel();
         panel.load(this.db);
         int code = JOptionPane.showConfirmDialog(naviPanel.getFrame(), panel, "Configure Database Server", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (code == JOptionPane.YES_OPTION) {

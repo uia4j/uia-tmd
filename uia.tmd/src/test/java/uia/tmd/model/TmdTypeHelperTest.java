@@ -1,17 +1,12 @@
 package uia.tmd.model;
 
 import java.io.File;
-import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import uia.tmd.model.xml.ColumnType;
-import uia.tmd.model.xml.CriteriaType;
-import uia.tmd.model.xml.DbServerType;
+import uia.tmd.model.xml.JobType;
 import uia.tmd.model.xml.PlanType;
-import uia.tmd.model.xml.SourceSelectType;
-import uia.tmd.model.xml.TableType;
-import uia.tmd.model.xml.TargetUpdateType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.model.xml.TmdType;
 
@@ -19,79 +14,55 @@ public class TmdTypeHelperTest {
 
     @Test
     public void testSample() throws Exception {
-        TmdType tmd = TmdTypeHelper.load(new File(TmdTypeHelperTest.class.getResource("sample2.xml").toURI()));
-        for (TaskType t : tmd.getTaskSpace().getTask()) {
-            System.out.println("-------------------------------------------");
-            System.out.println("task: " + t.getName());
+        TmdType tmd = TmdTypeHelper.load(new File(TmdTypeHelperTest.class.getResource("Sample.xml").toURI()));
 
-            print(t.getSourceSelect());
-            print(t.getTargetUpdate());
-            if (t.getNext() != null) {
-                for (PlanType p : t.getNext().getPlan()) {
-                    print(p);
-                }
-            }
+        Assert.assertEquals(3, tmd.getJobSpace().getJob().size());
+        JobType job1 = tmd.getJobSpace().getJob().get(0);   // '>'
+        Assert.assertEquals(
+                "SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 90)",
+                job1.getItem().get(0).getWhere());
+        JobType job2 = tmd.getJobSpace().getJob().get(1);   // translate '&lt;' to '<'
+        Assert.assertEquals(
+                "SITE='1020' and ACTUAL_COMP_DATE is not null and now()<add_days(ACTUAL_COMP_DATE, 90)",
+                job2.getItem().get(0).getWhere());
+        JobType job3 = tmd.getJobSpace().getJob().get(2);
+        Assert.assertEquals(3, job3.getItem().size());
 
-            System.out.println();
-        }
-        for (TableType tt : tmd.getTableSpace().getTable()) {
-            System.out.println(tt.getName() + ", pk:" + tt.getPk().getName());
-        }
+        Assert.assertEquals(4, tmd.getTaskSpace().getTask().size());
+        // Task1
+        TaskType task1 = tmd.getTaskSpace().getTask().get(0);
+        Assert.assertEquals("TABLE1", task1.getSourceSelect().getTable());
+        Assert.assertNotNull(task1.getTargetUpdate());
+        Assert.assertNull(task1.getNext());
 
-        for (DbServerType svr : tmd.getDatabaseSpace().getDbServer()) {
-            System.out.println(svr.getId() + ":" + svr.getHost());
-        }
-    }
+        // Task2
+        TaskType task2 = tmd.getTaskSpace().getTask().get(1);
+        Assert.assertEquals("SOURCE_TABLE2", task2.getSourceSelect().getTable());
+        Assert.assertEquals("TARGET_TABLE2", task2.getTargetUpdate().getTable());
+        Assert.assertEquals(3, task2.getTargetUpdate().getColumnMapping().getColumn().size());
+        Assert.assertNull(task2.getNext());
 
-    private void print(PlanType plan) {
-        System.out.println("");
-        System.out.println("plan:" + plan.getTaskName());
-        if (plan.getRule() != null) {
-            for (CriteriaType criteria : plan.getRule().getCriteria()) {
-                System.out.println("  criteria: " + criteria.getColumn() + "='" + criteria.getValue() + "'");
-            }
-        }
-        if (plan.getJoin() != null) {
-            for (ColumnType column : plan.getJoin().getColumn()) {
-                System.out.println("  column: " + column.getValue());
-            }
-        }
-        if (plan.getWhere() != null) {
-            for (CriteriaType criteria : plan.getWhere().getCriteria()) {
-                System.out.println("  where: " + criteria.getColumn() + "='" + criteria.getValue() + "'");
-            }
-        }
-    }
+        // Task3
+        TaskType task3 = tmd.getTaskSpace().getTask().get(2);
+        Assert.assertEquals("TABLE3", task3.getSourceSelect().getTable());
+        Assert.assertNull(task3.getTargetUpdate().getColumnMapping());
+        Assert.assertEquals(2, task3.getNext().getPlan().size());
+        Assert.assertEquals("A=?", task3.getNext().getPlan().get(0).getWhere());
+        Assert.assertNotNull(task3.getNext().getPlan().get(1).getWhere());
+        Assert.assertEquals(3, tmd.getDatabaseSpace().getDatabase().size());
+        Assert.assertEquals(1, tmd.getTableSpace().getTable().get(0).getPk().getColumn().size());
+        Assert.assertEquals(2, tmd.getTableSpace().getTable().get(1).getPk().getColumn().size());
+        Assert.assertEquals(2, tmd.getTableSpace().getTable().size());
 
-    private void print(SourceSelectType ss) {
-        System.out.println("  table: " + ss.getTable());
-        System.out.print("    pk: ");
-        if (ss.getPk() != null) {
-            for (String name : ss.getPk().getName()) {
-                System.out.print(name + ",");
-            }
-        }
-        System.out.println();
-    }
+        // Task4
+        TaskType task4 = tmd.getTaskSpace().getTask().get(3);
+        PlanType plan4 = task4.getNext().getPlan().get(0);
+        Assert.assertEquals("A=? and B=? and C like ? and D ? between ?", plan4.getWhere());
+        Assert.assertEquals(5, plan4.getParam().size());
+        Assert.assertNotNull(plan4.getParam().get(0).getSourceColumn());
+        Assert.assertNull(plan4.getParam().get(0).getText());
+        Assert.assertNull(plan4.getParam().get(0).getPrefix());
+        Assert.assertNull(plan4.getParam().get(0).getPostfix());
 
-    private void print(TargetUpdateType ts) {
-        System.out.println("  table: " + ts.getTable());
-        System.out.print("    pk: ");
-        if (ts.getPk() != null) {
-            for (String name : ts.getPk().getName()) {
-                System.out.print(name + ",");
-            }
-        }
-        System.out.println();
-        System.out.println("    columns: ");
-        if (ts.getColumns() != null) {
-            print(ts.getColumns().getColumn());
-        }
-    }
-
-    private void print(List<ColumnType> columns) {
-        for (ColumnType c : columns) {
-            System.out.println("      " + c.getValue() + "(source=" + c.getSource() + ") pk=" + c.isPk());
-        }
     }
 }

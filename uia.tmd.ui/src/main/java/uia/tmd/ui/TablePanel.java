@@ -20,8 +20,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import uia.tmd.model.xml.DbServerType;
-import uia.tmd.model.xml.TableType;
+import uia.tmd.model.xml.AbstractTableType;
+import uia.tmd.model.xml.DatabaseType;
 
 public class TablePanel extends JPanel {
 
@@ -33,18 +33,18 @@ public class TablePanel extends JPanel {
 
     private JButton addButton;
 
-    private JComboBox dbServverBox;
+    private JComboBox<String> dbServverBox;
 
     private JTable listTable;
 
     private JTable pkeyTable;
 
-    private List<TableType> data;
+    private List<AbstractTableType> data;
 
-    private TableType selectedItem;
+    private AbstractTableType selectedItem;
 
     public TablePanel() {
-        this.data = new ArrayList<TableType>();
+        this.data = new ArrayList<AbstractTableType>();
 
         setLayout(new BorderLayout(0, 0));
         setPreferredSize(new Dimension(WIDTH, 400));
@@ -68,7 +68,7 @@ public class TablePanel extends JPanel {
         });
         toolbarPanel.add(this.addButton);
 
-        this.dbServverBox = new JComboBox();
+        this.dbServverBox = new JComboBox<String>();
         this.dbServverBox.setBounds(40, 3, 195, 24);
         toolbarPanel.add(this.dbServverBox);
 
@@ -117,12 +117,12 @@ public class TablePanel extends JPanel {
     }
 
     public void load() {
-        this.data = new ArrayList<TableType>(this.frame.getTaskFactory().getTables().values());
+        this.data = new ArrayList<AbstractTableType>(this.frame.getTaskFactory().getTables().values());
         this.listTable.updateUI();
         this.listTable.getSelectionModel().setSelectionInterval(0, 0);
 
-        List<DbServerType> dbs = this.frame.getTaskFactory().getTmd().getDatabaseSpace().getDbServer();
-        for (DbServerType db : dbs) {
+        List<DatabaseType> dbs = this.frame.getTaskFactory().getTmd().getDatabaseSpace().getDatabase();
+        for (DatabaseType db : dbs) {
             this.dbServverBox.addItem(db.getId());
         }
         this.dbServverBox.setSelectedIndex(0);
@@ -132,7 +132,7 @@ public class TablePanel extends JPanel {
             return;
         }
         try {
-            DbServerType server = this.frame.getTaskFactory().getTmd().getDatabaseSpace().getDbServer().get(i);
+            DatabaseType server = this.frame.getTaskFactory().getTmd().getDatabaseSpace().getDatabase().get(i);
             if (server == null) {
                 return;
             }
@@ -215,10 +215,7 @@ public class TablePanel extends JPanel {
             if (TablePanel.this.selectedItem == null) {
                 return 0;
             }
-            if (TablePanel.this.selectedItem.getPk() == null) {
-                return 0;
-            }
-            return TablePanel.this.selectedItem.getPk().getName().size();
+            return 0;
         }
 
         @Override
@@ -226,10 +223,7 @@ public class TablePanel extends JPanel {
             if (TablePanel.this.selectedItem == null || rowIndex < 0) {
                 return null;
             }
-            if (TablePanel.this.selectedItem.getPk() == null) {
-                return null;
-            }
-            return TablePanel.this.selectedItem.getPk().getName().get(rowIndex);
+            return null;
         }
     }
 }

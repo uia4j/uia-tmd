@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd xmlns="http://tmd.uia/model/xml">
+	<jobSpace>
+		<job name="MVSDB_ALL_IDLE" source="IVP1" target="IDLE">
+			<item taskName="hspt" />
+			<item taskName="ivp" />		
+			<item taskName="ivp_agent" />		
+			<item taskName="ivp_event_def" />		
+			<item taskName="ivp_raw" />		
+			<item taskName="ivp_raw_event" />		
+			<item taskName="ivp_run" driverName="uia.tmd.impl.MyItemRunner">
+				<args>
+					<arg>created_time</arg>
+				</args>
+			</item>
+			<item taskName="ivp_run_memo" />		
+		</job>
+		<job name="MVSDB_ALL_IVP2" source="IVP1" target="IVP2">
+			<item taskName="hspt" />
+			<item taskName="ivp" />		
+			<item taskName="ivp_agent" />		
+			<item taskName="ivp_event_def" />		
+			<item taskName="ivp_raw" />		
+			<item taskName="ivp_raw_event" />		 
+			<item taskName="ivp_run" driverName="uia.tmd.impl.MyItemRunner">
+				<args>
+					<arg>created_time</arg>
+				</args>
+			</item>
+			<item taskName="ivp_run_memo" />		
+		</job>
+	</jobSpace>
+	<taskSpace>
+		<task name="hspt">
+			<sourceSelect table="hspt" />
+			<targetUpdate />
+		</task>
+		<task name="ivp">
+			<sourceSelect table="ivp" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_agent">
+			<sourceSelect table="ivp_agent" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_event_def">
+			<sourceSelect table="ivp_event_def" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_raw">
+			<sourceSelect table="ivp_raw" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_raw_event">
+			<sourceSelect table="ivp_raw_event" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_run">
+			<sourceSelect table="ivp_run" />
+			<targetUpdate />
+		</task>
+		<task name="ivp_run_memo">
+			<sourceSelect table="ivp_run_memo" />
+			<targetUpdate />
+		</task>
+	</taskSpace>
+	<tableSpace />
+	<databaseSpace>
+		<database>
+			<id>IDLE</id>
+			<host>0.0.0.0</host>
+			<port>0</port>
+			<dbName></dbName>
+			<user></user>
+			<password></password>
+			<driverClass>uia.tmd.IdleAccess</driverClass>
+		</database>
+		<database>
+			<id>IVP1</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>mvsdb</dbName>
+			<user>huede</user>
+			<password>huede</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+		<database>
+			<id>IVP2</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>mvsdb2</dbName>
+			<user>huede</user>
+			<password>huede</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+	</databaseSpace>
+</tmd>
