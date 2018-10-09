@@ -24,6 +24,16 @@ public final class TaskRunner {
     public TaskRunner(JobRunner jobRunner) {
         this.jobRunner = jobRunner;
     }
+    
+    public List<Map<String, Object>> selectSource(final TaskType task, final String parentPath, String where, SourceSelectFilter filter)  throws SQLException {
+        // <sourceSelect>
+        SourceSelectType sourceSelect = task.getSourceSelect();
+        List<Map<String, Object>> sourceRows = this.jobRunner.sourceAccess.select(sourceSelect.getTable(), where);
+        if (filter != null) {
+            sourceRows = filter.accept(sourceRows);
+        }
+        return sourceRows;
+    }
 
     public void run(final TaskType task, final String parentPath, String where, SourceSelectFilter filter) throws SQLException {
         // <sourceSelect>

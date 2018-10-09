@@ -23,6 +23,14 @@ public class TxKeyDao {
     public TxKeyDao(Connection conn) {
         this.conn = conn;
     }
+    
+    public int count() throws SQLException {
+        try (PreparedStatement ps = this.conn.prepareStatement("select count(*) from zzt_tx_key")) {
+        	ResultSet rs = ps.executeQuery();
+        	rs.next();
+        	return rs.getInt(1);
+        }
+    }
 
     public int insert(TxKey data) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {
@@ -35,6 +43,9 @@ public class TxKeyDao {
     }
 
     public int insert(List<TxKey> dataList) throws SQLException {
+    	if(dataList.size() == 0) {
+    		return 0;
+    	}
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {
             for (TxKey data : dataList) {
                 ps.setString(1, data.getId());
@@ -58,6 +69,9 @@ public class TxKeyDao {
     }
 
     public int update(List<TxKey> dataList) throws SQLException {
+    	if(dataList.size() == 0) {
+    		return 0;
+    	}
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_UPD)) {
             for (TxKey data : dataList) {
                 ps.setTimestamp(1, new Timestamp(data.getTxTime().getTime()));

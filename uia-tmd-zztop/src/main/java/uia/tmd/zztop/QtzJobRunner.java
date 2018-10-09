@@ -1,4 +1,4 @@
-package ui.tmd.zztop;
+package uia.tmd.zztop;
 
 import java.io.File;
 import java.sql.Connection;
@@ -73,12 +73,12 @@ public class QtzJobRunner implements JobListener, TaskListener {
     public void run(String jobName, String sqlWhere) throws Exception {
         TaskFactory factory = new TaskFactory(new File(this.filePath));
 
-        JobRunner executor = factory.createRunner(jobName);
+        JobRunner runner = factory.createRunner(jobName);
 
         this.execJob = new ExecJob();
-        this.execJob.setTmdJobBo(executor.getJobName());
-        this.execJob.setDatabaseSource(executor.getDatabaseSource());
-        this.execJob.setDatabaseTarget(executor.getDatabaseTarget());
+        this.execJob.setTmdJobBo(runner.getJobName());
+        this.execJob.setDatabaseSource(runner.getDatabaseSource());
+        this.execJob.setDatabaseTarget(runner.getDatabaseTarget());
         try {
             this.execJobDao.insert(this.execJob);
         }
@@ -86,9 +86,9 @@ public class QtzJobRunner implements JobListener, TaskListener {
             throw e;
         }
 
-        executor.addJobListener(this);
-        executor.addTaskListener(this);
-        executor.run(sqlWhere);
+        runner.addJobListener(this);
+        runner.addTaskListener(this);
+        runner.run(sqlWhere);
     }
 
     @Override

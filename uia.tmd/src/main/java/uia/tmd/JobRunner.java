@@ -58,6 +58,12 @@ public final class JobRunner {
         this.taskListeners = new ArrayList<TaskListener>();
         this.txPool = new TxPool(jobType.getName());
     }
+    
+    public void commit() throws SQLException {
+    	this.txPool.commitInsert(this.targetAccess);
+    	this.txPool.commitDelete(this.sourceAccess);
+    	this.txPool.clear();
+    }
 
     public List<String> pkInSource(String tableName) throws SQLException {
         return this.sourceAccess.prepareTable(tableName)
@@ -164,6 +170,11 @@ public final class JobRunner {
 
             }
         }
+    }
+    
+    @Override
+    public String toString() {
+    	return this.jobType.getName() +", items:" + this.jobType.getItem().size();
     }
 
     void raiseItemBegin(JobEvent event) {

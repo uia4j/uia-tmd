@@ -27,6 +27,7 @@ public class TxPool {
 
     public void clear() {
         this.insertTarget.clear();
+        this.deleteSource.clear();
     }
 
     public synchronized void insert(String tableName, List<Map<String, Object>> rows) {
@@ -59,12 +60,15 @@ public class TxPool {
 
     public synchronized void commitInsert(DataAccess access) throws SQLException {
         LOGGER.info("tmd> " + this.jobName + "> target batch commit:" + this.insertTarget.size());
+        if(this.insertTarget.size() == 0) {
+        	return;
+        }
         try {
             access.beginTx();
             for (Map.Entry<String, List<Map<String, Object>>> e : this.insertTarget.entrySet()) {
                 String tableName = e.getKey();
                 List<Map<String, Object>> rows = e.getValue();
-                access.insert(tableName, rows);
+            	access.insert(tableName, rows);
             }
             access.commit();
         }
@@ -76,12 +80,15 @@ public class TxPool {
 
     public synchronized void commitDelete(DataAccess access) throws SQLException {
         LOGGER.info("tmd> " + this.jobName + "> source batch delete:" + this.deleteSource.size());
+        if(this.deleteSource.size() == 0) {
+        	return;
+        }
         try {
             access.beginTx();
             for (Map.Entry<String, List<Map<String, Object>>> e : this.deleteSource.entrySet()) {
                 String tableName = e.getKey();
                 List<Map<String, Object>> rows = e.getValue();
-                access.delete(tableName, rows);
+            	access.delete(tableName, rows);
             }
             access.commit();
         }

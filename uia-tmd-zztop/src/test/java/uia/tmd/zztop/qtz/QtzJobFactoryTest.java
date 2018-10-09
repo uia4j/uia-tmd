@@ -2,7 +2,7 @@ package uia.tmd.zztop.qtz;
 
 import org.junit.Test;
 
-import ui.tmd.zztop.qtz.QtzJobFactory;
+import uia.tmd.zztop.qtz.QtzJobFactory;
 
 public class QtzJobFactoryTest {
 

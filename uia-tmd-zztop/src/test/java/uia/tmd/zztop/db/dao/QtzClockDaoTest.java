@@ -2,10 +2,9 @@ package uia.tmd.zztop.db.dao;
 
 import org.junit.Test;
 
+import uia.tmd.zztop.DB;
+import uia.tmd.zztop.ZztopEnv;
 import uia.tmd.zztop.db.QtzClock;
-
-import ui.tmd.zztop.DB;
-import ui.tmd.zztop.ZztopEnv;
 
 public class QtzClockDaoTest {
 

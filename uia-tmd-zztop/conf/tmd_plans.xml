@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd xmlns="http://tmd.uia/model/xml">
 	<jobSpace>
-		<job name="SHOP_ORDER" source="HANA_PROD" target="HANA_ARCHIVE_TEST" itemRunner="ui.tmd.zztop.TxKeyItemRunner">
-			<item taskName="SHOP_ORDER" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 140)" />
+		<job name="SHOP_ORDER" source="HANA_PROD" target="HANA_ARCHIVE_TEST" itemRunner="ui.tmd.zztop.OneByOneItemRunner">
+			<item taskName="SHOP_ORDER" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 170)" />
+		</job>
+		<job name="SHOP_ORDER_TEST" source="HANA_PROD" target="PG_ARCHIVE" itemRunner="ui.tmd.zztop.OneByOneItemRunner">
+			<item taskName="SHOP_ORDER" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 170)" />
 		</job>
 		<job name="SHOP_ORDER_DELETE" source="HANA_ARCHIVE_TEST" sourceDelete="true" target="IDLE" itemRunner="ui.tmd.zztop.TxKeyItemRunner">
 			<item taskName="SHOP_ORDER" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 140)" />
 		</job>
-		<job name="PKG_CONTAINER" source="HANA_PROD" target="HANA_ARCHIVE_TEST" desc="" itemRunner="ui.tmd.zztop.TxKeyItemRunner">
+		<job name="PKG_CONTAINER" source="HANA_PROD" target="HANA_ARCHIVE_TEST" itemRunner="ui.tmd.zztop.TxKeyItemRunner">
 			<item taskName="ZR_PKG_CONTAINER" where="STATE_NAME in ('IN_STOCK') and now()>add_days(PACKING_TIME, 100)" />
 		</job>
 		<job name="PMS_LOG" source="HANA_TEST" target="PGSVR" itemRunner="ui.tmd.zztop.TxTableItemRunner">
@@ -27,7 +30,7 @@
 				</args>
 			</item>
 		</job>
-		<job name="PMS_TX" source="HANA_TEST" target="PGSVR" desc="" itemRunner="ui.tmd.zztop.TxHistoryItemRunner">
+		<job name="PMS_TX" source="HANA_TEST" target="PGSVR" itemRunner="ui.tmd.zztop.TxHistoryItemRunner">
 			<item taskName="Z_PMS_JOB" where="JOB_STATUS='COMPLETE'">
 				<args>
 					<arg>COMPLETE_DATE_TIME</arg>
@@ -58,7 +61,7 @@
 			<sourceSelect table="HOLD_DETAIL" />
 			<targetUpdate />
 			<next>
-				<plan taskName="ZR_HOLD_SFC" where="HOLD_DETAIL_BO=?" desc="Logs of this shop order">
+				<plan taskName="ZR_HOLD_SFC" where="HOLD_DETAIL_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
 			</next>
@@ -67,19 +70,22 @@
 			<sourceSelect table="SHOP_ORDER" />
 			<targetUpdate />
 			<next>
-				<plan taskName="ACTIVITY_LOG" where="SHOP_ORDER_BO=?" desc="Logs of this shop order">
+				<plan taskName="ACTIVITY_LOG" where="SHOP_ORDER_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="SHOP_ORDER_SFC" where="SHOP_ORDER_BO=?" desc="Logs of this shop order">
+				<plan taskName="SHOP_ORDER_SFC" where="SHOP_ORDER_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="SFC" where="SHOP_ORDER_BO=?" desc="SFCs in this shop order">
+				<plan taskName="SFC" where="SHOP_ORDER_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZD_CUSTOMER_ITEM" where="SHOP_ORDER_BO=?" desc="Wafers in this shop order">
+				<plan taskName="ZD_SHOP_ORDER_ITEMSET" where="SHOP_ORDER_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_SHOP_ORDER_ITEMSET_LOG" where="SHOP_ORDER_BO=?" desc="Logs">
+				<plan taskName="ZD_CUSTOMER_ITEM" where="SHOP_ORDER_BO=?">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZR_SHOP_ORDER_ITEMSET_LOG" where="SHOP_ORDER_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
 			</next>
@@ -92,115 +98,144 @@
 			<sourceSelect table="ACTIVITY_LOG" />
 			<targetUpdate />
 		</task>
-		<task name="SFC" desc="Sync SFCs">
+		<task name="SFC">
 			<sourceSelect table="SFC" />
 			<targetUpdate />
 			<next>
                 <!-- WIP -->
-				<plan taskName="SFC_BOM" where="SFC_BO=?" desc="SFC BOM information">
+				<plan taskName="SFC_ID_HISTORY" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="SFC_ROUTING" where="SFC_BO=?" desc="SFC routing">
+				<plan taskName="SFC_BOM" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="HOLD_DETAIL" where="HOLD_CONTEXT_G_BO=?" desc="Hold information">
+				<plan taskName="SFC_ROUTING" where="SFC_BO=?">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="HOLD_DETAIL" where="HOLD_CONTEXT_G_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
                 <!-- HTKS -->
-				<plan taskName="ZD_SFC" where="SFC_BO=?" desc="SFC extension information">
+				<plan taskName="ZD_SFC" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_BINMAP_COMBINE" where="SFC_BO=?" desc="SFC_STEP extension information">
+				<plan taskName="ZR_BINMAP_COMBINE" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_DC_RESULT" where="SFC_BO=?" desc="Data collection result">
+				<plan taskName="ZR_DC_RESULT" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_DISPATCH_SFC" where="SFC_BO=?" desc="SFC_STEP extension information">
+				<plan taskName="ZR_DISPATCH_SFC" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_RUN_DEFECT" where="SFC_BO=?" desc="">
+				<plan taskName="ZR_RUN_DEFECT" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_RUN_JUMP" where="RUN_SFC_BO=?" desc="">
+				<plan taskName="ZR_RUN_JUMP" where="RUN_SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_RUN_MT_SFC" where="SFC_BO=?" desc="">
+				<plan taskName="ZR_RUN_MT_SFC" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_RUN_SFC" where="SFC_BO=?" desc="SFC run data">
+				<plan taskName="ZR_RUN_SFC" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_RUN_SPLIT_MERGE" where="BEF_SOURCE_SFC_BO=?" desc="Wafer run data">
+				<plan taskName="ZR_RUN_SPLIT_MERGE" where="BEF_SOURCE_SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_SAMPLING_RESULT" where="SFC_BO=?" desc="Wafer run data">
+				<plan taskName="ZR_SAMPLING_RESULT" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_BINMAP_COMBINE" where="SFC_BO=?" desc="SFC binmap">
+				<plan taskName="ZR_BINMAP_COMBINE" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_SFC_LOG" where="SFC_BO=?" desc="SFC logs">
+				<plan taskName="ZR_SFC_LOG" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_SPC_ALARM" where="SFC_BO=?" desc="SFC logs">
+				<plan taskName="ZR_SPC_ALARM" where="SFC_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
-				<plan taskName="ZR_SPC_ALARM_MAIL" where="SFC=?" desc="SFC logs">
+				<plan taskName="ZR_SPC_ALARM_DATA" where="SFC=?">
 					<param sourceColumn="SFC" />
 				</plan>
+				<plan taskName="ZR_SPC_ALARM_DATA_MASTER" where="SFC=?">
+					<param sourceColumn="SFC" />
+				</plan>
+				<plan taskName="ZR_SPC_ALARM_MAIL" where="SFC=?">
+					<param sourceColumn="SFC" />
+				</plan>
+				<plan taskName="ZR_HOLD_RELEASE_SFC" where="SFC_BO=?">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZR_HOLD_RELEASE_SFC_ITEM" where="SFC_BO=?">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZR_HOLD_RELEASE_SFC_ITEM_STATE" where="SFC_BO=?">
+					<param sourceColumn="HANDLE" />
+				</plan>
+				<plan taskName="ZR_SFC_MEMO" where="SFC_BO=?">
+					<param sourceColumn="HANDLE" />
+				</plan>
 			</next>
+		</task>
+		<task name="SFC_ID_HISTORY">
+			<sourceSelect table="SFC_ID_HISTORY" />
+			<targetUpdate />
 		</task>
 		<task name="SFC_BOM">
 			<sourceSelect table="SFC_BOM" />
 			<targetUpdate />
 		</task>
-		<task name="SFC_ROUTING" desc="Sync SFC routing">
+		<task name="SFC_ROUTING">
 			<sourceSelect table="SFC_ROUTING" />
 			<targetUpdate />
 			<next>
-				<plan taskName="SFC_ROUTER" where="SFC_ROUTING_BO=?" desc="SFC router">
+				<plan taskName="SFC_ROUTER" where="SFC_ROUTING_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
 			</next>
 		</task>
-		<task name="SFC_ROUTER" desc="Sync SFC router">
+		<task name="SFC_ROUTER">
 			<sourceSelect table="SFC_ROUTER" />
 			<targetUpdate />
 			<next>
-				<plan taskName="SFC_STEP" where="SFC_ROUTER_BO=?" desc="SFC routing">
+				<plan taskName="SFC_STEP" where="SFC_ROUTER_BO=?">
 					<param sourceColumn="HANDLE" />
 				</plan>
 			</next>
 		</task>
-		<task name="SFC_STEP" desc="Sync SFC steps">
+		<task name="SFC_STEP">
 			<sourceSelect table="SFC_STEP" />
 			<targetUpdate />
 		</task>
 
+		<task name="ZD_SHOP_ORDER_ITEMSET">
+			<sourceSelect table="ZD_SHOP_ORDER_ITEMSET" />
+			<targetUpdate />
+		</task>
 		<task name="ZD_CUSTOMER_ITEM">
 			<sourceSelect table="ZD_CUSTOMER_ITEM" />
 			<targetUpdate />
             <next>
-				<plan taskName="ZD_SFC_ITEM" where="CUSTOMER_ITEM_BO=?" desc="SFC handles this wafer">
+				<plan taskName="ZD_SFC_ITEM" where="CUSTOMER_ITEM_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZD_SFC_ITEM_GRADE" where="CUSTOMER_ITEM_BO=?" desc="Wafer grade">
+				<plan taskName="ZD_SFC_ITEM_GRADE" where="CUSTOMER_ITEM_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_CUSTOMER_ITEM_DEFECT" where="CUSTOMER_ITEM_BO=?" desc="Wafer defect">
+				<plan taskName="ZR_CUSTOMER_ITEM_DEFECT" where="CUSTOMER_ITEM_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_CUSTOMER_ITEM_GRADE" where="CUSTOMER_ITEM_BO=?" desc="Wafer grade">
+				<plan taskName="ZR_CUSTOMER_ITEM_GRADE" where="CUSTOMER_ITEM_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_SAMPLING_RESULT_DETAIL" where="CUSTOMER_ITEM_BO=?" desc="">
+				<plan taskName="ZR_SAMPLING_RESULT_DETAIL" where="CUSTOMER_ITEM_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_RUN_SFC_ITEM" where="CUSTOMER_ITEM_BO=?" desc="Wafer run data">
+				<plan taskName="ZR_RUN_SFC_ITEM" where="CUSTOMER_ITEM_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_RUN_SPLIT_MERGE_ITEM" where="CUSTOMER_ITEM_BO=?" desc="Log of split and merge">
+				<plan taskName="ZR_RUN_SPLIT_MERGE_ITEM" where="CUSTOMER_ITEM_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
             </next>
@@ -245,13 +280,13 @@
 			<sourceSelect table="ZR_DC_RESULT" />
 			<targetUpdate />
 			<next>
-				<plan taskName="ZR_DC_RESULT_DETAIL" where="DC_RESULT_BO=?" desc="">
+				<plan taskName="ZR_DC_RESULT_DETAIL" where="DC_RESULT_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_DC_RESULT_RAW" where="DC_RESULT_BO=?" desc="">
+				<plan taskName="ZR_DC_RESULT_RAW" where="DC_RESULT_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_DC_RESULT_STAT" where="DC_RESULT_BO=?" desc="">
+				<plan taskName="ZR_DC_RESULT_STAT" where="DC_RESULT_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
 			</next>
@@ -276,10 +311,10 @@
 			<sourceSelect table="ZR_HOLD_RELEASE" />
 			<targetUpdate />
 			<next>
-				<plan taskName="ZR_HOLD_RELEASE_SFC" where="HOLD_RELEASE_BO=?" desc="">
+				<plan taskName="ZR_HOLD_RELEASE_SFC" where="HOLD_RELEASE_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_HOLD_RELEASE_SFC_ITEM" where="HOLD_RELEASE_BO=?" desc="">
+				<plan taskName="ZR_HOLD_RELEASE_SFC_ITEM" where="HOLD_RELEASE_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
 			</next>
@@ -304,13 +339,16 @@
 			<sourceSelect table="ZR_PKG_CONTAINER" />
 			<targetUpdate />
 			<next>
-				<plan taskName="ZR_PKG_CONTAINER_LOG" where="ID=?" desc="">
+				<plan taskName="ZR_PKG_CONTAINER_LOG" where="ID=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_PKG_CONTAINER_LABEL" where="CONTAINER_BO=?" desc="">
+				<plan taskName="ZR_PKG_CONTAINER_LABEL" where="CONTAINER_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
-				<plan taskName="ZR_PKG_CONTAINER_SFC" where="CONTAINER_BO=?" desc="">
+				<plan taskName="ZR_PKG_CONTAINER_SFC" where="CONTAINER_BO=?">
+					<param sourceColumn="ID" />
+				</plan>
+				<plan taskName="ZR_PKG_CONTAINER_SFC_LOG" where="CONTAINER_BO=?">
 					<param sourceColumn="ID" />
 				</plan>
 			</next>
@@ -371,12 +409,24 @@
 			<sourceSelect table="ZR_SFC_LOG" />
 			<targetUpdate />
 		</task>
+		<task name="ZR_SFC_MEMO">
+			<sourceSelect table="ZR_SFC_MEMO" />
+			<targetUpdate />
+		</task>
 		<task name="ZR_SHOP_ORDER_ITEMSET_LOG">
 			<sourceSelect table="ZR_SHOP_ORDER_ITEMSET_LOG" />
 			<targetUpdate />
 		</task>
 		<task name="ZR_SPC_ALARM">
 			<sourceSelect table="ZR_SPC_ALARM" />
+			<targetUpdate />
+		</task>
+		<task name="ZR_SPC_ALARM_DATA">
+			<sourceSelect table="ZR_SPC_ALARM_DATA" />
+			<targetUpdate />
+		</task>
+		<task name="ZR_SPC_ALARM_DATA_MASTER">
+			<sourceSelect table="ZR_SPC_ALARM_DATA_MASTER" />
 			<targetUpdate />
 		</task>
 		<task name="ZR_SPC_ALARM_MAIL">
@@ -480,6 +530,11 @@
 				<column>HANDLE</column>
 			</pk>
 		</table>
+		<table name="SFC_ID_HISTORY">
+			<pk>
+				<column>HANDLE</column>
+			</pk>
+		</table>
 		<table name="SFC_ROUTER">
 			<pk>
 				<column>HANDLE</column>
@@ -571,12 +626,12 @@
 			<driverClass>uia.tmd.access.HanaAccess</driverClass>
 		</database>
 		<database>
-			<id>PGSVR</id>
+			<id>PG_ARCHIVE</id>
 			<host>localhost</host>
 			<port>5432</port>
-			<dbName>wip</dbName>
-			<user>wip</user>
-			<password>wip</password>
+			<dbName>wip_arch</dbName>
+			<user>wip_arch</user>
+			<password>wip_arch</password>
 			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
 		</database>
 	</databaseSpace>

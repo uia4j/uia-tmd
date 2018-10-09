@@ -1,4 +1,4 @@
-package ui.tmd.zztop.qtz;
+package uia.tmd.zztop.qtz;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -21,10 +21,9 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+import uia.tmd.zztop.DB;
 import uia.tmd.zztop.db.QtzClock;
 import uia.tmd.zztop.db.dao.QtzClockDao;
-
-import ui.tmd.zztop.DB;
 
 public class QtzJobFactory {
 

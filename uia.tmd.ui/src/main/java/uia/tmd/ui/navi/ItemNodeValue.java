@@ -1,71 +1,67 @@
 package uia.tmd.ui.navi;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
-import uia.tmd.model.xml.JobSpaceType;
+import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.JobType;
 import uia.tmd.ui.NaviPanel;
+import uia.tmd.ui.edit.ExecutorEditPanel;
 
-public class ExecutorSpaceNodeValue implements NodeValue {
+public class ItemNodeValue implements NodeValue {
 
-    private JobSpaceType es;
+    public final ItemType itemType;
 
-    public ExecutorSpaceNodeValue(JobSpaceType es) {
-        this.es = es;
+    public ItemNodeValue(ItemType itemType) {
+        this.itemType = itemType;
     }
 
     @Override
     public String getName() {
-        return "Executor";
+        return this.itemType.getTaskName();
     }
 
     @Override
     public Icon getIcon(boolean nodeSelected) {
-        return new ImageIcon(NodeValue.class.getResource("/resources/images/executorSpace.png"));
+        return new ImageIcon(NodeValue.class.getResource("/resources/images/task.png"));
     }
 
     @Override
-    public boolean appendable(String executorName) {
-        List<JobType> executors = this.es.getJob();
-        for (JobType executor : executors) {
-            if (executorName.equals(executor.getName())) {
-                return false;
-            }
-        }
-        return true;
+    public boolean appendable(String taskName) {
+        return false;
     }
 
     @Override
     public void append(NaviPanel naviPanel) {
-        naviPanel.appendExecutor();
     }
 
     @Override
     public void select(NaviPanel naviPanel) {
         LinkedHashMap<String, String> props = new LinkedHashMap<String, String>();
-        props.put("Node Type", "Executor Space");
+        props.put("Node Type", "Item");
+        props.put("Task", this.itemType.getTaskName());
+        props.put("Driver", this.itemType.getDriverName());
         naviPanel.updateProperties(props);
 
-        naviPanel.nodeSelected(this.es);
+        naviPanel.nodeSelected(this.itemType);
     }
 
     @Override
     public void delete(NaviPanel naviPanel) {
-
+        naviPanel.removeExecutor(this.itemType);
     }
 
     @Override
     public void expand(NaviPanel naviPanel) {
-
+        naviPanel.expandPlan();
     }
 
     @Override
     public void execute(NaviPanel naviPanel) {
-
+    	
     }
 
     @Override
@@ -75,7 +71,6 @@ public class ExecutorSpaceNodeValue implements NodeValue {
 
     @Override
     public String toString() {
-        return "Job List";
+        return this.itemType.getTaskName();
     }
-
 }

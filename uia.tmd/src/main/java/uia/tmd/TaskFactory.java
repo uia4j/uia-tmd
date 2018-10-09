@@ -76,6 +76,10 @@ public class TaskFactory {
         return this.jobs.keySet();
     }
 
+    public JobType getJob(String jobName) {
+        return this.jobs.get(jobName);
+    }
+
     public JobSpaceType getJobs() {
         return this.tmd.getJobSpace();
     }
@@ -128,26 +132,54 @@ public class TaskFactory {
     public void print(String jobName) {
         JobType jobType = this.jobs.get(jobName);
         for (ItemType itemType : jobType.getItem()) {
-            print(itemType.getTaskName(), 0);
+            print(itemType.getTaskName(), 0, "");
         }
     }
 
-    private void print(String taskName, int deep) {
+    public void printTables(String jobName) {
+        JobType jobType = this.jobs.get(jobName);
+        for (ItemType itemType : jobType.getItem()) {
+            printTable(itemType.getTaskName());
+        }
+    }
+
+    private void print(String taskName, int deep, String where) {
+    	String message = "";
         int b = Math.max(0, deep - 3);
         for (int i = 0; i < b; i++) {
-            System.out.print(" ");
+        	message += " ";
         }
         if (deep > 0) {
-            System.out.print("┖");
+        	message += "┖";
         }
         for (int i = b + 1; i < deep; i++) {
-            System.out.print("─");
+        	message += "─";
         }
-        System.out.println(taskName);
         TaskType taskType = getTask(taskName);
+        if(taskType == null) {
+        	System.out.println(String.format("%-40s - >>> NOT FOUND", message + taskName));
+        	return;
+        }
+    	System.out.println(String.format("%-40s , %s", 
+    			message + taskName,
+    			"select * from " + taskType.getSourceSelect().getTable()) + where);
         if (taskType.getNext() != null && taskType.getNext().getPlan() != null) {
             for (PlanType planType : taskType.getNext().getPlan()) {
-                print(planType.getTaskName(), deep + 3);
+                print(planType.getTaskName(), deep + 3, " where " + planType.getWhere());
+            }
+        }
+    }
+
+    private void printTable(String taskName) {
+        TaskType taskType = getTask(taskName);
+        if(taskType == null) {
+        	System.out.println("mssining task:" + taskName);
+        	return;
+        }
+    	System.out.println(taskType.getSourceSelect().getTable());
+        if (taskType.getNext() != null && taskType.getNext().getPlan() != null) {
+            for (PlanType planType : taskType.getNext().getPlan()) {
+                printTable(planType.getTaskName());
             }
         }
     }

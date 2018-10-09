@@ -22,6 +22,14 @@ public class ExecTaskDao {
     public ExecTaskDao(Connection conn) {
         this.conn = conn;
     }
+    
+    public int count() throws SQLException {
+        try (PreparedStatement ps = this.conn.prepareStatement("select count(*) from zzt_exec_task")) {
+        	ResultSet rs = ps.executeQuery();
+        	rs.next();
+        	return rs.getInt(1);
+        }
+    }
 
     public int insert(ExecTask data) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {

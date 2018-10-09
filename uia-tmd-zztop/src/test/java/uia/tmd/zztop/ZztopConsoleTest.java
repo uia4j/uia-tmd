@@ -2,7 +2,7 @@ package uia.tmd.zztop;
 
 import org.junit.Test;
 
-import ui.tmd.zztop.ZztopConsole;
+import uia.tmd.zztop.ZztopConsole;
 
 public class ZztopConsoleTest {
 

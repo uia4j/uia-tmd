@@ -2,8 +2,8 @@ package uia.tmd.zztop;
 
 import org.junit.Test;
 
-import ui.tmd.zztop.DB;
-import ui.tmd.zztop.ZztopEnv;
+import uia.tmd.zztop.DB;
+import uia.tmd.zztop.ZztopEnv;
 
 public class DBTest {
 

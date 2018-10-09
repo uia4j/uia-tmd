@@ -25,6 +25,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import uia.tmd.model.xml.DatabaseSpaceType;
 import uia.tmd.model.xml.DatabaseType;
+import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.JobSpaceType;
 import uia.tmd.model.xml.JobType;
 import uia.tmd.model.xml.PlanType;
@@ -39,6 +40,7 @@ import uia.tmd.ui.navi.DatabaseSpaceNodeValue;
 import uia.tmd.ui.navi.DbServerNodeValue;
 import uia.tmd.ui.navi.ExecutorNodeValue;
 import uia.tmd.ui.navi.ExecutorSpaceNodeValue;
+import uia.tmd.ui.navi.ItemNodeValue;
 import uia.tmd.ui.navi.NodeValue;
 import uia.tmd.ui.navi.PlanNodeValue;
 import uia.tmd.ui.navi.TaskNodeValue;
@@ -274,6 +276,15 @@ public class NaviPanel extends JPanel {
         this.runButton.setEnabled(true);
     }
 
+    public void nodeSelected(ItemType item) {
+        this.selectedDbServer = null;
+        this.selectedTask = null;
+
+        this.addButton.setEnabled(false);
+        this.removeButton.setEnabled(true);
+        this.runButton.setEnabled(true);
+    }
+
     public void nodeSelected(TaskSpaceType ts) {
         this.selectedDbServer = null;
         this.selectedExecutor = null;
@@ -326,20 +337,20 @@ public class NaviPanel extends JPanel {
     public void appendExecutor() {
         ExecutorEditPanel panel = new ExecutorEditPanel();
         panel.load(this.tmdType, null);
-        int button = JOptionPane.showConfirmDialog(this.frame, panel, "Create new executor", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+        int button = JOptionPane.showConfirmDialog(this.frame, panel, "Create new job", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
         if (button == JOptionPane.YES_OPTION) {
             appendExecutor(panel.save());
         }
     }
 
-    public void appendExecutor(JobType executor) {
+    public void appendExecutor(JobType jobType) {
         NodeValue nv = (NodeValue) this.executorSpaceNode.getUserObject();
-        if (!nv.appendable(executor.getName())) {
-            JOptionPane.showMessageDialog(this.frame, executor.getName() + " exists.", "Information", JOptionPane.WARNING_MESSAGE);
+        if (!nv.appendable(jobType.getName())) {
+            JOptionPane.showMessageDialog(this.frame, jobType.getName() + " exists.", "Information", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        this.frame.getTaskFactory().addJob(executor);
-        this.executorSpaceNode.add(new DefaultMutableTreeNode(new ExecutorNodeValue(executor)));
+        this.frame.getTaskFactory().addJob(jobType);
+        this.executorSpaceNode.add(new DefaultMutableTreeNode(new ExecutorNodeValue(jobType)));
 
         this.spaceTree.updateUI();
     }
@@ -347,6 +358,11 @@ public class NaviPanel extends JPanel {
     public void removeExecutor(JobType executor) {
         this.executorSpaceNode.remove(getSelectedTreeNode());
         this.frame.getTaskFactory().removeJob(this.selectedExecutor);
+        this.spaceTree.updateUI();
+    }
+
+    public void removeExecutor(ItemType item) {
+        this.executorSpaceNode.remove(getSelectedTreeNode());
         this.spaceTree.updateUI();
     }
 
@@ -415,6 +431,21 @@ public class NaviPanel extends JPanel {
             getSelectedTreeNode().add(child);
         }
         this.spaceTree.updateUI();
+    }
+
+    public void expandItems() {
+        DefaultMutableTreeNode jobNode = getSelectedTreeNode();
+        jobNode.removeAllChildren();
+
+        NodeValue nv = getSelectedTreeNodeValue();
+        JobType jobType = this.frame.getTaskFactory().getJob(nv.getName());
+        if (jobType == null) {
+            return;
+        }
+        List<ItemType> items= jobType.getItem();
+        for (ItemType item : items) {
+            jobNode.add(new DefaultMutableTreeNode(new ItemNodeValue(item)));
+        }
     }
 
     public void expandPlan() {

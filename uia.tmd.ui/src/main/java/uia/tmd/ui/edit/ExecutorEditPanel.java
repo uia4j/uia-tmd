@@ -21,7 +21,7 @@ public class ExecutorEditPanel extends JPanel {
 
     private static final long serialVersionUID = -7947622814357795549L;
 
-    private JobType executor;
+    private JobType jobType;
 
     private JTextField nameField;
 
@@ -90,35 +90,39 @@ public class ExecutorEditPanel extends JPanel {
         add(itemScroll);
 
         this.itemTable = new JTable(new ItemTableModel());
+        this.itemTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        this.itemTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+        this.itemTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+        this.itemTable.getColumnModel().getColumn(2).setPreferredWidth(500);
         itemScroll.setViewportView(this.itemTable);
     }
 
     public JobType save() {
-        if (this.executor == null) {
-            this.executor = new JobType();
+        if (this.jobType == null) {
+            this.jobType = new JobType();
         }
-        this.executor.setName(this.nameField.getText());
-        this.executor.setSource((String) this.sourceBox.getSelectedItem());
-        this.executor.setTarget((String) this.targetBox.getSelectedItem());
-        this.executor.setDesc(this.descField.getText());
-        this.executor.setSourceDelete(this.deleteBox.isSelected());
-        return this.executor;
+        this.jobType.setName(this.nameField.getText());
+        this.jobType.setSource((String) this.sourceBox.getSelectedItem());
+        this.jobType.setTarget((String) this.targetBox.getSelectedItem());
+        this.jobType.setDesc(this.descField.getText());
+        this.jobType.setSourceDelete(this.deleteBox.isSelected());
+        return this.jobType;
     }
 
-    public void load(TmdType tmd, JobType executor) {
-        this.executor = executor;
+    public void load(TmdType tmd, JobType jobType) {
+        this.jobType = jobType;
 
         for (DatabaseType db : tmd.getDatabaseSpace().getDatabase()) {
             this.sourceBox.addItem(db.getId());
             this.targetBox.addItem(db.getId());
         }
 
-        if (this.executor != null) {
-            this.nameField.setText(this.executor.getName());
-            this.sourceBox.setSelectedItem(this.executor.getSource());
-            this.targetBox.setSelectedItem(this.executor.getTarget());
-            this.descField.setText(this.executor.getDesc());
-            this.deleteBox.setSelected(this.executor.isSourceDelete());
+        if (this.jobType != null) {
+            this.nameField.setText(this.jobType.getName());
+            this.sourceBox.setSelectedItem(this.jobType.getSource());
+            this.targetBox.setSelectedItem(this.jobType.getTarget());
+            this.descField.setText(this.jobType.getDesc());
+            this.deleteBox.setSelected(this.jobType.isSourceDelete());
         }
 
         this.itemTable.updateUI();
@@ -127,35 +131,48 @@ public class ExecutorEditPanel extends JPanel {
     public class ItemTableModel extends AbstractTableModel {
 
         private static final long serialVersionUID = -3433644415472125736L;
-
+        
         @Override
         public int getRowCount() {
-            if (ExecutorEditPanel.this.executor == null) {
+            if (ExecutorEditPanel.this.jobType == null) {
                 return 0;
             }
 
-            if (ExecutorEditPanel.this.executor.getItem() == null) {
+            if (ExecutorEditPanel.this.jobType.getItem() == null) {
                 return 0;
             }
 
-            return ExecutorEditPanel.this.executor.getItem().size();
+            return ExecutorEditPanel.this.jobType.getItem().size();
         }
 
         @Override
+        public String getColumnName(int column) {
+    		switch(column) {
+    			case 0:
+    				return "Task";
+    			case 1:
+    				return "Driver";
+    			case 2:
+    				return "Where";
+    		}
+    		return "";
+    	}
+
+        @Override
         public int getColumnCount() {
-            if (ExecutorEditPanel.this.executor == null) {
+            if (ExecutorEditPanel.this.jobType == null) {
                 return 3;
             }
 
-            if (ExecutorEditPanel.this.executor.getItem() == null) {
+            if (ExecutorEditPanel.this.jobType.getItem() == null) {
                 return 3;
             }
 
-            if (ExecutorEditPanel.this.executor.getItem().size() == 0) {
+            if (ExecutorEditPanel.this.jobType.getItem().size() == 0) {
                 return 3;
             }
 
-            return 3 + ExecutorEditPanel.this.executor.getItem().stream()
+            return 3 + ExecutorEditPanel.this.jobType.getItem().stream()
                     .mapToInt(i -> i.getArgs().getArg() == null ? 0 : i.getArgs().getArg().size())
                     .max()
                     .getAsInt();
@@ -163,26 +180,26 @@ public class ExecutorEditPanel extends JPanel {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            if (ExecutorEditPanel.this.executor == null) {
+            if (ExecutorEditPanel.this.jobType == null) {
                 return null;
             }
 
-            if (ExecutorEditPanel.this.executor.getItem() == null) {
+            if (ExecutorEditPanel.this.jobType.getItem() == null) {
                 return null;
             }
 
-            if (ExecutorEditPanel.this.executor.getItem().size() == 0) {
+            if (ExecutorEditPanel.this.jobType.getItem().size() == 0) {
                 return null;
             }
 
-            ItemType item = ExecutorEditPanel.this.executor.getItem().get(rowIndex);
+            ItemType item = ExecutorEditPanel.this.jobType.getItem().get(rowIndex);
             switch (columnIndex) {
                 case 0:
                     return item.getTaskName();
                 case 1:
                     return item.getDriverName();
                 case 2:
-                    return item.getDesc();
+                    return item.getWhere();
             }
 
             return columnIndex > 2 ? item.getArgs().getArg().get(columnIndex - 3) : null;

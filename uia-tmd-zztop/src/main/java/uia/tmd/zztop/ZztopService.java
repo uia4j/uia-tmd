@@ -1,9 +1,9 @@
-package ui.tmd.zztop;
+package uia.tmd.zztop;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ui.tmd.zztop.qtz.QtzJobFactory;
+import uia.tmd.zztop.qtz.QtzJobFactory;
 
 public final class ZztopService {
 

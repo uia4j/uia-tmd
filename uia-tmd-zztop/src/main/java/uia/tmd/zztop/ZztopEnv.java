@@ -1,5 +1,6 @@
-package ui.tmd.zztop;
+package uia.tmd.zztop;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
@@ -13,7 +14,7 @@ public final class ZztopEnv {
 
     public static void initial() throws Exception {
         try {
-            InputStream is = ZztopEnv.class.getClassLoader().getResourceAsStream("META-INF/maven/uia/uia-tmd-zztop/pom.properties");
+            InputStream is = ZztopEnv.class.getClassLoader().getResourceAsStream("META-INF/maven/org.uia.solution/uia-tmd-zztop/pom.properties");
             if (is != null) {
                 Properties pom = new Properties();
                 pom.load(is);
@@ -31,5 +32,12 @@ public final class ZztopEnv {
         Properties PROPS = System.getProperties();
         PROPS.load(fis);
         System.setProperties(PROPS);
+        
+        
+        if(!new File("conf/tmd_plans.xml").exists()) {
+            LOGGER.error("conf/tmd_plans.xml not found");
+            System.exit(0);
+        }
+        
     }
 }

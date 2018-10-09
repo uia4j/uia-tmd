@@ -1,4 +1,4 @@
-package ui.tmd.zztop;
+package uia.tmd.zztop;
 
 import java.sql.Connection;
 import java.util.Arrays;

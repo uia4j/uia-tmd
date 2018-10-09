@@ -1,4 +1,4 @@
-package ui.tmd.zztop;
+package uia.tmd.zztop;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,9 +12,9 @@ public class DB {
     public static String PWD;
 
     static {
-        CONN = "jdbc:postgresql://localhost:5432/tmd";
-        USER = "postgres";
-        PWD = "pgAdmin";
+        CONN = "jdbc:postgresql://localhost:5432/tmddb";
+        USER = "tmd";
+        PWD = "tmd";
 
         if (System.getProperties().getProperty("zzt.db.driver") != null) {
             try {

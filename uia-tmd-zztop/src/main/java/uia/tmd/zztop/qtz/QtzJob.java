@@ -1,4 +1,4 @@
-package ui.tmd.zztop.qtz;
+package uia.tmd.zztop.qtz;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -6,9 +6,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import uia.tmd.zztop.QtzJobRunner;
 import uia.tmd.zztop.db.QtzClock;
-
-import ui.tmd.zztop.QtzJobRunner;
 
 public class QtzJob implements Job {
 

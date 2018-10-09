@@ -23,6 +23,14 @@ public class ExecJobDao {
     public ExecJobDao(Connection conn) {
         this.conn = conn;
     }
+    
+    public int count() throws SQLException {
+        try (PreparedStatement ps = this.conn.prepareStatement("select count(*) from zzt_exec_job")) {
+        	ResultSet rs = ps.executeQuery();
+        	rs.next();
+        	return rs.getInt(1);
+        }
+    }
 
     public int insert(ExecJob data) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {

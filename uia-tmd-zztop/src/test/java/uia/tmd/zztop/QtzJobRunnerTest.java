@@ -5,9 +5,8 @@ import java.io.File;
 import org.junit.Test;
 
 import uia.tmd.TaskFactory;
-
-import ui.tmd.zztop.QtzJobRunner;
-import ui.tmd.zztop.ZztopEnv;
+import uia.tmd.zztop.QtzJobRunner;
+import uia.tmd.zztop.ZztopEnv;
 
 public class QtzJobRunnerTest {
 
@@ -20,6 +19,13 @@ public class QtzJobRunnerTest {
         new TaskFactory(new File("conf/tmd_plans.xml")).print("SHOP_ORDER");
         System.out.println();
         new TaskFactory(new File("conf/tmd_plans.xml")).print("PKG_CONTAINER");
+    }
+
+    @Test
+    public void testPrintTables() throws Exception {
+        new TaskFactory(new File("conf/tmd_plans.xml")).printTables("SHOP_ORDER");
+        System.out.println();
+        new TaskFactory(new File("conf/tmd_plans.xml")).printTables("PKG_CONTAINER");
     }
 
     public void testPMS_LOG() throws Exception {
@@ -46,7 +52,6 @@ public class QtzJobRunnerTest {
         System.out.println(t2 - t1 + "ms");
     }
 
-    @Test
     public void testPKG_CONTAINER() throws Exception {
         QtzJobRunner job = new QtzJobRunner();
         long t1 = System.currentTimeMillis();

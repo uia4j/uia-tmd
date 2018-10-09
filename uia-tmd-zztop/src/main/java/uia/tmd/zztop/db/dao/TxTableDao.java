@@ -23,6 +23,14 @@ public class TxTableDao {
     public TxTableDao(Connection conn) {
         this.conn = conn;
     }
+    
+    public int count() throws SQLException {
+        try (PreparedStatement ps = this.conn.prepareStatement("select count(*) from zzt_tx_table")) {
+        	ResultSet rs = ps.executeQuery();
+        	rs.next();
+        	return rs.getInt(1);
+        }
+    }
 
     public int insert(TxTable data) throws SQLException {
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {
@@ -35,6 +43,9 @@ public class TxTableDao {
     }
 
     public int insert(List<TxTable> dataList) throws SQLException {
+    	if(dataList.size() == 0) {
+    		return 0;
+    	}
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_INS)) {
             for (TxTable data : dataList) {
                 ps.setString(1, data.getId());
@@ -58,6 +69,9 @@ public class TxTableDao {
     }
 
     public int update(List<TxTable> dataList) throws SQLException {
+    	if(dataList.size() == 0) {
+    		return 0;
+    	}
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_UPD)) {
             for (TxTable data : dataList) {
                 ps.setTimestamp(1, new Timestamp(data.getTxTime().getTime()));
