@@ -1,6 +1,7 @@
-package uia.tmd.zztop;
+package uia.tmd.zztop.cmd;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
 
+import org.apache.commons.cli.CommandLine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,6 +17,8 @@ import uia.tmd.JobListener;
 import uia.tmd.JobRunner;
 import uia.tmd.TaskFactory;
 import uia.tmd.TaskListener;
+import uia.tmd.zztop.ZztopCmd;
+import uia.tmd.zztop.DB;
 import uia.tmd.zztop.db.ExecJob;
 import uia.tmd.zztop.db.ExecTask;
 import uia.tmd.zztop.db.TxKey;
@@ -24,11 +28,9 @@ import uia.tmd.zztop.db.dao.ExecTaskDao;
 import uia.tmd.zztop.db.dao.TxKeyDao;
 import uia.tmd.zztop.db.dao.TxTableDao;
 
-public class QtzJobRunner implements JobListener, TaskListener {
+public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
 
-    private static final Logger LOGGER = LogManager.getLogger(QtzJobRunner.class);
-
-    private final String filePath;
+    private static final Logger LOGGER = LogManager.getLogger(SyncCmd.class);
 
     private Connection conn;
 
@@ -38,18 +40,24 @@ public class QtzJobRunner implements JobListener, TaskListener {
 
     private ExecJobDao execJobDao;
 
-    private ExecTaskDao taskLogDao;
+    private ExecTaskDao taskLogDao; 
 
     private TxTableDao txTableDao;
 
     private TxKeyDao txKeyDao;
+    
+    private boolean saveTxKey;
 
-    public QtzJobRunner() throws Exception {
-        this("conf/tmd_plans.xml");
+    public SyncCmd() {
     }
 
-    public QtzJobRunner(String filePath) throws Exception {
-        this.filePath = filePath;
+    public void run(String filePath, String jobName, String sqlWhere) throws Exception {
+        if(filePath == null || !new File(filePath).exists()) {
+        	throw new IOException("File:" + filePath + " not found");
+        }
+        if(jobName == null || jobName.trim().length() == 0) {
+        	throw new NullPointerException("Job not found");
+        }
 
         this.conn = DB.create();
         this.pathKeys = new TreeMap<String, String>();
@@ -58,22 +66,12 @@ public class QtzJobRunner implements JobListener, TaskListener {
         this.taskLogDao = new ExecTaskDao(this.conn);
         this.txTableDao = new TxTableDao(this.conn);
         this.txKeyDao = new TxKeyDao(this.conn);
-    }
 
-    public void close() throws Exception {
-        this.conn.close();
-    }
-
-    /**
-     *
-     * @param jobName Job name defined in TMD xml filePath.
-     * @param sqlWhere Where statement.
-     * @throws Exception Failed to run.
-     */
-    public void run(String jobName, String sqlWhere) throws Exception {
-        TaskFactory factory = new TaskFactory(new File(this.filePath));
+        TaskFactory factory = new TaskFactory(new File(filePath));
 
         JobRunner runner = factory.createRunner(jobName);
+        // TODO: redesign
+        this.saveTxKey = !runner.isSourceDelete();
 
         this.execJob = new ExecJob();
         this.execJob.setTmdJobBo(runner.getJobName());
@@ -89,7 +87,22 @@ public class QtzJobRunner implements JobListener, TaskListener {
         runner.addJobListener(this);
         runner.addTaskListener(this);
         runner.run(sqlWhere);
+
+        this.conn.close();
     }
+
+	@Override
+	public void run(CommandLine cl) throws Exception {
+		// filePath
+		String filePath = cl.getOptionValue("file");
+        if(filePath == null) {
+        	filePath = "conf/tmd_plans.xml";
+        }
+        // job name
+        String jobName = cl.getOptionValue("job");
+        // run
+        run(filePath, jobName, null);
+	}
 
     @Override
     public void itemBegin(JobRunner jobRunner, JobEvent event) {
@@ -130,16 +143,18 @@ public class QtzJobRunner implements JobListener, TaskListener {
 
         try {
             this.taskLogDao.insert(data);
-
-            ArrayList<TxKey> keys = new ArrayList<TxKey>();
-            evt.keys.forEach(k -> {
-                TxKey key = new TxKey();
-                key.setId(k);
-                key.setTxTime(txTime);
-                key.setTableName(evt.tableName);
-                keys.add(key);
-            });
-            this.txKeyDao.insert(keys);
+            if(this.saveTxKey) {
+            	ArrayList<TxKey> keys = new ArrayList<TxKey>();
+	            evt.keys.forEach(k -> {
+	                TxKey key = new TxKey();
+	                key.setId(k);
+	                key.setTxTime(txTime);
+	                key.setTableName(evt.tableName);
+	                keys.add(key);
+	            });
+	            this.txKeyDao.delete(evt.keys);
+	            this.txKeyDao.insert(keys);
+            }
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -190,5 +205,4 @@ public class QtzJobRunner implements JobListener, TaskListener {
             e.printStackTrace();
         }
     }
-
 }

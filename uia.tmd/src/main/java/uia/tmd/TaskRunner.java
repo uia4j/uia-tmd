@@ -136,7 +136,7 @@ public final class TaskRunner {
             for (ParamType param : plan.getParam()) {
                 Object text = "";
                 if (param.getSourceColumn() != null) {
-                    text = sourceRow.get(param.getSourceColumn());
+                    text = sourceRow.get(param.getSourceColumn().toUpperCase());
                 }
                 else {
                     text = param.getText();

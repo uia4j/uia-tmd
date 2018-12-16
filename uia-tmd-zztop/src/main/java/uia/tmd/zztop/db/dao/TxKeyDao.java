@@ -92,6 +92,20 @@ public class TxKeyDao {
         }
     }
 
+    public int delete(List<String> keys) throws SQLException {
+    	if(keys.size() == 0) {
+    		return 0;
+    	}
+        try (PreparedStatement ps = this.conn.prepareStatement("DELETE FROM zzt_tx_key WHERE id=?")) {
+            for (String key : keys) {
+                ps.setString(1, key);
+
+                ps.addBatch();
+            }
+            return ps.executeBatch().length;
+        }
+    }
+
     public TxKey selectByPK(String id) throws SQLException {
         TxKey result = null;
         try (PreparedStatement ps = this.conn.prepareStatement(SQL_SEL + "WHERE id=?")) {

@@ -6,11 +6,11 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-public class IVPTest implements JobListener, TaskListener {
+public class MVSTest implements JobListener, TaskListener {
 
     @Test
     public void testIdle() throws URISyntaxException, Exception {
-        TaskFactory factory = new TaskFactory(new File(IVPTest.class.getResource("IVP.xml").toURI()));
+        TaskFactory factory = new TaskFactory(new File(MVSTest.class.getResource("mvs.xml").toURI()));
 
         JobRunner runner = factory.createRunner("MVSDB_ALL_IDLE");
         runner.addJobListener(this);
@@ -24,7 +24,7 @@ public class IVPTest implements JobListener, TaskListener {
 
     @Test
     public void testIvp2() throws URISyntaxException, Exception {
-        TaskFactory factory = new TaskFactory(new File(IVPTest.class.getResource("IVP.xml").toURI()));
+        TaskFactory factory = new TaskFactory(new File(MVSTest.class.getResource("mvs.xml").toURI()));
 
         JobRunner runner = factory.createRunner("MVSDB_ALL_IVP2");
         runner.addTaskListener(this);

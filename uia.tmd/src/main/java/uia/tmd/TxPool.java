@@ -44,8 +44,8 @@ public class TxPool {
         table.addAll(rows);
     }
 
-    public synchronized void delete(String tableName, List<Map<String, Object>> pks) {
-        if (tableName == null || pks == null || pks.isEmpty()) {
+    public synchronized void delete(String tableName, List<Map<String, Object>> rows) {
+        if (tableName == null || rows == null || rows.isEmpty()) {
             return;
         }
 
@@ -55,7 +55,7 @@ public class TxPool {
             this.deleteSource.put(tableName, table);
         }
 
-        table.addAll(pks);
+        table.addAll(rows);
     }
 
     public synchronized void commitInsert(DataAccess access) throws SQLException {
@@ -68,6 +68,7 @@ public class TxPool {
             for (Map.Entry<String, List<Map<String, Object>>> e : this.insertTarget.entrySet()) {
                 String tableName = e.getKey();
                 List<Map<String, Object>> rows = e.getValue();
+                access.delete(tableName, rows);
             	access.insert(tableName, rows);
             }
             access.commit();

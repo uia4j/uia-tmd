@@ -1,60 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd xmlns="http://tmd.uia/model/xml">
 	<jobSpace>
-		<job name="MVSDB_ALL_IDLE" source="IVP1" target="IDLE" itemRunner="ui.tmd.zztop.TxKeyItemRunner">
-			<item taskName="hspt">
-				<args>
-					<arg>id</arg>
-				</args>
-			</item>
-			<item taskName="ivp">
-				<args>
-					<arg>id</arg>
-				</args>
-			</item>		
-			<item taskName="ivp_agent">
-				<args>
-					<arg>id</arg>
-				</args>
-			</item>				
-			<item taskName="ivp_dtu">
-				<args>
-					<arg>bid</arg>
-					<arg>nid</arg>
-				</args>
-			</item>		
-			<item taskName="ivp_event_def">
-				<args>
-					<arg>id</arg>
-				</args>
-			</item>
-			<item taskName="ivp_raw">
-				<args>
-					<arg>id</arg>
-				</args>
-			</item>
-			<item taskName="ivp_raw_event">
-				<args>
-					<arg>id</arg>
-				</args>
-			</item>
-			<item taskName="ivp_run_memo">
-				<args>
-					<arg>id</arg>
-				</args>
-			</item>
+		<job name="Run" source="IVP1" target="IVP2" itemRunner="uia.tmd.zztop.OneByOneItemRunner">
+			<item taskName="ivp_run" />
 		</job>
-		<job name="MVSDB_IVP_RUN_IDLE" source="IVP1" target="IDLE" itemRunner="ui.tmd.zztop.TxTableItemRunner">
-			<item taskName="ivp_run">
-				<args>
-					<arg>created_time</arg>
-				</args>
-			</item>
-			<item taskName="ivp_run_memo">
-				<args>
-					<arg>id</arg>
-				</args>
-			</item>
+		<job name="RunWOF" source="IVP1" target="IVP2" itemRunner="uia.tmd.zztop.OneByOneItemRunnerWOF">
+			<item taskName="ivp_run" />
 		</job>
 	</jobSpace>
 	<taskSpace>
@@ -81,6 +32,11 @@
 		<task name="ivp_raw">
 			<sourceSelect table="ivp_raw" />
 			<targetUpdate />
+			<next>
+				<plan taskName="ivp_raw_event" where="ivp_raw=?">
+					<param sourceColumn="id" />
+				</plan>
+			</next>
 		</task>
 		<task name="ivp_raw_event">
 			<sourceSelect table="ivp_raw_event" />
@@ -89,6 +45,11 @@
 		<task name="ivp_run">
 			<sourceSelect table="ivp_run" />
 			<targetUpdate />
+			<next>
+				<plan taskName="ivp_raw" where="ivp_run=?">
+					<param sourceColumn="id" />
+				</plan>
+			</next>
 		</task>
 		<task name="ivp_run_memo">
 			<sourceSelect table="ivp_run_memo" />

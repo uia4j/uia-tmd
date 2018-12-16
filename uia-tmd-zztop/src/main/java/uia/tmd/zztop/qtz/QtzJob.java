@@ -6,7 +6,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import uia.tmd.zztop.QtzJobRunner;
+import uia.tmd.zztop.cmd.SyncCmd;
 import uia.tmd.zztop.db.QtzClock;
 
 public class QtzJob implements Job {
@@ -22,8 +22,8 @@ public class QtzJob implements Job {
             QtzClock qc = (QtzClock) context.getJobDetail().getJobDataMap().get(QtzClock.class.getSimpleName());
             LOGGER.info("zzt> " + qc.getTmdJobBo() + "> run by quartz:" + context.getFireTime() + "), next:" + context.getNextFireTime());
 
-            QtzJobRunner runner = new QtzJobRunner();
-            runner.run(qc.getTmdJobBo(), null);
+            SyncCmd cmd = new SyncCmd();
+            cmd.run("conf/tmd_plans.xml", qc.getTmdJobBo(), null);
         }
         catch (Exception e) {
 

@@ -32,12 +32,5 @@ public final class ZztopEnv {
         Properties PROPS = System.getProperties();
         PROPS.load(fis);
         System.setProperties(PROPS);
-        
-        
-        if(!new File("conf/tmd_plans.xml").exists()) {
-            LOGGER.error("conf/tmd_plans.xml not found");
-            System.exit(0);
-        }
-        
     }
 }

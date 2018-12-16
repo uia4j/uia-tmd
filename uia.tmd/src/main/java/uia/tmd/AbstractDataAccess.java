@@ -67,6 +67,10 @@ public abstract class AbstractDataAccess implements DataAccess {
                 }
             }
         }
+        catch (Exception ex) {
+            LOGGER.error("failed to run:" + sql);
+            throw ex;
+        }
 
         return rows;
 
@@ -111,7 +115,7 @@ public abstract class AbstractDataAccess implements DataAccess {
                 }
             }
         }
-        catch (SQLException ex) {
+        catch (Exception ex) {
             LOGGER.error("failed to run:" + Where.toString(sql, paramValues), ex);
             throw ex;
         }

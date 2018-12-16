@@ -4,6 +4,9 @@
 		<job name="SO_DAILY_SYNC" source="HANA_PROD" target="HANA_ARCHIVE_TEST" itemRunner="uia.tmd.zztop.OneByOneItemRunner">
 			<item taskName="SHOP_ORDER" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 160)" />
 		</job>
+		<job name="SO_DAILY_DELETE" source="HANA_ARCHIVE_TEST" sourceDelete="true" target="IDLE" itemRunner="uia.tmd.zztop.OneByOneItemRunnerWOF">
+			<item taskName="SHOP_ORDER" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 160)" />
+		</job>
 		<job name="PKG_DAILY_SYNC" source="HANA_PROD" target="HANA_ARCHIVE_TEST" itemRunner="uia.tmd.zztop.OneByOneItemRunner">
 			<item taskName="ZR_PKG_CONTAINER" where="STATE_NAME in ('IN_STOCK') and now()>add_days(PACKING_TIME, 150)" />
 		</job>

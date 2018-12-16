@@ -1,10 +1,7 @@
 package uia.tmd.zztop;
 
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,31 +11,26 @@ import uia.tmd.JobRunner;
 import uia.tmd.SourceSelectFilter;
 import uia.tmd.TaskRunner;
 import uia.tmd.TmdException;
-import uia.tmd.TmdUtils;
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
-import uia.tmd.zztop.db.TxKey;
-import uia.tmd.zztop.db.dao.TxKeyDao;
 
 /**
+ * WOF: Without Filter
+ * 
  * 1. 紀錄新同步的數據。
- * 2. 濾掉已同步的數據。
  *
  * @author Kyle K. Lin
  *
  */
-public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
+public class OneByOneItemRunnerWOF implements ItemRunner, SourceSelectFilter {
 
-    private static final Logger LOGGER = LogManager.getLogger(OneByOneItemRunner.class);
+    private static final Logger LOGGER = LogManager.getLogger(OneByOneItemRunnerWOF.class);
     
     private String tableName;
 
     private List<String> pkColumns;
 
-    private TreeSet<String> pkValues;
-
-    public OneByOneItemRunner() {
-        this.pkValues = new TreeSet<String>();
+    public OneByOneItemRunnerWOF() {
     }
 
     @Override
@@ -49,17 +41,6 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
         }
         catch (Exception ex) {
             throw new TmdException(ex);
-        }
-
-        try (Connection conn = DB.create()) {
-            TxKeyDao dao = new TxKeyDao(conn);
-            List<TxKey> keys = dao.selectByTable(this.tableName);
-            keys.stream().forEach(k -> {
-                this.pkValues.add(k.getId());
-            });
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
         }
 
         return new WhereType(whereBase)
@@ -79,7 +60,7 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
             		where += (" AND " + this.pkColumns.get(k) + "='" +row.get(this.pkColumns.get(k).toUpperCase()) + "'");
             	}
 
-            	LOGGER.info("itemRunner> new: " + whereType.sql);
+            	LOGGER.info("itemRunner> new  where: " + where);
                 taskRunner.run(taskType, "/", where, this);
                 jobRunner.commit();
             }
@@ -92,15 +73,6 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
 
     @Override
     public List<Map<String, Object>> accept(List<Map<String, Object>> sourceRows) {
-        // 濾掉 已同步 的數據
-        ArrayList<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-        sourceRows.forEach(r -> {
-            String pk = TmdUtils.generateKey(this.tableName, this.pkColumns, r);
-            // check
-            if (!this.pkValues.contains(pk)) {
-                result.add(r);
-            }
-        });
-        return result;
+    	return sourceRows;
     }
 }
