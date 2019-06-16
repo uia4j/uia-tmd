@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.uia.solution</groupId>
 	<artifactId>uia-tmd-zztop</artifactId>
-	<version>0.2.0.181010A</version>
+	<version>0.2.0.181218A</version>
 	<packaging>jar</packaging>
 	<name>uia-tmd-zztop</name>
 	<url>https://github.com/uia4j/uia-tmd</url>

@@ -18,9 +18,9 @@ public final class ZztopEnv {
             if (is != null) {
                 Properties pom = new Properties();
                 pom.load(is);
-                LOGGER.info("GROUP:        " + pom.get("groupId"));
-                LOGGER.info("ARTIFACT:     " + pom.get("artifactId"));
-                LOGGER.info("VERSION:      " + pom.get("version"));
+                LOGGER.info("GROUP:       " + pom.get("groupId"));
+                LOGGER.info("ARTIFACT:    " + pom.get("artifactId"));
+                LOGGER.info("VERSION:     " + pom.get("version"));
             }
         }
         catch (Exception ex) {

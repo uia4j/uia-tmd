@@ -1,13 +1,13 @@
 # Example
 
-Suggest that there are two tables, one is __employee__, another is __employee_manhour__. Structure and relation of tables are below:
-### table: __employee__
+Suggest that there are two tables, one is __employee__, another is __employee_manhour__. Structure and relation of these two tables are below:
+### employee
 * id - Primary key.
 * name
 * birthday
 * sex
 
-### table: __employee_manhour__
+### employee_manhour
 * id - Primary key.
 * employee - Foreign key to id of __employee__.
 * time_in
@@ -19,7 +19,7 @@ When one employee retires，system need to move his personal data from "local1" 
 
 ## XML
 
-* Define "Retire" job to run "EMPLOYEE" which moves data of employee from "local1" to "local2".
+* Define "Retire" job to run "EMPLOYEE" task which moves personal data from "local1" to "local2".
 ```xml
 <jobSpace>
     <job name="Retire" source="local1" target="local2">
@@ -28,7 +28,7 @@ When one employee retires，system need to move his personal data from "local1" 
 </jobSpace>
 ```
 
-* Define "EMPLOYEE" task to handle data in table employee, and link "MANHOUR" to be sub task. The relation between "EMPLOYEE" and "MANHOUR" is __employee__.id=__employee_manhour__.employee
+* Define "EMPLOYEE" task to handle data in employee table, and link "MANHOUR" task. The relation between "EMPLOYEE" and "MANHOUR" is __employee__.id=__employee_manhour__.employee
 ```xml
 <task name="EMPLOYEE">
     <sourceSelect table="employee" />
@@ -41,7 +41,7 @@ When one employee retires，system need to move his personal data from "local1" 
 </task>
 ```
 
-* Define "MANHOUR" task to handle data in table employee_manhour. There are no sub tasks.
+* Define "MANHOUR" task to handle data in employee_manhour table.
 ```xml
 <task name="MANHOUR">
     <sourceSelect table="employee_manhour" />
@@ -78,8 +78,7 @@ Full XML:
 <tmd>
     <jobSpace>
         <job name="Retire" source="local1" target="local2">
-            <item taskName="EMPLOYEE">
-            </item>
+            <item taskName="EMPLOYEE" />
         </job>
     </jobSpace>
     <taskSpace>

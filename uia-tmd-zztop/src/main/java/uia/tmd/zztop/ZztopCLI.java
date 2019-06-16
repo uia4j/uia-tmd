@@ -24,11 +24,21 @@ public class ZztopCLI {
         ZztopEnv.initial();
 
         Options options = ZztopCLI.createOptions();
+    	if(args.length == 0) {
+    		help(options);
+    		return;
+    	}
 
-        String[] _args = new String[args.length + 1];
-        _args[0] = "-c";
-        for(int i=0; i<args.length; i++) {
-        	_args[i + 1] = args[i];
+        String[] _args;
+        if("-c".equals(args[0])){
+        	_args = args;
+        }
+        else {
+	        _args = new String[args.length + 1];
+	        _args[0] = "-c";
+	        for(int i=0; i<args.length; i++) {
+	        	_args[i + 1] = args[i];
+	        }
         }
         
         System.out.println();
@@ -40,14 +50,15 @@ public class ZztopCLI {
         catch (Exception ex) {
             System.out.println(ex.getMessage());
             help(options);
-            System.exit(0);
+            return;
         }
 
-        String cmd = cl.getOptionValue("cmd");
+        String cmd = cl.getOptionValue("c");
         String cls = cmds.get(cmd);
         if (cls != null) {
             ZztopCmd instance = (ZztopCmd) Class.forName(cls).newInstance();
-            instance.run(cl);
+            boolean result = instance.run(cl);
+            System.out.println(cmd + ": " + result);
         }
         else {
             System.out.println(cmd + " not found");
@@ -64,7 +75,6 @@ public class ZztopCLI {
 
     static Options createOptions() {
         Option cmd = Option.builder("c")
-                .longOpt("cmd")
                 .desc("command name to be executed. [sync]")
                 .required()
                 .hasArg()
@@ -73,7 +83,7 @@ public class ZztopCLI {
 
         Option file = Option.builder("f")
                 .longOpt("file")
-                .desc("plan XML file")
+                .desc("plan file.")
                 .required()
                 .hasArg()
                 .argName("file")
@@ -81,17 +91,26 @@ public class ZztopCLI {
 
         Option job = Option.builder("j")
                 .longOpt("job")
-                .desc("job name")
+                .desc("job name defined in the plan file.")
                 .required()
                 .hasArg()
                 .argName("job")
                 .valueSeparator(',')
                 .build();
 
+        Option where = Option.builder("w")
+                .longOpt("where")
+                .desc("where statement")
+                .hasArg()
+                .argName("where")
+                .valueSeparator(',')
+                .build();
+
         Options options = new Options()
                 .addOption(cmd)
                 .addOption(file)
-                .addOption(job);
+                .addOption(job)
+                .addOption(where);
 
         return options;
 

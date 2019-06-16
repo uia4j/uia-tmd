@@ -32,8 +32,6 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
 
     private static final Logger LOGGER = LogManager.getLogger(SyncCmd.class);
 
-    private Connection conn;
-
     private ExecJob execJob;
 
     private TreeMap<String, String> pathKeys;
@@ -51,48 +49,60 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
     public SyncCmd() {
     }
 
-    public void run(String filePath, String jobName, String sqlWhere) throws Exception {
+    public boolean run(String filePath, String jobName, String sqlWhere) {
         if(filePath == null || !new File(filePath).exists()) {
-        	throw new IOException("File:" + filePath + " not found");
+        	LOGGER.error("sync> file:  " + filePath + " not found");
+        	return false; 
         }
+    	
         if(jobName == null || jobName.trim().length() == 0) {
-        	throw new NullPointerException("Job not found");
+        	LOGGER.error("sync> job:   missing");
+        	return false; 
         }
 
-        this.conn = DB.create();
-        this.pathKeys = new TreeMap<String, String>();
+        LOGGER.info("sync> file:  " + filePath);
+    	LOGGER.info("sync> job:   " + jobName);
+    	LOGGER.info("sync> where: " + sqlWhere);
+    	
+        try(Connection conn = DB.create()) {
+	        this.pathKeys = new TreeMap<String, String>();
+	
+	        this.execJobDao = new ExecJobDao(conn);
+	        this.taskLogDao = new ExecTaskDao(conn);
+	        this.txTableDao = new TxTableDao(conn);
+	        this.txKeyDao = new TxKeyDao(conn);
+	
+	        TaskFactory factory = new TaskFactory(new File(filePath));
+	
+	        JobRunner runner = factory.createRunner(jobName);
+	        if(runner == null) {
+		    	LOGGER.error("sync> job runner not found");
+		    	return false;
+	        }
 
-        this.execJobDao = new ExecJobDao(this.conn);
-        this.taskLogDao = new ExecTaskDao(this.conn);
-        this.txTableDao = new TxTableDao(this.conn);
-        this.txKeyDao = new TxKeyDao(this.conn);
-
-        TaskFactory factory = new TaskFactory(new File(filePath));
-
-        JobRunner runner = factory.createRunner(jobName);
-        // TODO: redesign
-        this.saveTxKey = !runner.isSourceDelete();
-
-        this.execJob = new ExecJob();
-        this.execJob.setTmdJobBo(runner.getJobName());
-        this.execJob.setDatabaseSource(runner.getDatabaseSource());
-        this.execJob.setDatabaseTarget(runner.getDatabaseTarget());
-        try {
+	        // TODO: redesign
+	        this.saveTxKey = !runner.isSourceDelete();
+	
+	        this.execJob = new ExecJob();
+	        this.execJob.setTmdJobBo(runner.getJobName());
+	        this.execJob.setDatabaseSource(runner.getDatabaseSource());
+	        this.execJob.setDatabaseTarget(runner.getDatabaseTarget());
             this.execJobDao.insert(this.execJob);
-        }
-        catch (Exception e) {
-            throw e;
-        }
+        	LOGGER.info("sync> EXEC_JOB id: " + this.execJob.getId());
 
-        runner.addJobListener(this);
-        runner.addTaskListener(this);
-        runner.run(sqlWhere);
-
-        this.conn.close();
+	        runner.addJobListener(this);
+	        runner.addTaskListener(this);
+	        runner.run(sqlWhere);
+	        return true;
+	    }
+        catch(Exception ex) {
+        	LOGGER.error("sync> failed", ex);
+	        return false;
+        }
     }
 
 	@Override
-	public void run(CommandLine cl) throws Exception {
+	public boolean run(CommandLine cl) throws Exception {
 		// filePath
 		String filePath = cl.getOptionValue("file");
         if(filePath == null) {
@@ -100,8 +110,12 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
         }
         // job name
         String jobName = cl.getOptionValue("job");
+        
+        // where statement
+        String where = cl.hasOption("where") ? cl.getOptionValue("where") : null;
+        
         // run
-        run(filePath, jobName, null);
+        return run(filePath, jobName, where);
 	}
 
     @Override
@@ -125,7 +139,7 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
     @Override
     public void sourceSelected(JobRunner jobRunner, TaskEvent evt) {
         Date txTime = new Date();
-        LOGGER.info("zzt> " + jobRunner.getJobName() + "> " + evt);
+        LOGGER.info("sync> " + jobRunner.getJobName() + "> " + evt);
 
         ExecTask data = new ExecTask();
         data.setTmdTaskBo(evt.taskName);

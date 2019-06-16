@@ -2,7 +2,7 @@
 <tmd xmlns="http://tmd.uia/model/xml">
 	<jobSpace>
 		<job name="Run" source="IVP1" target="IVP2" itemRunner="uia.tmd.zztop.OneByOneItemRunner">
-			<item taskName="ivp_run" />
+			<item taskName="ivp_run" where="id='123456677'" />
 		</job>
 		<job name="RunWOF" source="IVP1" target="IVP2" itemRunner="uia.tmd.zztop.OneByOneItemRunnerWOF">
 			<item taskName="ivp_run" />
