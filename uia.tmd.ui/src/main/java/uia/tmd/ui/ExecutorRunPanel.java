@@ -11,9 +11,8 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uia.tmd.JobRunner;
 import uia.tmd.TaskListener;
@@ -21,7 +20,7 @@ import uia.tmd.ui.edit.TaskExecutorPanel;
 
 public class ExecutorRunPanel extends JPanel implements TaskListener {
 
-    private static Logger LOGGER = Logger.getLogger(ExecutorRunPanel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobRunner.class);
 
     private static final long serialVersionUID = -6194042035824829196L;
 
@@ -66,8 +65,6 @@ public class ExecutorRunPanel extends JPanel implements TaskListener {
 
             @Override
             public void run() {
-                FileAppender appender = createAppender(te.getJobName() + "_" + System.currentTimeMillis());
-                LOGGER.addAppender(appender);
                 try {
                     ExecutorRunPanel.this.frame.setExecutable(false);
                     te.run(panel.save());
@@ -77,7 +74,6 @@ public class ExecutorRunPanel extends JPanel implements TaskListener {
                 }
                 finally {
                     ExecutorRunPanel.this.frame.setExecutable(true);
-                    LOGGER.removeAppender(appender);
                 }
             }
         }).start();
@@ -149,20 +145,5 @@ public class ExecutorRunPanel extends JPanel implements TaskListener {
 
     @Override
     public void taskDone(JobRunner jobRunner) {
-
-    }
-
-    private FileAppender createAppender(String fileName) {
-        FileAppender appender = new FileAppender();
-        appender.setAppend(true);
-        appender.setName("tx");
-        appender.setFile("hist\\" + fileName + ".txt");
-
-        PatternLayout layOut = new PatternLayout();
-        layOut.setConversionPattern("%-5p %d{HH:mm:ss} %-35c - %m%n");
-        appender.setLayout(layOut);
-        appender.activateOptions();     // must call here
-
-        return appender;
     }
 }

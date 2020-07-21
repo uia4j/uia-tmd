@@ -21,8 +21,6 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
 
-import org.apache.log4j.PropertyConfigurator;
-
 import uia.tmd.TaskFactory;
 import uia.tmd.model.TmdTypeHelper;
 import uia.tmd.model.xml.AbstractTableType;
@@ -60,12 +58,6 @@ public class MainFrame extends JFrame implements WindowListener {
         try {
             // locale
             Locale.setDefault(Locale.US);
-
-            // log4j
-            String rootPath = System.getProperty("user.dir") + System.getProperty("file.separator");
-            PropertyConfigurator.configureAndWatch(
-                    rootPath + "log.properties",
-                    1000 * 60);
 
             // look & feel
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
