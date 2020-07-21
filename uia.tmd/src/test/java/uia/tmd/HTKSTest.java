@@ -2,7 +2,6 @@ package uia.tmd;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 
 import org.junit.Test;
 
@@ -86,11 +85,11 @@ public class HTKSTest implements TaskListener {
     }
 
     @Override
-    public void failed(JobRunner jobRunner, TaskEvent evt, SQLException ex) {
+    public void taskFailed(JobRunner jobRunner, TaskEvent evt, Exception ex) {
         System.out.println(evt);
     }
 
     @Override
-    public void done(JobRunner jobRunner) {
+    public void taskDone(JobRunner jobRunner) {
     }
 }

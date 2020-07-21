@@ -3,7 +3,6 @@ package uia.tmd.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -142,14 +141,14 @@ public class ExecutorRunPanel extends JPanel implements TaskListener {
     }
 
     @Override
-    public void failed(JobRunner jobRunner, TaskEvent evt, SQLException ex) {
+    public void taskFailed(JobRunner jobRunner, TaskEvent evt, Exception ex) {
         LOGGER.error(String.format("%s> %s", evt), ex);
         appendMessage(String.format("RUN> %s failed\n", evt.parentPath + "/" + evt.taskName));
         appendMessage(ex.getMessage() + "\n");
     }
 
     @Override
-    public void done(JobRunner jobRunner) {
+    public void taskDone(JobRunner jobRunner) {
 
     }
 

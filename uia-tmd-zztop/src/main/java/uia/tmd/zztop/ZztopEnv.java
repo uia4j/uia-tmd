@@ -1,16 +1,15 @@
 package uia.tmd.zztop;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class ZztopEnv {
 
-    private static final Logger LOGGER = LogManager.getLogger(ZztopEnv.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZztopEnv.class);
 
     public static void initial() throws Exception {
         try {

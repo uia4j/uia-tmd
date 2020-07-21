@@ -15,6 +15,7 @@ import uia.tmd.TmdUtils;
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.zztop.db.TxKey;
+import uia.tmd.zztop.db.conf.TmdDB;
 import uia.tmd.zztop.db.dao.TxKeyDao;
 
 /**
@@ -46,7 +47,7 @@ public class TxKeyItemRunner implements ItemRunner, SourceSelectFilter {
             throw new TmdException(ex);
         }
 
-        try (Connection conn = DB.create()) {
+        try (Connection conn = TmdDB.create()) {
             TxKeyDao dao = new TxKeyDao(conn);
             List<TxKey> keys = dao.selectByTable(this.tableName);
             keys.stream().forEach(k -> {

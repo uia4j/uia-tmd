@@ -1,6 +1,7 @@
 package uia.tmd;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -30,6 +31,27 @@ public class TaskFactory {
     final TreeMap<String, DatabaseType> databases;
 
     public TaskFactory(File file) throws Exception {
+        this.jobs = new TreeMap<String, JobType>();
+        this.tasks = new TreeMap<String, TaskType>();
+        this.tables = new TreeMap<String, AbstractTableType>();
+        this.databases = new TreeMap<String, DatabaseType>();
+
+        this.tmd = TmdTypeHelper.load(file);
+        for (JobType job : this.tmd.getJobSpace().getJob()) {
+            this.jobs.put(job.getName(), job);
+        }
+        for (TaskType task : this.tmd.getTaskSpace().getTask()) {
+            this.tasks.put(task.getName(), task);
+        }
+        for (AbstractTableType table : this.tmd.getTableSpace().getTable()) {
+            this.tables.put(table.getName(), table);
+        }
+        for (DatabaseType database : this.tmd.getDatabaseSpace().getDatabase()) {
+            this.databases.put(database.getId(), database);
+        }
+    }
+
+    public TaskFactory(InputStream file) throws Exception {
         this.jobs = new TreeMap<String, JobType>();
         this.tasks = new TreeMap<String, TaskType>();
         this.tables = new TreeMap<String, AbstractTableType>();

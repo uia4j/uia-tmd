@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import uia.utils.dao.TableType;
+import uia.dao.TableType;
 
 public final class TmdUtils {
 

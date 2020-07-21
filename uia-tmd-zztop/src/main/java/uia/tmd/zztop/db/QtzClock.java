@@ -3,20 +3,33 @@ package uia.tmd.zztop.db;
 import java.util.Date;
 import java.util.UUID;
 
-public class QtzClock {
+import uia.dao.annotation.ColumnInfo;
+import uia.dao.annotation.TableInfo;
 
+@TableInfo(name = "zzt_qtz_clock")
+public class QtzClock {
+	
+	public static final String KEY = "zzt_qtz_clock";
+
+	@ColumnInfo(name = "id", primaryKey = true)
     private String id;
 
+	@ColumnInfo(name = "start_time")
     private Date startTime;
 
+	@ColumnInfo(name = "end_time")
     private Date endTime;
 
+	@ColumnInfo(name = "clock_type")
     private String clockType;
 
+	@ColumnInfo(name = "clock_interval")
     private Integer clockInterval;
 
+	@ColumnInfo(name = "tmd_job_bo")
     private String tmdJobBo;
 
+	@ColumnInfo(name = "trigger_startup")
     private String triggerStartup;
 
     public QtzClock() {

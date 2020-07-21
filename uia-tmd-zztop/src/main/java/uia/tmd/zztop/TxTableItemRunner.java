@@ -10,6 +10,7 @@ import uia.tmd.TmdException;
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.zztop.db.TxTable;
+import uia.tmd.zztop.db.conf.TmdDB;
 import uia.tmd.zztop.db.dao.TxTableDao;
 
 public class TxTableItemRunner implements ItemRunner {
@@ -23,7 +24,7 @@ public class TxTableItemRunner implements ItemRunner {
             throw new TmdException("Argument missing, args(0): column name");
         }
 
-        try (Connection conn = DB.create()) {
+        try (Connection conn = TmdDB.create()) {
             TxTable txTable = new TxTableDao(conn).selectLastByTable(taskType.getSourceSelect().getTable());
             if (txTable == null) {
                 return new WhereType(null)
@@ -47,7 +48,7 @@ public class TxTableItemRunner implements ItemRunner {
 
     @Override
     public void run(JobRunner executorRunner, ItemType itemType, TaskType taskType, TaskRunner taskRunner, WhereType where) throws TmdException {
-        try (Connection conn = DB.create()) {
+        try (Connection conn = TmdDB.create()) {
             if (where.sql != null) {
                 taskRunner.run(taskType, "/", where.sql, Arrays.asList(where.paramValues), null);
             }

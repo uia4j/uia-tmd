@@ -2,7 +2,7 @@ package uia.tmd;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,9 +13,9 @@ import uia.tmd.model.xml.PlanType;
 import uia.tmd.model.xml.SourceSelectType;
 import uia.tmd.model.xml.TargetUpdateType;
 import uia.tmd.model.xml.TaskType;
-import uia.utils.dao.ColumnType;
-import uia.utils.dao.TableType;
-import uia.utils.dao.where.Where;
+import uia.dao.ColumnType;
+import uia.dao.TableType;
+import uia.dao.where.Where;
 
 public final class TaskRunner {
 
@@ -109,14 +109,9 @@ public final class TaskRunner {
 
         // <next>
         List<PlanType> plans = task.getNext().getPlan();
-        plans.parallelStream().forEach(plan -> {
-            try {
-                runPlan(task, parentPath, plan, sourceRows);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        for(PlanType plan : plans) {
+            runPlan(task, parentPath, plan, sourceRows);
+        }
     }
 
     private void runPlan(final TaskType task, final String parentPath, PlanType plan, final List<Map<String, Object>> sourceRows) throws SQLException {
@@ -218,7 +213,7 @@ public final class TaskRunner {
         if (mapping == null) {
             // target == source
             for (Map<String, Object> sourceRow : sourceRows) {
-                LinkedHashMap<String, Object> targetRow = new LinkedHashMap<String, Object>();
+            	HashMap<String, Object> targetRow = new HashMap<String, Object>();
                 for (ColumnType targetColumn : targetColumns) {
                     String key = targetColumn.getColumnName().toUpperCase();
                     targetRow.put(key, sourceRow.get(key));
@@ -229,7 +224,7 @@ public final class TaskRunner {
         else {
             // target != source
             for (Map<String, Object> sourceRow : sourceRows) {
-                LinkedHashMap<String, Object> targetRow = new LinkedHashMap<String, Object>();
+            	HashMap<String, Object> targetRow = new HashMap<String, Object>();
                 for (ColumnType targetColumn : targetColumns) {
                     String key = targetColumn.getColumnName().toUpperCase();
                     String sourceName = mapping.get(key);

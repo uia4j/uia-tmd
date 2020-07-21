@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uia.tmd.ItemRunner;
 import uia.tmd.JobRunner;
@@ -18,9 +18,12 @@ import uia.tmd.TmdUtils;
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.zztop.db.TxKey;
+import uia.tmd.zztop.db.conf.TmdDB;
 import uia.tmd.zztop.db.dao.TxKeyDao;
 
 /**
+ * 以 Row 為 commit 目標。
+ * 
  * 1. 紀錄新同步的數據。
  * 2. 濾掉已同步的數據。
  *
@@ -29,7 +32,7 @@ import uia.tmd.zztop.db.dao.TxKeyDao;
  */
 public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
 
-    private static final Logger LOGGER = LogManager.getLogger(OneByOneItemRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OneByOneItemRunner.class);
     
     private String tableName;
 
@@ -51,7 +54,7 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
             throw new TmdException(ex);
         }
 
-        try (Connection conn = DB.create()) {
+        try (Connection conn = TmdDB.create()) {
             TxKeyDao dao = new TxKeyDao(conn);
             List<TxKey> keys = dao.selectByTable(this.tableName);
             keys.stream().forEach(k -> {
@@ -59,7 +62,7 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
             });
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+        	LOGGER.error("prepare> ", ex);
         }
 
         return new WhereType(whereBase)
@@ -67,25 +70,30 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
     }
 
     @Override
-    public void run(JobRunner jobRunner, ItemType itemType, TaskType taskType, TaskRunner taskRunner, WhereType whereType) throws TmdException {
+    public void run(final JobRunner jobRunner, final ItemType itemType, final TaskType taskType, final TaskRunner taskRunner, final WhereType whereType) throws TmdException {
     	LOGGER.info("itemRunner> orig where: " + whereType.sql);
         try {
-        	// 1. select all
+        	// 1. select rows to migrate, but do nothing
             List<Map<String, Object>> rows = taskRunner.selectSource(taskType, "/", whereType.sql, this);
-            // 2. one by one
-            for(Map<String, Object> row : rows) {
-            	String where = this.pkColumns.get(0) + "='" +row.get(this.pkColumns.get(0).toUpperCase()) + "'";
+        	LOGGER.info("itemRunner> count: " +rows.size());
+        	
+        	// 2. one by one
+            for(final Map<String, Object> row : rows) {
+            	// 
+    	    	String pk = "" + row.get(this.pkColumns.get(0).toUpperCase());
+            	String where = this.pkColumns.get(0) + "='" + row.get(this.pkColumns.get(0).toUpperCase()) + "'";
             	for(int k = 1; k < this.pkColumns.size(); k++) {
             		where += (" AND " + this.pkColumns.get(k) + "='" +row.get(this.pkColumns.get(k).toUpperCase()) + "'");
             	}
 
-            	LOGGER.info("itemRunner> new: " + whereType.sql);
+            	// re-select by PK
+            	LOGGER.info("itemRunner> new: " + where);
+            	jobRunner.setTxId(pk);
                 taskRunner.run(taskType, "/", where, this);
                 jobRunner.commit();
             }
         }
         catch (Exception ex) {
-        	ex.printStackTrace();
             throw new TmdException(ex);
         }
     }
@@ -100,7 +108,32 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
             if (!this.pkValues.contains(pk)) {
                 result.add(r);
             }
+            else {
+            	LOGGER.info("itemRunner> already executed. ignore: pk:" + pk);
+            }
         });
         return result;
+    }
+    
+    public static class ExecuteResult {
+    	
+    	public final boolean ok;
+    	
+    	public final String rowKey;
+    	
+    	public final String message;
+
+    	public ExecuteResult() {
+    		this.ok = true;
+    		this.rowKey = null;
+    		this.message = null;
+    	}
+    	
+    	public ExecuteResult(boolean ok, String rowKey, String message) {
+    		this.ok = ok;
+    		this.rowKey = rowKey;
+    		this.message = message;
+    	}
+    	
     }
 }

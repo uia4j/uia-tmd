@@ -6,12 +6,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TxPool {
 
-    private static final Logger LOGGER = LogManager.getLogger(TxPool.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TxPool.class);
 
     private final String jobName;
 
@@ -59,22 +59,26 @@ public class TxPool {
     }
 
     public synchronized void commitInsert(DataAccess access) throws SQLException {
-        LOGGER.info("tmd> " + this.jobName + "> target batch commit:" + this.insertTarget.size());
+        LOGGER.info("tmd> " + this.jobName + "> target batch insert:" + this.insertTarget.size());
         if(this.insertTarget.size() == 0) {
         	return;
         }
+        String tableName = null;
         try {
             access.beginTx();
             for (Map.Entry<String, List<Map<String, Object>>> e : this.insertTarget.entrySet()) {
-                String tableName = e.getKey();
+                tableName = e.getKey();
                 List<Map<String, Object>> rows = e.getValue();
                 access.delete(tableName, rows);
             	access.insert(tableName, rows);
             }
             access.commit();
+            LOGGER.info("tmd> " + this.jobName + "> commit");
         }
         catch (SQLException ex) {
+            LOGGER.error("tmd> " + this.jobName + "> rollback: " + tableName);
             access.rollback();
+            ex.printStackTrace();
             throw ex;
         }
     }
@@ -84,16 +88,19 @@ public class TxPool {
         if(this.deleteSource.size() == 0) {
         	return;
         }
+        String tableName = null;
         try {
             access.beginTx();
             for (Map.Entry<String, List<Map<String, Object>>> e : this.deleteSource.entrySet()) {
-                String tableName = e.getKey();
+                tableName = e.getKey();
                 List<Map<String, Object>> rows = e.getValue();
             	access.delete(tableName, rows);
             }
             access.commit();
+            LOGGER.info("tmd> " + this.jobName + "> commit");
         }
         catch (SQLException ex) {
+            LOGGER.error("tmd> " + this.jobName + "> rollback: " + tableName);
             access.rollback();
             throw ex;
         }

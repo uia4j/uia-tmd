@@ -1,7 +1,7 @@
 package uia.tmd.access;
 
 import uia.tmd.AbstractDataAccess;
-import uia.utils.dao.Database;
+import uia.dao.Database;
 
 /**
  * MS SQL Server data access.

@@ -8,9 +8,10 @@ import java.util.Map;
 
 import uia.tmd.model.xml.AbstractTableType;
 import uia.tmd.model.xml.DatabaseType;
-import uia.utils.dao.ColumnType;
-import uia.utils.dao.Database;
-import uia.utils.dao.TableType;
+import uia.dao.ColumnDiff;
+import uia.dao.ColumnType;
+import uia.dao.Database;
+import uia.dao.TableType;
 
 /**
  * Idle data access.
@@ -81,7 +82,7 @@ public class IdleAccess implements DataAccess, Database {
     }
 
     @Override
-    public Connection getConnectionFromPool() throws SQLException {
+    public Connection createConnection() throws SQLException {
         return null;
     }
 
@@ -131,17 +132,7 @@ public class IdleAccess implements DataAccess, Database {
     }
 
     @Override
-    public String generateAlterTableSQL(String tableName, List<ColumnType> cols) {
-        return null;
-    }
-
-    @Override
     public int createTable(TableType table) throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public int alterTableColumns(String tableName, List<ColumnType> columns) throws SQLException {
         return 0;
     }
 
@@ -169,6 +160,51 @@ public class IdleAccess implements DataAccess, Database {
     public int[] executeBatch(String sql, List<List<Object>> rows) throws SQLException {
         return new int[rows.size()];
     }
+
+	@Override
+	public void setAlwaysNVarchar(boolean alwaysNVarchar) {
+	}
+
+	@Override
+	public boolean isAlwaysNVarchar() {
+		return true;
+	}
+
+	@Override
+	public void setAlwaysTimestampZ(boolean timestampZ) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isAlwaysTimestampZ() {
+		return true;
+	}
+
+	@Override
+	public String generateCreateViewSQL(String viewName, String sql) {
+		return null;
+	}
+
+	@Override
+	public String generateAlterTableSQL(String tableName, List<ColumnDiff> details) {
+		return null;
+	}
+
+	@Override
+	public String generateDropTableSQL(String tableName) {
+		return null;
+	}
+
+	@Override
+	public String generateDropViewSQL(String viewName) {
+		return null;
+	}
+
+	@Override
+	public boolean execute(String sql) throws SQLException {
+		return true;
+	}
 
     @Override
     public void beginTx() {

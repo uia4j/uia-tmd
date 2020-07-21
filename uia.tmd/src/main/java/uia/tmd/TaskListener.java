@@ -1,6 +1,5 @@
 package uia.tmd;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,13 +44,13 @@ public interface TaskListener {
      * @param evt Event.
      * @param ex Exception.
      */
-    public void failed(JobRunner jobRunner, TaskEvent evt, SQLException ex);
+    public void taskFailed(JobRunner jobRunner, TaskEvent evt, Exception ex);
 
     /**
      *
      * @param task
      */
-    public void done(JobRunner jobRunner);
+    public void taskDone(JobRunner jobRunner);
 
     /**
      *

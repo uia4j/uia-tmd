@@ -17,6 +17,7 @@ import uia.tmd.TmdUtils;
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.zztop.db.TxKey;
+import uia.tmd.zztop.db.conf.TmdDB;
 import uia.tmd.zztop.db.dao.TxKeyDao;
 
 /**
@@ -42,7 +43,7 @@ public class TxHistoryItemRunner implements ItemRunner, SourceSelectFilter {
     public WhereType prepare(JobRunner jobRunner, ItemType itemType, TaskType taskType, String whereBase) throws TmdException {
         this.tableName = taskType.getSourceSelect().getTable();
         this.pkColumns = itemType.getArgs().getArg();
-        try (Connection conn = DB.create()) {
+        try (Connection conn = TmdDB.create()) {
             TxKeyDao dao = new TxKeyDao(conn);
             List<TxKey> keys = dao.selectByTable(this.tableName);
             keys.stream().forEach(k -> {

@@ -13,19 +13,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uia.tmd.model.xml.AbstractTableType;
 import uia.tmd.model.xml.DatabaseType;
-import uia.utils.dao.ColumnType;
-import uia.utils.dao.Database;
-import uia.utils.dao.TableType;
-import uia.utils.dao.where.Where;
+import uia.dao.ColumnType;
+import uia.dao.Database;
+import uia.dao.TableType;
+import uia.dao.where.Where;
 
 public abstract class AbstractDataAccess implements DataAccess {
 
-    private static final Logger LOGGER = LogManager.getLogger(AbstractDataAccess.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDataAccess.class);
 
     protected DatabaseType databaseType;
 
@@ -47,12 +47,12 @@ public abstract class AbstractDataAccess implements DataAccess {
     public List<Map<String, Object>> select(String tableName, String where) throws SQLException {
         ArrayList<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
-        // select
+		// select
         String sql = (where == null || where.trim().isEmpty())
                 ? prepareTable(tableName).generateSelectSQL()
                 : prepareTable(tableName).generateSelectSQL() + " WHERE " + where;
         //Connection conn = getDatabase().getConnection();
-        try (Connection conn = getDatabase().getConnectionFromPool()) {
+        try (Connection conn = getDatabase().createConnection()) {
             try (Statement ps = conn.createStatement()) {
                 try (ResultSet rs = ps.executeQuery(sql)) {
                     int cnt = rs.getMetaData().getColumnCount();
@@ -88,7 +88,7 @@ public abstract class AbstractDataAccess implements DataAccess {
             useParams = true;
         }
 
-        try (Connection conn = getDatabase().getConnectionFromPool()) {
+        try (Connection conn = getDatabase().createConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 if (useParams) {
                     for (int i = 0, c = paramValues.size(); i < c; i++) {
@@ -125,11 +125,20 @@ public abstract class AbstractDataAccess implements DataAccess {
 
     @Override
     public synchronized int insert(String tableName, List<Map<String, Object>> rows) throws SQLException {
-        if (rows == null || rows.size() == 0) {
+        if (rows == null || rows.isEmpty()) {
             return 0;
         }
 
-        TableType table = prepareTable(tableName);
+        List<String> columns = new ArrayList<String>(rows.get(0).keySet());
+    	columns.replaceAll(String::toUpperCase);
+
+        TableType temp = prepareTable(tableName);
+        TableType table = new TableType(temp.getTableName(), temp.getRemark(), new ArrayList<>(), true);
+    	for(ColumnType column : temp.getColumns()) {
+    		if(columns.contains(column.getColumnName().toUpperCase())) {
+    			table.getColumns().add(column);
+    		}
+    	}
         try (PreparedStatement ps = getDatabase()
                 .getConnection()
                 .prepareStatement(table.generateInsertSQL())) {

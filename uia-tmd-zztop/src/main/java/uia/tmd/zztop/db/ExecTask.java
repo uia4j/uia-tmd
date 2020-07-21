@@ -2,23 +2,40 @@ package uia.tmd.zztop.db;
 
 import java.util.UUID;
 
-public class ExecTask {
+import uia.dao.annotation.ColumnInfo;
+import uia.dao.annotation.TableInfo;
 
+@TableInfo(name = "zzt_exec_task")
+public class ExecTask {
+	
+	public static final String KEY = "zzt_exec_task";
+
+	@ColumnInfo(name = "id", primaryKey = true)
     private String id;
 
+	@ColumnInfo(name = "tmd_task_bo")
     private String tmdTaskBo;
 
+	@ColumnInfo(name = "exec_job_bo")
     private String execJobBo;
 
+	@ColumnInfo(name = "table_name")
     private String tableName;
 
+	@ColumnInfo(name = "sql_where")
     private String sqlWhere;
 
+	@ColumnInfo(name = "triggered_by")
     private String triggeredBy;
 
+	@ColumnInfo(name = "result_count")
     private int resultCount;
 
+	@ColumnInfo(name = "task_path")
     private String taskPath;
+
+	@ColumnInfo(name = "group_id")
+    private String groupId;
 
     public ExecTask() {
         this.id = System.currentTimeMillis() + "-" + UUID.randomUUID().toString();
@@ -33,6 +50,7 @@ public class ExecTask {
         this.triggeredBy = data.triggeredBy;
         this.resultCount = data.resultCount;
         this.taskPath = data.taskPath;
+        this.groupId = data.groupId;
     }
 
     public String getId() {
@@ -99,7 +117,15 @@ public class ExecTask {
         this.taskPath = taskPath;
     }
 
-    @Override
+    public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
+	@Override
     public ExecTask clone() {
         return new ExecTask(this);
     }

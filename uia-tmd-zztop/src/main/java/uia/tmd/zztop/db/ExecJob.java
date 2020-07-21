@@ -3,33 +3,49 @@ package uia.tmd.zztop.db;
 import java.util.Date;
 import java.util.UUID;
 
-public class ExecJob {
+import uia.dao.annotation.ColumnInfo;
+import uia.dao.annotation.TableInfo;
 
+@TableInfo(name = "zzt_exec_job", orderBy = "executed_date desc")
+public class ExecJob {
+	
+	public static final String KEY = "zzt_exec_job";
+
+	@ColumnInfo(name = "id", primaryKey = true)
     private String id;
 
+	@ColumnInfo(name = "tmd_job_bo")
     private String tmdJobBo;
 
+	@ColumnInfo(name = "database_source")
     private String databaseSource;
 
+	@ColumnInfo(name = "database_target")
     private String databaseTarget;
 
+	@ColumnInfo(name = "tmd_task_log_bo")
     private String tmdTaskLogBo;
 
+	@ColumnInfo(name = "executed_date")
     private Date executedDate;
 
+	@ColumnInfo(name = "executed_time")
     private Date executedTime;
 
+	@ColumnInfo(name = "executed_result")
     private String executedResult;
 
+	@ColumnInfo(name = "run_state")
     private String runState;
 
+	@ColumnInfo(name = "delete_after")
     private Date deleteAfter;
 
     public ExecJob() {
         this.executedDate = new Date();
         this.executedTime = this.executedDate;
         this.id = this.executedDate.getTime() + "-" + UUID.randomUUID().toString();
-        this.executedResult = "UNKONW";
+        this.executedResult = "UNKNOWN";
         this.runState = "RUN";
     }
 

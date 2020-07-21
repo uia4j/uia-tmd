@@ -1,8 +1,8 @@
 package uia.tmd.access;
 
 import uia.tmd.AbstractDataAccess;
-import uia.utils.dao.Database;
-import uia.utils.dao.hana.Hana;
+import uia.dao.Database;
+import uia.dao.hana.Hana;
 
 public class HanaAccess extends AbstractDataAccess {
 

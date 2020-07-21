@@ -4,12 +4,9 @@ import java.util.LinkedHashMap;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import uia.tmd.model.xml.ItemType;
-import uia.tmd.model.xml.JobType;
 import uia.tmd.ui.NaviPanel;
-import uia.tmd.ui.edit.ExecutorEditPanel;
 
 public class ItemNodeValue implements NodeValue {
 

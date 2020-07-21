@@ -6,7 +6,7 @@ import java.util.Map;
 
 import uia.tmd.model.xml.AbstractTableType;
 import uia.tmd.model.xml.DatabaseType;
-import uia.utils.dao.TableType;
+import uia.dao.TableType;
 
 /**
  * Database access.

@@ -3,8 +3,8 @@ package uia.tmd.zztop;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uia.tmd.ItemRunner;
 import uia.tmd.JobRunner;
@@ -24,7 +24,7 @@ import uia.tmd.model.xml.TaskType;
  */
 public class OneByOneItemRunnerWOF implements ItemRunner, SourceSelectFilter {
 
-    private static final Logger LOGGER = LogManager.getLogger(OneByOneItemRunnerWOF.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OneByOneItemRunnerWOF.class);
     
     private String tableName;
 
@@ -51,22 +51,26 @@ public class OneByOneItemRunnerWOF implements ItemRunner, SourceSelectFilter {
     public void run(JobRunner jobRunner, ItemType itemType, TaskType taskType, TaskRunner taskRunner, WhereType whereType) throws TmdException {
     	LOGGER.info("itemRunner> orig where: " + whereType.sql);
         try {
-        	// 1. select all
+        	// 1. select rows to migrate, but do nothing
             List<Map<String, Object>> rows = taskRunner.selectSource(taskType, "/", whereType.sql, this);
-            // 2. one by one
+        	LOGGER.info("itemRunner> count: " +rows.size());
+        	
+        	// 2. one by one
             for(Map<String, Object> row : rows) {
+            	// 
+    	    	String pk = "" + row.get(this.pkColumns.get(0).toUpperCase());
             	String where = this.pkColumns.get(0) + "='" +row.get(this.pkColumns.get(0).toUpperCase()) + "'";
             	for(int k = 1; k < this.pkColumns.size(); k++) {
             		where += (" AND " + this.pkColumns.get(k) + "='" +row.get(this.pkColumns.get(k).toUpperCase()) + "'");
             	}
 
             	LOGGER.info("itemRunner> new  where: " + where);
+            	jobRunner.setTxId(pk);
                 taskRunner.run(taskType, "/", where, this);
                 jobRunner.commit();
             }
         }
         catch (Exception ex) {
-        	ex.printStackTrace();
             throw new TmdException(ex);
         }
     }

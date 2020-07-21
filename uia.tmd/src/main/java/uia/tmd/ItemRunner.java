@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
-import uia.utils.dao.where.Where;
+import uia.dao.where.Where;
 
 public interface ItemRunner {
 

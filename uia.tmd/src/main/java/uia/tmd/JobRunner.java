@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import uia.tmd.ItemRunner.WhereType;
 import uia.tmd.JobListener.JobEvent;
 import uia.tmd.TaskListener.TaskEvent;
@@ -22,6 +25,8 @@ import uia.tmd.model.xml.TaskType;
  */
 public final class JobRunner {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobRunner.class);
+    
     final DataAccess sourceAccess;
 
     final DataAccess targetAccess;
@@ -29,6 +34,8 @@ public final class JobRunner {
     final TxPool txPool;
 
     final TaskFactory factory;
+    
+    private String txId;
 
     private final Date txTime;
 
@@ -41,28 +48,64 @@ public final class JobRunner {
     private final ArrayList<JobListener> jobListeners;
 
     private final ArrayList<TaskListener> taskListeners;
-
+    
     public JobRunner(TaskFactory factory, JobType jobType) throws Exception {
-        this.factory = factory;
+    	this.txId = "" + System.currentTimeMillis();
         this.txTime = new Date();
+        this.txPool = new TxPool(jobType.getName());
+        this.jobListeners = new ArrayList<JobListener>();
+        this.taskListeners = new ArrayList<TaskListener>();
+
+        this.factory = factory;
         this.jobType = jobType;
         this.sourceType = this.factory.getDatabase(jobType.getSource());
         this.targetType = this.factory.getDatabase(jobType.getTarget());
-
         this.sourceAccess = (DataAccess) Class.forName(this.sourceType.getDriverClass()).newInstance();
         this.targetAccess = (DataAccess) Class.forName(this.targetType.getDriverClass()).newInstance();
+
         this.sourceAccess.initial(this.sourceType, factory.getTables());
         this.targetAccess.initial(this.targetType, factory.getTables());
+    }
 
+    private JobRunner(String txId, TaskFactory factory, JobType jobType, DatabaseType sourceType, DatabaseType targetType, DataAccess sourceAccess, DataAccess targetAccess) {
+    	this.txId = txId;
+        this.txTime = new Date();
+        this.txPool = new TxPool(jobType.getName());
         this.jobListeners = new ArrayList<JobListener>();
         this.taskListeners = new ArrayList<TaskListener>();
-        this.txPool = new TxPool(jobType.getName());
+
+        this.factory = factory;
+        this.jobType = jobType;
+        this.sourceType = sourceType;
+        this.targetType = targetType;
+        this.sourceAccess = sourceAccess;
+        this.targetAccess = targetAccess;
     }
     
-    public void commit() throws SQLException {
+    public JobRunner copy(String txId) throws Exception {
+    	return new JobRunner(
+    			txId,
+    			this.factory, 
+    			this.jobType,
+    			this.sourceType,
+    			this.targetType,
+    			this.sourceAccess,
+    			this.targetAccess);
+    }
+    
+    public String getTxId() {
+		return this.txId;
+	}
+    
+    public void setTxId(String txId) {
+    	this.txId = txId;
+    }
+
+	public void commit() throws SQLException {
     	this.txPool.commitInsert(this.targetAccess);
     	this.txPool.commitDelete(this.sourceAccess);
     	this.txPool.clear();
+    	this.txId = "" + System.currentTimeMillis();
     }
 
     public List<String> pkInSource(String tableName) throws SQLException {
@@ -126,7 +169,6 @@ public final class JobRunner {
                 this.targetAccess.connect();
             }
 
-            boolean success = true;
             for (ItemType itemType : this.jobType.getItem()) {
                 if (!itemType.isEnabled()) {
                     continue;
@@ -147,19 +189,24 @@ public final class JobRunner {
                 String tableName = taskType.getSourceSelect().getTable();
                 WhereType whereType = itemRunner.prepare(this, itemType, taskType, where);
 
+                final JobEvent event = new JobEvent(itemType.getTaskName(), tableName, whereType.toString());
+
                 TaskRunner taskRunner = new TaskRunner(this);
-                raiseItemBegin(new JobEvent(itemType.getTaskName(), tableName, whereType.toString()));
+                raiseItemBegin(event);
                 itemRunner.run(this, itemType, taskType, taskRunner, whereType);
-                raiseItemEnd(new JobEvent(itemType.getTaskName(), tableName, whereType.toString()));
+                raiseItemEnd(event);
             }
 
-            if (success) {
-                this.txPool.commitInsert(this.targetAccess);
-                this.txPool.commitDelete(this.sourceAccess);
-                raiseDone();
-            }
+            this.txPool.commitInsert(this.targetAccess);
+            this.txPool.commitDelete(this.sourceAccess);
+            raiseJobDone();
 
-            return success;
+            return true;
+        }
+        catch(Exception ex) {
+        	LOGGER.error("jobRunner> ", ex);
+        	raiseJobFailed(ex);
+        	return false;
         }
         finally {
             try {
@@ -180,7 +227,7 @@ public final class JobRunner {
     void raiseItemBegin(JobEvent event) {
         for (JobListener l : this.jobListeners) {
             try {
-                l.itemBegin(this, event);
+                l.jobItemBegin(this, event);
             }
             catch (Exception ex2) {
 
@@ -191,7 +238,7 @@ public final class JobRunner {
     void raiseItemEnd(JobEvent event) {
         for (JobListener l : this.jobListeners) {
             try {
-                l.itemEnd(this, event);
+                l.jobItemEnd(this, event);
             }
             catch (Exception ex2) {
 
@@ -221,10 +268,10 @@ public final class JobRunner {
         }
     }
 
-    void raiseTargetInserted(TaskEvent evt) {
-        for (TaskListener l : this.taskListeners) {
+    void raiseJobFailed(Exception ex) {
+        for (JobListener l : this.jobListeners) {
             try {
-                l.targetInserted(this, evt);
+                l.jobFailed(this, ex);
             }
             catch (Exception ex2) {
 
@@ -232,32 +279,10 @@ public final class JobRunner {
         }
     }
 
-    void raiseTargetDeleted(TaskEvent evt) {
-        for (TaskListener l : this.taskListeners) {
+    void raiseJobDone() {
+        for (JobListener l : this.jobListeners) {
             try {
-                l.targetDeleted(this, evt);
-            }
-            catch (Exception ex2) {
-
-            }
-        }
-    }
-
-    void raiseJobFailure(TaskEvent evt, SQLException ex) {
-        for (TaskListener l : this.taskListeners) {
-            try {
-                l.failed(this, evt, ex);
-            }
-            catch (Exception ex2) {
-
-            }
-        }
-    }
-
-    void raiseDone() {
-        for (TaskListener l : this.taskListeners) {
-            try {
-                l.done(this);
+                l.jobDone(this);
             }
             catch (Exception ex2) {
 

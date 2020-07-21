@@ -2,7 +2,6 @@ package uia.tmd;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 
 import org.junit.Test;
 
@@ -12,7 +11,7 @@ public class WIPTest implements TaskListener {
 
     @Test
     public void testInitialTest() throws URISyntaxException, Exception {
-        TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("wip.xml").toURI()));
+        TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("/wip.xml").toURI()));
 
         JobRunner runner = factory.createRunner("INITIAL_TEST");
         runner.addTaskListener(this);
@@ -39,12 +38,12 @@ public class WIPTest implements TaskListener {
     }
 
     @Override
-    public void failed(JobRunner jobRunner, TaskEvent evt, SQLException ex) {
+    public void taskFailed(JobRunner jobRunner, TaskEvent evt, Exception ex) {
         System.out.println(evt);
         ex.printStackTrace();
     }
 
     @Override
-    public void done(JobRunner jobRunner) {
+    public void taskDone(JobRunner jobRunner) {
     }
 }

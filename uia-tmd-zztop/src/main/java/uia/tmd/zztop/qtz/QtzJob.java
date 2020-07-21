@@ -1,7 +1,8 @@
 package uia.tmd.zztop.qtz;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -11,7 +12,7 @@ import uia.tmd.zztop.db.QtzClock;
 
 public class QtzJob implements Job {
 
-    private static final Logger LOGGER = LogManager.getLogger(QtzJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QtzJob.class);
 
     public QtzJob() {
     }
@@ -23,7 +24,7 @@ public class QtzJob implements Job {
             LOGGER.info("zzt> " + qc.getTmdJobBo() + "> run by quartz:" + context.getFireTime() + "), next:" + context.getNextFireTime());
 
             SyncCmd cmd = new SyncCmd();
-            cmd.run("conf/tmd_plans.xml", qc.getTmdJobBo(), null);
+            cmd.run("conf/tmd_plans.xml", qc.getTmdJobBo(), null, null);
         }
         catch (Exception e) {
 

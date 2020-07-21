@@ -1,8 +1,8 @@
 package uia.tmd.access;
 
 import uia.tmd.AbstractDataAccess;
-import uia.utils.dao.Database;
-import uia.utils.dao.pg.PostgreSQL;
+import uia.dao.Database;
+import uia.dao.pg.PostgreSQL;
 
 /**
  * PostgreSQL data accessor.
@@ -11,7 +11,7 @@ import uia.utils.dao.pg.PostgreSQL;
  *
  */
 public class PGSQLAccess extends AbstractDataAccess {
-
+ 
     private Database database;
 
     public PGSQLAccess() throws Exception {

@@ -7,9 +7,13 @@ package uia.tmd;
  */
 public interface JobListener {
 
-    public void itemBegin(JobRunner jobRunner, JobEvent evt);
+    public void jobItemBegin(JobRunner jobRunner, JobEvent evt) throws Exception;
 
-    public void itemEnd(JobRunner jobRunner, JobEvent evt);
+    public void jobItemEnd(JobRunner jobRunner, JobEvent evt) throws Exception;
+
+    public void jobFailed(JobRunner jobRunner, Exception ex) throws Exception;
+
+    public void jobDone(JobRunner jobRunner) throws Exception;
 
     public static class JobEvent {
 

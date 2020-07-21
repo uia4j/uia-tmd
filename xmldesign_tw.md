@@ -7,10 +7,10 @@ XML 結構由下面四大區塊組成，描述一個執行單體執行時，進�
 * tableSpace - 表格定義。
 * databaseSpace - 資料庫定義。
 
-## jobSpece
+## jobSpace
 由多個工作 (job) 組成，每個工作包含多個項目 (item)，每個項目對應一個任務 (task)。
 ```xml
-<jobSpece>
+<jobSpace>
     <job name="job1" source="svr1" target="svr2">
         <item taskName="T1" />
         <item taskName="T2" />
@@ -18,7 +18,7 @@ XML 結構由下面四大區塊組成，描述一個執行單體執行時，進�
     <job name="job2" source="svr1" target="svr2">
         <item taskName="T3" />
     </job>
-</executorSpece>
+</executorSpace>
 ```    
 ### tag: job
 定義執行個體，描述來源資料庫、目的資料庫和指定執行的工作。
@@ -33,7 +33,7 @@ XML 結構由下面四大區塊組成，描述一個執行單體執行時，進�
 # taskSpace
 由多個任務 (task) 組成。每個任務可包含子任務 (plan)。
 ```xml
-<taskSpece>
+<taskSpace>
     <task name="T1">
         <sourceSelect tableName="table1" />
         <targetUpdate />
@@ -48,7 +48,7 @@ XML 結構由下面四大區塊組成，描述一個執行單體執行時，進�
         <targetUpdate />
         <next />
     </task>
-</taskSpece>
+</taskSpace>
 ```    
 ## tag: task
 定義任務，描述處理的表格與相關聯任務。

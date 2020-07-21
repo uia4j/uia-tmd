@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.function.BiFunction;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -21,13 +22,13 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
-import uia.tmd.zztop.DB;
 import uia.tmd.zztop.db.QtzClock;
+import uia.tmd.zztop.db.conf.TmdDB;
 import uia.tmd.zztop.db.dao.QtzClockDao;
 
 public class QtzJobFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger(QtzJobFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(QtzJobFactory.class);
 
     private Scheduler scheduler;
 
@@ -54,7 +55,7 @@ public class QtzJobFactory {
         String group = "Tmd";
 
         List<QtzClock> qcs = null;
-        try (Connection conn = DB.create()) {
+        try (Connection conn = TmdDB.create()) {
             QtzClockDao dao = new QtzClockDao(conn);
             qcs = dao.selectAll();
 

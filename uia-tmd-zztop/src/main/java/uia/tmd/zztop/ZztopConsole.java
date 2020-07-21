@@ -2,14 +2,14 @@ package uia.tmd.zztop;
 
 import java.util.Scanner;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import uia.tmd.zztop.qtz.QtzJobFactory;
 
 public final class ZztopConsole {
 
-    private static final Logger LOGGER = LogManager.getLogger(ZztopConsole.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZztopConsole.class);
 
     private static Scanner SCANNER;
 
