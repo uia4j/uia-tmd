@@ -26,10 +26,10 @@ public class PlanNodeValue implements NodeValue {
     @Override
     public Icon getIcon(boolean nodeSelected) {
         if (nodeSelected) {
-            return new ImageIcon(NodeValue.class.getResource("/resources/images/task.png"));
+            return new ImageIcon(NodeValue.class.getResource("/images/task.png"));
         }
         else {
-            return new ImageIcon(NodeValue.class.getResource("/resources/images/taskNext.png"));
+            return new ImageIcon(NodeValue.class.getResource("/images/taskNext.png"));
         }
     }
 

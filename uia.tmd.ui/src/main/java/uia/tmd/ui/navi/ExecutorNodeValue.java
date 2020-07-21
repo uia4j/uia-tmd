@@ -25,7 +25,7 @@ public class ExecutorNodeValue implements NodeValue {
 
     @Override
     public Icon getIcon(boolean nodeSelected) {
-        return new ImageIcon(NodeValue.class.getResource("/resources/images/executor.png"));
+        return new ImageIcon(NodeValue.class.getResource("/images/executor.png"));
     }
 
     @Override

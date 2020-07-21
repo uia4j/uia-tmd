@@ -20,7 +20,7 @@ public class DbServerNodeValue implements NodeValue {
 
     @Override
     public Icon getIcon(boolean nodeSelected) {
-        return new ImageIcon(NodeValue.class.getResource("/resources/images/dbServer.png"));
+        return new ImageIcon(NodeValue.class.getResource("/images/dbServer.png"));
     }
 
     @Override

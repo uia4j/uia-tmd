@@ -18,7 +18,7 @@ public class TmdNodeValue implements NodeValue {
 
     @Override
     public Icon getIcon(boolean nodeSelected) {
-        return new ImageIcon(NodeValue.class.getResource("/resources/images/tmd.png"));
+        return new ImageIcon(NodeValue.class.getResource("/images/tmd.png"));
     }
 
     @Override

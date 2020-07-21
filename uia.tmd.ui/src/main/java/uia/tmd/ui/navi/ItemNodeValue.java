@@ -23,7 +23,7 @@ public class ItemNodeValue implements NodeValue {
 
     @Override
     public Icon getIcon(boolean nodeSelected) {
-        return new ImageIcon(NodeValue.class.getResource("/resources/images/task.png"));
+        return new ImageIcon(NodeValue.class.getResource("/images/task.png"));
     }
 
     @Override

@@ -55,7 +55,7 @@ public class TablePanel extends JPanel {
         add(toolbarPanel, BorderLayout.NORTH);
 
         this.addButton = new JButton();
-        this.addButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/resources/images/add-small.png")));
+        this.addButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/images/add-small.png")));
         this.addButton.setToolTipText("Quick add one task");
         this.addButton.setBounds(0, 3, 24, 24);
         this.addButton.addActionListener(new ActionListener() {

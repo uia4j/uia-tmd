@@ -20,7 +20,7 @@ public class TaskSpaceNodeValue implements NodeValue {
 
     @Override
     public Icon getIcon(boolean nodeSelected) {
-        return new ImageIcon(NodeValue.class.getResource("/resources/images/taskSpace.png"));
+        return new ImageIcon(NodeValue.class.getResource("/images/taskSpace.png"));
     }
 
     @Override

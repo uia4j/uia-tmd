@@ -99,7 +99,7 @@ public class NaviPanel extends JPanel {
 
         this.addButton = new JButton();
         this.addButton.setEnabled(false);
-        this.addButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/resources/images/add-small.png")));
+        this.addButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/images/add-small.png")));
         this.addButton.setToolTipText("Add new task");
         this.addButton.setBounds(0, 3, 24, 24);
         this.addButton.addActionListener(evt -> {
@@ -109,7 +109,7 @@ public class NaviPanel extends JPanel {
 
         this.removeButton = new JButton();
         this.removeButton.setEnabled(false);
-        this.removeButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/resources/images/remove-small.png")));
+        this.removeButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/images/remove-small.png")));
         this.removeButton.setToolTipText("Remove selected task");
         this.removeButton.setBounds(26, 3, 24, 24);
         this.removeButton.addActionListener(evt -> {
@@ -119,7 +119,7 @@ public class NaviPanel extends JPanel {
 
         this.runButton = new JButton();
         this.runButton.setEnabled(false);
-        this.runButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/resources/images/run-small.png")));
+        this.runButton.setIcon(new ImageIcon(NaviPanel.class.getResource("/images/run-small.png")));
         this.runButton.setToolTipText("Remove selected task");
         this.runButton.setBounds(73, 3, 24, 24);
         this.runButton.addActionListener(a -> {

@@ -20,7 +20,7 @@ public class DatabaseSpaceNodeValue implements NodeValue {
 
     @Override
     public Icon getIcon(boolean nodeSelected) {
-        return new ImageIcon(NodeValue.class.getResource("/resources/images/databaseSpace.png"));
+        return new ImageIcon(NodeValue.class.getResource("/images/databaseSpace.png"));
     }
 
     @Override
