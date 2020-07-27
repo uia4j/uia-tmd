@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
+	<Appenders>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<ThresholdFilter level="INFO" />
+			<PatternLayout pattern="[%d{mm:ss:SSS}] %-45C{3} %4L - %m%n" />
+		</Console>
+		<RollingFile name="ALL"
+			filePattern="logs/zztop-cli-%d{yyyy-MM-dd-HH}.log">
+			<ThresholdFilter level="ALL" />
+			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] %-45C{3} - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+		<RollingFile name="ERROR"
+			filePattern="logs/zztop-cli-%d{yyyy-MM-dd}-err.log">
+			<ThresholdFilter level="ERROR" />
+			<PatternLayout pattern="[%d{HH:mm:ss:SSS}] %-45C{3} %4L - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="all">
+			<AppenderRef ref="STDOUT" />
+			<AppenderRef ref="ERROR" />
+			<AppenderRef ref="ALL" />
+		</Root>
+	</Loggers>
+</Configuration>

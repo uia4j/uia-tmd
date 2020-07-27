@@ -7,8 +7,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import uia.tmd.model.xml.DatabaseSpaceType;
-import uia.tmd.model.xml.DbServerType;
-import uia.tmd.model.xml.ExecutorType;
+import uia.tmd.model.xml.DatabaseType;
 import uia.tmd.ui.NaviPanel;
 
 public class DatabaseSpaceNodeValue implements NodeValue {
@@ -21,18 +20,18 @@ public class DatabaseSpaceNodeValue implements NodeValue {
 
     @Override
     public Icon getIcon(boolean nodeSelected) {
-        return new ImageIcon(NodeValue.class.getResource("/resources/images/databaseSpace.png"));
+        return new ImageIcon(NodeValue.class.getResource("/images/databaseSpace.png"));
     }
 
     @Override
-    public void appendNode(NaviPanel panel) {
+    public void append(NaviPanel panel) {
         panel.appendDatabase();
     }
 
     @Override
     public boolean appendable(String dbServerName) {
-        List<DbServerType> servers = this.ds.getDbServer();
-        for (DbServerType server : servers) {
+        List<DatabaseType> servers = this.ds.getDatabase();
+        for (DatabaseType server : servers) {
             if (dbServerName.equals(server.getDbName())) {
                 return false;
             }

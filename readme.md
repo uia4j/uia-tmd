@@ -1,11 +1,11 @@
-Topic Maintenance Definition
+Data Migration Tool
 ============================
 
 [Chinese](readme_tw.md)
 
-This API can move specific rows and their relative data from one source to another depending on customize definition.
+The purpose of `uia-tmd` api is to move specific rows and their relative data from one source to another depending on customize definition in the __plan file__.
 
-If tables without primary keys, this API provides extra configuration to redefine them that used to handle duplication when moving data.
+The plan file can define primary keys of tables.
 
-- [Tutorial](tutorial.md)
-- XML Design Concept
+- [API Integration](tutorial.md)
+

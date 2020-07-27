@@ -8,7 +8,7 @@
     <element name="tmd" type="uia:TmdType" nillable="true" />
     <complexType name="TmdType" mixed="false">
         <sequence>
-            <element name="executorSpace" type="uia:ExecutorSpaceType"></element>
+            <element name="jobSpace" type="uia:JobSpaceType"></element>
             <element name="taskSpace" type="uia:TaskSpaceType"></element>
             <element name="tableSpace" type="uia:TableSpaceType"></element>
             <element name="databaseSpace" type="uia:DatabaseSpaceType"></element>
@@ -16,33 +16,65 @@
     </complexType>
     
      <!-- ExecutorSpace -->
-    <complexType name="ExecutorSpaceType">
+    <complexType name="JobSpaceType">
         <sequence>
-            <choice maxOccurs="unbounded">
-                <element name="executor" type="uia:ExecutorType"></element>
-            </choice>
+            <element name="job" type="uia:JobType" maxOccurs="unbounded"></element>
         </sequence>
     </complexType>
-    <complexType name="ExecutorType">
-        <attribute name="name" type="string" />
-        <attribute name="source" type="string" />
-        <attribute name="target" type="string" />
-        <attribute name="task" type="string" />
+    <complexType name="JobType">
+        <sequence>
+            <element name="item" type="uia:ItemType" maxOccurs="unbounded"></element>
+        </sequence>
+        <attribute name="name" type="string" use="required" />
+        <attribute name="source" type="string" use="required" />
+        <attribute name="sourceDelete" type="boolean" default="false" />
+        <attribute name="target" type="string" use="required" />
+        <attribute name="itemRunner" type="string" />
+        <attribute name="desc" type="string" />
+    </complexType>
+    <complexType name="ItemType">
+        <sequence>
+			<element name="args" minOccurs="0">
+				<complexType>
+			        <sequence>
+						<element name="arg" type="string" minOccurs="0" maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
+			<element name="filters" minOccurs="0">
+				<complexType>
+			        <sequence>
+						<element name="filter" type="uia:FilterType" maxOccurs="unbounded"></element>
+			        </sequence>
+				</complexType>
+			</element>
+        </sequence>
+        <attribute name="taskName" type="string" use="required" />
+        <attribute name="driverName" type="string" />
+        <attribute name="desc" type="string" />
+        <attribute name="enabled" type="boolean" default="true" />
+        <attribute name="where" type="string" />
     </complexType>
     
+    <complexType name="FilterType">
+        <sequence>
+            <element name="arg" minOccurs="0" maxOccurs="unbounded" type="string"></element>
+        </sequence>
+        <attribute name="driverName" type="string" />
+        <attribute name="desc" type="string" />
+    </complexType>
+
      <!-- TaskSpace -->
     <complexType name="TaskSpaceType">
         <sequence>
-            <choice maxOccurs="unbounded">
-                <element name="task" type="uia:TaskType"></element>
-            </choice>
+	         <element name="task" type="uia:TaskType" maxOccurs="unbounded"></element>
         </sequence>
     </complexType>
     <complexType name="TaskType">
 		<sequence>
             <element name="sourceSelect" type="uia:SourceSelectType"></element>
             <element name="targetUpdate" type="uia:TargetUpdateType"></element>
-			<element name="next">
+			<element name="next" minOccurs="0" maxOccurs="1">
 				<complexType>
 			        <sequence>
 						<element name="plan" type="uia:PlanType" maxOccurs="unbounded"></element>
@@ -51,79 +83,47 @@
 			</element>
 		</sequence>
         <attribute name="name" type="string" use="required" />
-    </complexType>
-    <complexType name="PlanType">
-		<sequence>
-			<element name="rule">
-				<complexType>
-			        <sequence>
-						<element name="criteria" type="uia:CriteriaType" maxOccurs="unbounded"></element>
-			        </sequence>
-				</complexType>
-			</element>
-			<element name="join">
-				<complexType>
-			        <sequence>
-						<element name="column" type="uia:ColumnType" maxOccurs="unbounded"></element>
-			        </sequence>
-				</complexType>
-			</element>
-			<element name="where">
-				<complexType>
-			        <sequence>
-						<element name="criteria" type="uia:CriteriaType" maxOccurs="unbounded"></element>
-			        </sequence>
-				</complexType>
-			</element>
-		</sequence>
-        <attribute name="taskName" type="string" use="required" />
+        <attribute name="desc" type="string" />
     </complexType>
     <complexType name="SourceSelectType">
-        <sequence>
-			<element name="pk">
-				<complexType>
-			        <sequence>
-						<element name="name" type="string" maxOccurs="unbounded"></element>
-			        </sequence>
-				</complexType>
-			</element>
-        </sequence>
         <attribute name="table" type="string" use="required" />
-        <attribute name="deleted" type="boolean" default="false" />
+        <attribute name="delete" type="boolean" />
     </complexType>
     <complexType name="TargetUpdateType">
         <sequence>
-			<element name="pk">
+			<element name="columnMapping" minOccurs="0" maxOccurs="1">
 				<complexType>
 			        <sequence>
-						<element name="name" type="string" maxOccurs="unbounded"></element>
-			        </sequence>
-				</complexType>
-			</element>
-			<element name="columns">
-				<complexType>
-			        <sequence>
-						<element name="column" type="uia:ColumnType" maxOccurs="unbounded"></element>
+						<element name="column" type="uia:ColumnMappingType" minOccurs="0" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
         </sequence>
         <attribute name="table" type="string" />
+        <attribute name="truncate" type="boolean" default="false" />
     </complexType>
-    <complexType name="ColumnType">
+    <complexType name="ColumnMappingType">
         <simpleContent>
             <extension base="string">
                 <attribute name="source" type="string" />
-                <attribute name="pk" type="boolean" default="false" />
             </extension>
         </simpleContent>
     </complexType>
-    <complexType name="CriteriaType">
+    <complexType name="PlanType">
+        <sequence>
+            <element name="param" type="uia:ParamType"  minOccurs="0" maxOccurs="unbounded"></element>
+        </sequence>
+        <attribute name="taskName" type="string" use="required" />
+        <attribute name="where" type="string" use="required" />
+        <attribute name="desc" type="string" />
+    </complexType>
+    <complexType name="ParamType">
         <simpleContent>
             <extension base="string">
-                <attribute name="column" type="string" />
-                <attribute name="validate" type="string" default="equals" />
-                <attribute name="emplyIsNull" type="boolean" default="true" />
+                <attribute name="text" type="string" />
+                <attribute name="sourceColumn" type="string" />
+                <attribute name="prefix" type="string" />
+                <attribute name="postfix" type="string" />
             </extension>
         </simpleContent>
     </complexType>
@@ -131,17 +131,15 @@
      <!-- TableSpace -->
     <complexType name="TableSpaceType">
         <sequence>
-            <choice maxOccurs="unbounded">
-                <element name="table" type="uia:TableType"></element>
-            </choice>
+            <element name="table" type="uia:AbstractTableType" minOccurs="0" maxOccurs="unbounded"></element>
         </sequence>
     </complexType>
-    <complexType name="TableType">
+    <complexType name="AbstractTableType">
         <sequence>
 			<element name="pk">
 				<complexType>
 			        <sequence>
-						<element name="name" type="string" maxOccurs="unbounded"></element>
+						<element name="column" type="string" maxOccurs="unbounded"></element>
 			        </sequence>
 				</complexType>
 			</element>
@@ -152,12 +150,10 @@
      <!-- DatabaseSpace -->
     <complexType name="DatabaseSpaceType">
         <sequence>
-            <choice maxOccurs="unbounded">
-                <element name="dbServer" type="uia:DbServerType"></element>
-            </choice>
+            <element name="database" type="uia:DatabaseType" maxOccurs="unbounded"></element>
         </sequence>
     </complexType>
-    <complexType name="DbServerType">
+    <complexType name="DatabaseType">
         <sequence>
             <element name="id" type="string"></element>
             <element name="host" type="string"></element>
@@ -165,7 +161,7 @@
             <element name="dbName" type="string"></element>
             <element name="user" type="string"></element>
             <element name="password" type="string"></element>
-            <element name="dbType" type="string"></element>
+            <element name="driverClass" type="string"></element>
         </sequence>
     </complexType>
 	

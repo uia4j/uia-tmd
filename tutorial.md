@@ -1,12 +1,17 @@
 # Example
 
-Suggest that there are two tables in system. One is about employee, another is about manhour of employee. Structure and relation of tables are below:
-### table: employee
+Suggest that there are two tables, one is __employee__, another is __employee_manhour__. Structure and relation of these two tables are below:
+### employee
 * id - Primary key.
+* name
+* birthday
+* sex
 
-### table: employee_manhour
+### employee_manhour
 * id - Primary key.
-* employee - foreign key to id of employee.
+* employee - Foreign key to id of __employee__.
+* time_in
+* time_leave
 
 When one employee retires，system need to move his personal data from "local1" database to "local2".
 
@@ -14,119 +19,113 @@ When one employee retires，system need to move his personal data from "local1" 
 
 ## XML
 
-* Define "Retire" executor to run "job1" which moves data of employee from "local1" to "local2".
-```
-<executorSpace>
-    <executor name="Retire" source="local1" target="local2" task="job1" />
-</executorSpace>
+* Define "Retire" job to run "EMPLOYEE" task which moves personal data from "local1" to "local2".
+```xml
+<jobSpace>
+    <job name="Retire" source="local1" target="local2">
+        <item taskName="EMPLOYEE" />
+    </job>
+</jobSpace>
 ```
 
-* Define "job1" task to handle table of employee, and make "job2" to be next task. The relation between "job1" and "job2" is employee.id=employee_manhour.employee
-```
-<task name="job1">
+* Define "EMPLOYEE" task to handle data in employee table, and link "MANHOUR" task. The relation between "EMPLOYEE" and "MANHOUR" is __employee__.id=__employee_manhour__.employee
+```xml
+<task name="EMPLOYEE">
     <sourceSelect table="employee" />
     <targetUpdate />
-    <nexts>
-        <plan name="job2">
-            <join>
-                <column source="id">employee</column>
-            </join>
+    <next>
+        <plan taskName="MANHOUR" where="employee=?">
+            <param sourceColumn="id" />
         </plan>
-    </nexts>
+    </next>
 </task>
 ```
 
-* Define "job2" task to handle table of employee_manhour.
-```
-<task name="job2">
+* Define "MANHOUR" task to handle data in employee_manhour table.
+```xml
+<task name="MANHOUR">
     <sourceSelect table="employee_manhour" />
     <targetUpdate />
 </task>
 ```
 
-* Define data sources of "local1" & "local2"
-```
-<dbServer>
+* Define data sources "local1" & "local2":
+```xml
+<database>
     <id>local1</id>
     <host>localhost</host>
-    <port>1433</port>
+    <port>5432</port>
     <dbName>db1</dbName>
     <user>user1</user>
     <password>1234</password>
-    <dbType>MSSQL</dbType>
-</dbServer>
-<dbServer>
+    <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+</database>
+<database>
     <id>local2</id>
     <host>localhost</host>
-    <port>1433</port>
+    <port>5432</port>
     <dbName>db2</dbName>
     <user>user2</user>
     <password>1234</password>
-    <dbType>MSSQL</dbType>
-</dbServer>
+    <dbType>uia.tmd.access.PGSQLAccess</dbType>
+</database>
 ```
 
 Full XML:
 
-```
-
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd>
-	<executorSpace>
-		<executor name="Retire" source="local1" target="local2" task="job1" />
-	</executorSpace>
-	<taskSpace>
-        <task name="job1">
+    <jobSpace>
+        <job name="Retire" source="local1" target="local2">
+            <item taskName="EMPLOYEE" />
+        </job>
+    </jobSpace>
+    <taskSpace>
+        <task name="EMPLOYEE">
             <sourceSelect table="employee" />
             <targetUpdate />
-            <nexts>
-                <plan name="job2">
-                    <join>
-                        <column source="id">employee</column>
-                    </join>
+            <next>
+                <plan taskName="MANHOUR" where="employee=?">
+                    <param sourceColumn="id" />
                 </plan>
-            </nexts>
+            </next>
         </task>
-        <task name="job2">
+        <task name="MANHOUR">
             <sourceSelect table="employee_manhour" />
             <targetUpdate />
         </task>
     </taskSpace>
-    <tableSpace />
+    <tableSpace>
+    </tableSpace>
     <databaseSpace>
-        <dbServer>
+        <database>
             <id>local1</id>
             <host>localhost</host>
-            <port>1433</port>
+            <port>5432</port>
             <dbName>db1</dbName>
             <user>user1</user>
             <password>1234</password>
-            <dbType>MSSQL</dbType>
-        </dbServer>
-        <dbServer>
+            <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+        </database>
+        <database>
             <id>local2</id>
             <host>localhost</host>
-            <port>1433</port>
+            <port>5432</port>
             <dbName>db2</dbName>
             <user>user2</user>
             <password>1234</password>
-            <dbType>MSSQL</dbType>
-        </dbServer>
+            <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+        </database>
     </databaseSpace>
 </tmd>
 ```
 
 ## java code
-When one whose id is 0098712 retires, system creates "Retire" executor to finish the job describes above.
+When one whose id is __0098712__ retired, your application can create "Retire" job and execute with criteria "id=0098712" and backup data of this employee.
 
-"Retire" exeuctes "job1", and "job1" handles table of employee which primary key is id, so the criteria is id="0098712".
-
-```
+```java
 TaskFactory factory = new TaskFactory(new File("sample.xml"));
-TaskExecutor executor = factory.createExecutor("Retire");
-
-TreeMap<String, Object> where = new TreeMap<String, Object>();
-where.put("id", "0098712");
-
-executor.run(where);
+JobRunner runner = factory.createRunner("Retire");
+runner.run("id='0098712'");
 ```
