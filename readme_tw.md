@@ -5,24 +5,6 @@
 
 __客製化設定__ 可以重新定義表格的主鍵。
 
-- [使用範例](tutorial_tw.md)
+- [API 整合](tutorial_tw.md)
+- [命令列](tutorial_zztop.md)
 - [XML 設計概要](xmldesign_tw.md)
-
-
-## 套件說明
-- uia-tmd - 核心 API
-
-- uia-tmd-access - 資料庫存取驅動
-    - PostgreSQL
-    - Oracle
-    - HANA
-
-## 應用程式
-### uia-tmd-ui
-此應用程式提供 UI 編輯客製化設定檔案。
-
-### uia-tmd-zztop
-此應用程式將同步的紀錄儲存在 PostgreSQL 9.3 內。
-
-#### CLI
-java -jar tmd-zztop.jar `sync` -f conf/mvs.xml -j Run
