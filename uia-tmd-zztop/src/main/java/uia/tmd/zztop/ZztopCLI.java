@@ -10,6 +10,7 @@ import org.apache.commons.cli.Options;
 
 import uia.tmd.zztop.cmd.SOMSyncCmd;
 import uia.tmd.zztop.cmd.SimpleSyncCmd;
+import uia.tmd.zztop.cmd.TestResultCmd;
 import uia.tmd.zztop.cmd.SOMDeleteCmd;
 
 public class ZztopCLI {
@@ -23,11 +24,13 @@ public class ZztopCLI {
         cmds.put("sync", SimpleSyncCmd.class.getName());
         cmds.put("so_month_sync", SOMSyncCmd.class.getName());
         cmds.put("so_month_delete", SOMDeleteCmd.class.getName());
+        cmds.put("test_result", TestResultCmd.class.getName());
 
         cmdArgs = new TreeMap<>();
         cmdArgs.put("sync", SimpleSyncCmd.arguments());
         cmdArgs.put("so_month_sync", SOMSyncCmd.arguments());
         cmdArgs.put("so_month_delete", SOMDeleteCmd.arguments());
+        cmdArgs.put("test_result", TestResultCmd.arguments());
         
     }
 

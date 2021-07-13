@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd xmlns="http://tmd.uia/model/xml">
+    <jobSpace>
+        <job
+            name="MASTER_DATA"
+            source="TCI_TD1_PMS"
+            target="TCI_DEV_PMS">
+            <item taskName="broken_code" />
+            <item taskName="equip" />
+            <item taskName="equip_group" />
+            <item taskName="equip_group_struct" />
+            <item taskName="equip_group_struct_broken" />
+            <item taskName="insp_category" />
+            <item taskName="insp_item" />
+            <item taskName="insp_item_group" />
+            <item taskName="lookup" />
+            <item taskName="ma_item" />
+            <item taskName="ma_item_group" />
+            <item taskName="ma_item_part" />
+            <item taskName="ma_item_part_replace" />
+            <item taskName="part" />
+            <item taskName="part_category" />
+            <item taskName="pms_plugin" />
+            <item taskName="pms_user" />
+            <item taskName="struct_code" />
+            <item taskName="work_group" />
+            <item taskName="work_group_job" />
+            <item taskName="work_group_member" />
+        </job>
+        <job
+            name="PMS_SCHEDULE"
+            source="TCI_TD1_PMS"
+            target="TCI_DEV_PMS">
+            <item taskName="pms_schedule" />
+            <item taskName="pms_schedule_job" />
+            <item taskName="pms_schedule_equip" />
+            <item taskName="ma_schedule" />
+            <item taskName="ma_schedule_item" />
+            <item taskName="insp_schedule" />
+            <item taskName="insp_schedule_item" />
+            <item taskName="pms_schedule_order" />
+        </job>
+        <job
+            name="PMS_SCHEDULE_ORDER"
+            source="TCI_TD1_PMS"
+            target="TCI_DEV_PMS">
+            <item taskName="ma_order" />
+            <item taskName="ma_order_item" />
+            <item taskName="ma_order_item_part" />
+            <item taskName="order_member" />
+            <item taskName="order_member_log" />
+            <item taskName="insp_order" />
+            <item taskName="insp_order_item" />
+        </job>
+        <job
+            name="REPAIR_ORDER"
+            source="TCI_TD1_PMS"
+            target="TCI_DEV_PMS">
+            <item taskName="repair_order" />
+            <item taskName="repair_order_check" />
+            <item taskName="repair_order_item" />
+            <item taskName="repair_order_item_part" />
+            <item taskName="repair_order_item_result" />
+        </job>
+        <job
+            name="PATROL_SHEET"
+            source="LOCAL"
+            target="LOCAL_TEST">
+            <item taskName="patrol_sheet" />
+            <item taskName="patrol_sheet_item" />
+            <item taskName="patrol_sheet_job" />
+        </job>
+        <job
+            name="PATROL_ORDER"
+            source="LOCAL"
+            target="LOCAL_TEST">
+            <item taskName="patrol_order" />
+            <item taskName="patrol_order_item" />
+        </job>
+    </jobSpace>
+    <taskSpace>
+        <task name="attachment">
+            <sourceSelect table="attachment" />
+            <targetUpdate />
+        </task>
+        <task name="broken_code">
+            <sourceSelect table="broken_code" />
+            <targetUpdate />
+        </task>
+        <task name="equip">
+            <sourceSelect table="equip" />
+            <targetUpdate />
+        </task>
+        <task name="equip_group">
+            <sourceSelect table="equip_group" />
+            <targetUpdate />
+        </task>
+        <task name="equip_group_part">
+            <sourceSelect table="equip_group_part" />
+            <targetUpdate />
+        </task>
+        <task name="equip_group_struct">
+            <sourceSelect table="equip_group_struct" />
+            <targetUpdate />
+        </task>
+        <task name="equip_group_struct_broken">
+            <sourceSelect table="equip_group_struct_broken" />
+            <targetUpdate />
+        </task>
+        <task name="insp_category">
+            <sourceSelect table="insp_category" />
+            <targetUpdate />
+        </task>
+        <task name="insp_item">
+            <sourceSelect table="insp_item" />
+            <targetUpdate />
+        </task>
+        <task name="insp_item_group">
+            <sourceSelect table="insp_item_group" />
+            <targetUpdate />
+        </task>
+        <task name="insp_schedule">
+            <sourceSelect table="insp_schedule" />
+            <targetUpdate />
+        </task>
+        <task name="insp_schedule_item">
+            <sourceSelect table="insp_schedule_item" />
+            <targetUpdate />
+        </task>
+        <task name="lookup">
+            <sourceSelect table="lookup" />
+            <targetUpdate />
+        </task>
+        <task name="ma_item">
+            <sourceSelect table="ma_item" />
+            <targetUpdate />
+        </task>
+        <task name="ma_item_group">
+            <sourceSelect table="ma_item_group" />
+            <targetUpdate />
+        </task>
+        <task name="ma_item_part">
+            <sourceSelect table="ma_item_part" />
+            <targetUpdate />
+        </task>
+        <task name="ma_item_part_replace">
+            <sourceSelect table="ma_item_part_replace" />
+            <targetUpdate />
+        </task>
+        <task name="ma_schedule">
+            <sourceSelect table="ma_schedule" />
+            <targetUpdate />
+        </task>
+        <task name="ma_schedule_item">
+            <sourceSelect table="ma_schedule_item" />
+            <targetUpdate />
+        </task>
+        <task name="part">
+            <sourceSelect table="part" />
+            <targetUpdate />
+        </task>
+        <task name="part_category">
+            <sourceSelect table="part_category" />
+            <targetUpdate />
+        </task>
+        <task name="patrol_sheet">
+            <sourceSelect table="patrol_sheet" />
+            <targetUpdate />
+        </task>
+        <task name="patrol_sheet_item">
+            <sourceSelect table="patrol_sheet_item" />
+            <targetUpdate />
+        </task>
+        <task name="patrol_sheet_job">
+            <sourceSelect table="patrol_sheet_job" />
+            <targetUpdate />
+        </task>
+        <task name="pms_plugin">
+            <sourceSelect table="pms_plugin" />
+            <targetUpdate />
+        </task>
+        <task name="pms_schedule">
+            <sourceSelect table="pms_schedule" />
+            <targetUpdate />
+        </task>
+        <task name="pms_schedule_equip">
+            <sourceSelect table="pms_schedule_equip" />
+            <targetUpdate />
+        </task>
+        <task name="pms_schedule_job">
+            <sourceSelect table="pms_schedule_job" />
+            <targetUpdate />
+        </task>
+        <task name="pms_user">
+            <sourceSelect table="pms_user" />
+            <targetUpdate />
+        </task>
+        <task name="sequence_no">
+            <sourceSelect table="sequence_no" />
+            <targetUpdate />
+        </task>
+        <task name="struct_code">
+            <sourceSelect table="struct_code" />
+            <targetUpdate />
+        </task>
+        <task name="work_group">
+            <sourceSelect table="work_group" />
+            <targetUpdate />
+        </task>
+        <task name="work_group_job">
+            <sourceSelect table="work_group_job" />
+            <targetUpdate />
+        </task>
+        <task name="work_group_member">
+            <sourceSelect table="work_group_member" />
+            <targetUpdate />
+        </task>
+        <task name="insp_order">
+            <sourceSelect table="zr_insp_order" />
+            <targetUpdate />
+        </task>
+        <task name="insp_order_item">
+            <sourceSelect table="zr_insp_order_item" />
+            <targetUpdate />
+        </task>
+        <task name="ma_order">
+            <sourceSelect table="zr_ma_order" />
+            <targetUpdate />
+        </task>
+        <task name="ma_order_item">
+            <sourceSelect table="zr_ma_order_item" />
+            <targetUpdate />
+        </task>
+        <task name="ma_order_item_part">
+            <sourceSelect table="zr_ma_order_item_part" />
+            <targetUpdate />
+        </task>
+        <task name="order_member">
+            <sourceSelect table="zr_order_member" />
+            <targetUpdate />
+        </task>
+        <task name="order_member_log">
+            <sourceSelect table="zr_order_member_log" />
+            <targetUpdate />
+        </task>
+        <task name="patrol_order">
+            <sourceSelect table="zr_patrol_order" />
+            <targetUpdate />
+        </task>
+        <task name="patrol_order_item">
+            <sourceSelect table="zr_patrol_order_item" />
+            <targetUpdate />
+        </task>
+        <task name="pms_schedule_order">
+            <sourceSelect table="zr_pms_schedule_order" />
+            <targetUpdate />
+        </task>
+        <task name="repair_order">
+            <sourceSelect table="zr_repair_order" />
+            <targetUpdate />
+        </task>
+        <task name="repair_order_check">
+            <sourceSelect table="zr_repair_order_check" />
+            <targetUpdate />
+        </task>
+        <task name="repair_order_item">
+            <sourceSelect table="zr_repair_order_item" />
+            <targetUpdate />
+        </task>
+        <task name="repair_order_item_part">
+            <sourceSelect table="zr_repair_order_item_part" />
+            <targetUpdate />
+        </task>
+        <task name="repair_order_item_result">
+            <sourceSelect table="zr_repair_order_item_result" />
+            <targetUpdate />
+        </task>
+    </taskSpace>
+    <tableSpace />
+    <databaseSpace>
+        <database>
+            <id>IDLE</id>
+            <host>0.0.0.0</host>
+            <port>0</port>
+            <dbName></dbName>
+            <user></user>
+            <password></password>
+            <driverClass>uia.tmd.IdleAccess</driverClass>
+        </database>
+        <!-- LOCAL -->
+        <database>
+            <id>LOCAL</id>
+            <host>localhost</host>
+            <port>5432</port>
+            <dbName>pmsdb</dbName>
+            <user>pms</user>
+            <password>pms</password>
+            <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+        </database>
+        <database>
+            <id>LOCAL_TEST</id>
+            <host>localhost</host>
+            <port>5432</port>
+            <dbName>pmsdb_0713</dbName>
+            <user>pms</user>
+            <password>pms</password>
+            <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+        </database>
+        <database>
+            <id>LOCAL_TCI_DEV</id>
+            <host>localhost</host>
+            <port>5432</port>
+            <dbName>pmsdb_tci_dev</dbName>
+            <user>pms</user>
+            <password>pms</password>
+            <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+        </database>
+        <database>
+            <id>LOCAL_TCI_TD1</id>
+            <host>localhost</host>
+            <port>5432</port>
+            <dbName>pmsdb_tci_td1</dbName>
+            <user>pms</user>
+            <password>pms</password>
+            <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+        </database>
+        <database>
+            <id>FW_PG_TCI_DEV</id>
+            <host>59.125.131.19</host>
+            <port>35472</port>
+            <dbName>pmsdb</dbName>
+            <user>pms</user>
+            <password>PMS@zaq1</password>
+            <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+        </database>
+        <database>
+            <id>FW_PG_TCI_TD1</id>
+            <host>59.125.131.19</host>
+            <port>35472</port>
+            <dbName>pmsdb_tci_td1</dbName>
+            <user>pms</user>
+            <password>PMS@zaq1</password>
+            <driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+        </database>
+        <database>
+            <id>FW_HANA_TCI</id>
+            <host>192.168.137.245</host>
+            <port>39015</port>
+            <dbName>PMS</dbName>
+            <user>PMS</user>
+            <password>PMSpms</password>
+            <driverClass>uia.tmd.access.HanaAccess</driverClass>
+        </database>
+        <!-- TCI -->
+        <database>
+            <id>TCI_DEV_PMS</id>
+            <host>192.168.95.31</host>
+            <port>39015</port>
+            <dbName>PMS</dbName>
+            <user>PMS</user>
+            <password>S@p12345</password>
+            <driverClass>uia.tmd.access.HanaAccess</driverClass>
+        </database>
+        <database>
+            <id>TCI_DEV_WIP</id>
+            <host>192.168.95.31</host>
+            <port>39015</port>
+            <dbName>WIP</dbName>
+            <user>WIP</user>
+            <password>Sap12345</password>
+            <driverClass>uia.tmd.access.HanaAccess</driverClass>
+        </database>
+        <database>
+            <id>TCI_TD1_PMS</id>
+            <host>192.168.91.250</host>
+            <port>39015</port>
+            <dbName>PMS</dbName>
+            <user>PMS</user>
+            <password>S@p12345</password>
+            <driverClass>uia.tmd.access.HanaAccess</driverClass>
+        </database>
+        <database>
+            <id>TCI_TD1_WIP</id>
+            <host>192.168.91.250</host>
+            <port>39015</port>
+            <dbName>WIP</dbName>
+            <user>WIP</user>
+            <password>S@p12345</password>
+            <driverClass>uia.tmd.access.HanaAccess</driverClass>
+        </database>
+    </databaseSpace>
+</tmd>

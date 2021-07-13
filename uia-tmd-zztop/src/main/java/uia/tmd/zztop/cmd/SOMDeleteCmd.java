@@ -27,15 +27,30 @@ public class SOMDeleteCmd implements ZztopCmd {
                 .argName("month")
                 .build();
 
+        Option job = Option.builder("j")
+                .longOpt("job")
+                .desc("job name.")
+                .hasArg()
+                .argName("job")
+                .build();
+
         return new Options()
                 .addOption(y)
-                .addOption(m);
+                .addOption(m)
+                .addOption(job);
     }
     
 	@Override
 	public boolean run(CommandLine cl) {
 		int y = Integer.parseInt(cl.getOptionValue("year"));
 		int m = Integer.parseInt(cl.getOptionValue("month"));
+		String job = cl.getOptionValue("job");
+		if(job == null || job.trim().isEmpty()) {
+			job = "SO_DELETE_ARCH";
+		}
+		else {
+			job = "SO_DELETE_" + job.toUpperCase();
+		}
         
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, y);
@@ -50,7 +65,7 @@ public class SOMDeleteCmd implements ZztopCmd {
 				String ymd = String.format("%s/%02d/%02d", y, m, d);
 				CommandLine syncCL = SyncCmd.parse(
 						"htks.xml", 
-						"SO_DELETE_ARCH", 
+						job, 
 						ymd, 
 						"TO_VARCHAR(ACTUAL_COMP_DATE,'YYYY/MM/DD')='" + ymd + "'");
 	    		

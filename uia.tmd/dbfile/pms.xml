@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmd xmlns="http://tmd.uia/model/xml">
+	<jobSpace>
+		<job name="MA_ORDER_SYNC" source="DEV" target="DEVTEST" itemRunner="uia.tmd.zztop.OneByOneItemRunner">
+			<item taskName="PMS_SCHEDULE_ORDER" where="action_type='ma' AND state_name='close'" />
+		</job>
+		<job name="DEV_META" source="DEV" target="DEVTEST">
+			<item taskName="broken_code" />
+			<item taskName="equip" />		
+			<item taskName="equip_group" />		
+			<item taskName="equip_group_struct" />		
+			<item taskName="equip_group_struct_broken" />		
+			<item taskName="insp_item" />		
+			<item taskName="ma_item" />		
+			<item taskName="ma_item_part" />		
+			<item taskName="ma_item_part_replace" />		
+			<item taskName="part" />		
+			<item taskName="pms_plugin" />		
+			<item taskName="pms_user" />		
+			<item taskName="struct_code" />		
+			<item taskName="work_group" />		
+			<item taskName="work_group_job" />		
+			<item taskName="work_group_member" />		
+		</job>
+		<job name="TYM_META" source="TYM_DEV_WIP" target="TYM_DEV_PMS">
+			<item taskName="broken_code" />
+			<item taskName="equip" />		
+			<item taskName="equip_group" />		
+			<item taskName="equip_group_struct" />		
+			<item taskName="equip_group_struct_broken" />		
+			<item taskName="insp_item" />		
+			<item taskName="ma_item" />		
+			<item taskName="ma_item_part" />		
+			<item taskName="ma_item_part_replace" />		
+			<item taskName="part" />		
+			<item taskName="pms_plugin" />		
+			<item taskName="pms_user" />		
+			<item taskName="struct_code" />		
+			<item taskName="work_group" />		
+			<item taskName="work_group_job" />		
+			<item taskName="work_group_member" />		
+		</job>
+	</jobSpace>
+	<taskSpace>
+		<task name="PMS_SCHEDULE_ORDER">
+			<sourceSelect table="ZR_PMS_SCHEDULE_ORDER" />
+			<targetUpdate />
+			<next>
+				<plan taskName="MA_ORDER" where="PMS_SCHEDULE_ORDER_ID=?">
+					<param sourceColumn="ID" />
+				</plan>
+			</next>
+		</task>
+		<task name="MA_ORDER">
+			<sourceSelect table="ZR_MA_ORDER" />
+			<targetUpdate />
+			<next>
+				<plan taskName="MA_ORDER_ITEM" where="MA_ORDER_ID=?">
+					<param sourceColumn="PMS_SCHEDULE_ORDER_ID" />
+				</plan>
+				<plan taskName="MA_ORDER_ITEM_PART" where="MA_ORDER_ID=?">
+					<param sourceColumn="PMS_SCHEDULE_ORDER_ID" />
+				</plan>
+			</next>
+		</task>
+		<task name="MA_ORDER_ITEM">
+			<sourceSelect table="ZR_MA_ORDER_ITEM" />
+			<targetUpdate />
+			<next />
+		</task>
+		<task name="MA_ORDER_ITEM_PART">
+			<sourceSelect table="ZR_MA_ORDER_ITEM" />
+			<targetUpdate />
+			<next />
+		</task>
+		<task name="broken_code">
+			<sourceSelect table="broken_code" />
+			<targetUpdate />
+		</task>
+		<task name="equip">
+			<sourceSelect table="equip" />
+			<targetUpdate />
+		</task>
+		<task name="equip_group">
+			<sourceSelect table="equip_group" />
+			<targetUpdate />
+		</task>
+		<task name="equip_group_part">
+			<sourceSelect table="equip_group_part" />
+			<targetUpdate />
+		</task>
+		<task name="equip_group_struct">
+			<sourceSelect table="equip_group_struct" />
+			<targetUpdate />
+		</task>
+		<task name="equip_group_struct_broken">
+			<sourceSelect table="equip_group_struct_broken" />
+			<targetUpdate />
+		</task>
+		<task name="insp_category">
+			<sourceSelect table="insp_category" />
+			<targetUpdate />
+		</task>
+		<task name="insp_item">
+			<sourceSelect table="insp_item" />
+			<targetUpdate />
+		</task>
+		<task name="insp_item_group">
+			<sourceSelect table="insp_item_group" />
+			<targetUpdate />
+		</task>
+		<task name="lookup">
+			<sourceSelect table="lookup" />
+			<targetUpdate />
+		</task>
+		<task name="ma_item">
+			<sourceSelect table="ma_item" />
+			<targetUpdate />
+		</task>
+		<task name="ma_item_group">
+			<sourceSelect table="ma_item_group" />
+			<targetUpdate />
+		</task>
+		<task name="ma_item_part">
+			<sourceSelect table="ma_item_part" />
+			<targetUpdate />
+		</task>
+		<task name="ma_item_part_replace">
+			<sourceSelect table="ma_item_part_replace" />
+			<targetUpdate />
+		</task>
+		<task name="part">
+			<sourceSelect table="part" />
+			<targetUpdate />
+		</task>
+		<task name="part_cateogry">
+			<sourceSelect table="part_cateogry" />
+			<targetUpdate />
+		</task>
+		<task name="pms_plugin">
+			<sourceSelect table="pms_plugin" />
+			<targetUpdate />
+		</task>
+		<task name="pms_user">
+			<sourceSelect table="pms_user" />
+			<targetUpdate />
+		</task>
+		<task name="struct_code">
+			<sourceSelect table="struct_code" />
+			<targetUpdate />
+		</task>
+		<task name="work_group">
+			<sourceSelect table="work_group" />
+			<targetUpdate />
+		</task>
+		<task name="work_group_job">
+			<sourceSelect table="work_group_job" />
+			<targetUpdate />
+		</task>
+		<task name="work_group_member">
+			<sourceSelect table="work_group_member" />
+			<targetUpdate />
+		</task>
+	</taskSpace>
+	<tableSpace />
+	<databaseSpace>
+		<database>
+			<id>IDLE</id>
+			<host>0.0.0.0</host>
+			<port>0</port>
+			<dbName></dbName>
+			<user></user>
+			<password></password>
+			<driverClass>uia.tmd.IdleAccess</driverClass>
+		</database>
+		<database>
+			<id>DEV</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>pmsdb</dbName>
+			<user>pms</user>
+			<password>pms</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+		<database>
+			<id>DEVTEST</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>pmsdbv2_test</dbName>
+			<user>pms</user>
+			<password>pms</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+		<database>
+			<id>TYM_DEV_PMS</id>
+			<host>10.135.236.52</host>
+			<port>39015</port>
+			<dbName>PMS</dbName>
+			<user>PMS</user>
+			<password>PMSpms</password>
+			<driverClass>uia.tmd.access.HanaAccess</driverClass>
+		</database>
+		<database>
+			<id>TYM_DEV_WIP</id>
+			<host>10.135.236.52</host>
+			<port>39015</port>
+			<dbName>WIP</dbName>
+			<user>MES</user>
+			<password>mes123</password>
+			<driverClass>uia.tmd.access.HanaAccess</driverClass>
+		</database>
+	</databaseSpace>
+</tmd>
