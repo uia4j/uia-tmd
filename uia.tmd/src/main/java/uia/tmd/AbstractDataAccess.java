@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -51,8 +52,8 @@ public abstract class AbstractDataAccess implements DataAccess {
         String sql = (where == null || where.trim().isEmpty())
                 ? prepareTable(tableName).generateSelectSQL()
                 : prepareTable(tableName).generateSelectSQL() + " WHERE " + where;
-        //Connection conn = getDatabase().getConnection();
-        try (Connection conn = getDatabase().createConnection()) {
+        Connection conn = getDatabase().getConnection();
+        //try (Connection conn = getDatabase().createConnection()) {
             try (Statement ps = conn.createStatement()) {
                 try (ResultSet rs = ps.executeQuery(sql)) {
                     int cnt = rs.getMetaData().getColumnCount();
@@ -66,7 +67,7 @@ public abstract class AbstractDataAccess implements DataAccess {
                     }
                 }
             }
-        }
+        //}
         catch (Exception ex) {
             LOGGER.error("failed to run:" + sql);
             throw ex;
@@ -88,8 +89,8 @@ public abstract class AbstractDataAccess implements DataAccess {
             useParams = true;
         }
 
-        try (Connection conn = getDatabase().createConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        //try (Connection conn = getDatabase().createConnection()) {
+            try (PreparedStatement ps = getDatabase().getConnection().prepareStatement(sql)) {
                 if (useParams) {
                     for (int i = 0, c = paramValues.size(); i < c; i++) {
                         Object pv = paramValues.get(i);
@@ -114,7 +115,7 @@ public abstract class AbstractDataAccess implements DataAccess {
                     }
                 }
             }
-        }
+        //}
         catch (Exception ex) {
             LOGGER.error("failed to run:" + Where.toString(sql, paramValues), ex);
             throw ex;
@@ -146,6 +147,8 @@ public abstract class AbstractDataAccess implements DataAccess {
                 int i = 1;
                 for (ColumnType ct : table.getColumns()) {
                     Object value = row.get(ct.getColumnName().toUpperCase());
+                    // important
+                    // CLOB, NCLOB, original
                     ps.setObject(i, ct.read(getDatabase().getConnection(), value));
                     i++;
                 }
@@ -230,9 +233,23 @@ public abstract class AbstractDataAccess implements DataAccess {
         getDatabase().getConnection().commit();
     }
 
+	@Override
+	public Savepoint createSavePoint(String name) throws SQLException {
+		return getDatabase().getConnection().setSavepoint(name);
+	}
+
     @Override
     public void rollback() throws SQLException {
         getDatabase().getConnection().rollback();
+    }
+    
+    @Override
+    public String toString() {
+    	return String.format("%s::%s:%s/%s", 
+    			this.databaseType.getId(),
+    			this.databaseType.getHost(),
+    			this.databaseType.getPort(),
+    			this.databaseType.getDbName());
     }
 
     protected abstract Database getDatabase();

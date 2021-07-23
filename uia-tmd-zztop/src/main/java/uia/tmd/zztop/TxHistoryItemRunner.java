@@ -1,6 +1,5 @@
 package uia.tmd.zztop;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -8,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import uia.dao.DaoSession;
 import uia.tmd.ItemRunner;
 import uia.tmd.JobRunner;
 import uia.tmd.SourceSelectFilter;
@@ -17,7 +17,7 @@ import uia.tmd.TmdUtils;
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.zztop.db.TxKey;
-import uia.tmd.zztop.db.conf.TmdDB;
+import uia.tmd.zztop.db.conf.ZZTOP;
 import uia.tmd.zztop.db.dao.TxKeyDao;
 
 /**
@@ -43,8 +43,8 @@ public class TxHistoryItemRunner implements ItemRunner, SourceSelectFilter {
     public WhereType prepare(JobRunner jobRunner, ItemType itemType, TaskType taskType, String whereBase) throws TmdException {
         this.tableName = taskType.getSourceSelect().getTable();
         this.pkColumns = itemType.getArgs().getArg();
-        try (Connection conn = TmdDB.create()) {
-            TxKeyDao dao = new TxKeyDao(conn);
+        try (DaoSession session = ZZTOP.env().createSession()) {
+            TxKeyDao dao = session.tableDao(TxKeyDao.class);
             List<TxKey> keys = dao.selectByTable(this.tableName);
             keys.stream().forEach(k -> {
                 this.pkValues.add(k.getId());

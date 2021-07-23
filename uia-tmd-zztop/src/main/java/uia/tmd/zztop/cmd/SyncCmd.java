@@ -2,11 +2,11 @@ package uia.tmd.zztop.cmd;
 
 import java.io.File;
 import java.io.InputStream;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -16,6 +16,7 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uia.dao.DaoSession;
 import uia.tmd.JobListener;
 import uia.tmd.JobRunner;
 import uia.tmd.TaskFactory;
@@ -25,7 +26,7 @@ import uia.tmd.zztop.db.ExecJob;
 import uia.tmd.zztop.db.ExecTask;
 import uia.tmd.zztop.db.TxKey;
 import uia.tmd.zztop.db.TxTable;
-import uia.tmd.zztop.db.conf.TmdDB;
+import uia.tmd.zztop.db.conf.ZZTOP;
 import uia.tmd.zztop.db.dao.ExecJobDao;
 import uia.tmd.zztop.db.dao.ExecTaskDao;
 import uia.tmd.zztop.db.dao.TxKeyDao;
@@ -112,13 +113,13 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
     	LOGGER.info("sync> job:   " + jobName);
     	LOGGER.info("sync> where: " + sqlWhere);
     	
-        try(Connection conn = TmdDB.create()) { 
+        try (DaoSession session = ZZTOP.env().createSession()) {
 	        this.pathKeys = new TreeMap<String, String>();
 	
-	        this.execJobDao = new ExecJobDao(conn);
-	        this.taskLogDao = new ExecTaskDao(conn);
-	        this.txTableDao = new TxTableDao(conn);
-	        this.txKeyDao = new TxKeyDao(conn);
+	        this.execJobDao = session.tableDao(ExecJobDao.class);
+	        this.taskLogDao = session.tableDao(ExecTaskDao.class);
+	        this.txTableDao = session.tableDao(TxTableDao.class);
+	        this.txKeyDao = session.tableDao(TxKeyDao.class);
 	
 	        TaskFactory factory = new TaskFactory(filePath);
 	
@@ -165,13 +166,13 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
     	LOGGER.info("sync> where: " + sqlWhere);
     	
         this.execJob = new ExecJob();
-        try(Connection conn = TmdDB.create()) { 
+        try (DaoSession session = ZZTOP.env().createSession()) {
 	        this.pathKeys = new TreeMap<String, String>();
 	
-	        this.execJobDao = new ExecJobDao(conn);
-	        this.taskLogDao = new ExecTaskDao(conn);
-	        this.txTableDao = new TxTableDao(conn);
-	        this.txKeyDao = new TxKeyDao(conn);
+	        this.execJobDao = session.tableDao(ExecJobDao.class);
+	        this.taskLogDao = session.tableDao(ExecTaskDao.class);
+	        this.txTableDao = session.tableDao(TxTableDao.class);
+	        this.txKeyDao = session.tableDao(TxKeyDao.class);
 	
 	        TaskFactory factory = new TaskFactory(new File(filePath));
 	
@@ -189,17 +190,19 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
 	        this.execJob.setDatabaseSource(runner.getDatabaseSource());
 	        this.execJob.setDatabaseTarget(runner.getDatabaseTarget());
             this.execJobDao.insert(this.execJob);
-        	LOGGER.info(String.format("sync> %s> %s",
+            /**
+        	LOGGER.debug(String.format("sync> %s> %s",
         			jobName,
         			this.execJob.getId()));
-        	LOGGER.info(String.format("sync> %s> %s to %s, deleteSource:%s",
+        	LOGGER.debug(String.format("sync> %s> %s to %s, deleteSource:%s",
         			jobName,
         			runner.getDatabaseSource(),
         			runner.getDatabaseTarget(),
         			runner.isSourceDelete()));
-        	LOGGER.info(String.format("sync> %s> extra: %s",
+        	LOGGER.debug(String.format("sync> %s> extra: %s",
         			jobName,
         			sqlWhere));
+        	*/
 
 	        runner.addJobListener(this);
 	        runner.addTaskListener(this);
@@ -241,7 +244,7 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
     @Override
     public void sourceSelected(JobRunner jobRunner, TaskEvent evt) {
         Date txTime = new Date();
-        LOGGER.info("sync> " + jobRunner.getJobName() + "> " + evt);
+        LOGGER.debug("sync> " + jobRunner.getJobName() + "> " + evt);
 
         ExecTask data = new ExecTask();
         data.setTmdTaskBo(evt.taskName);
@@ -257,7 +260,7 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
         try {
             this.taskLogDao.insert(data);
             if(this.saveTxKey) {
-            	ArrayList<TxKey> keys = new ArrayList<TxKey>();
+            	TreeSet<TxKey> keys = new TreeSet<TxKey>();
 	            evt.keys.forEach(k -> {
 	                TxKey key = new TxKey();
 	                key.setId(k);
@@ -267,10 +270,11 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
 	                keys.add(key);
 	            });
 	            this.txKeyDao.delete(evt.keys);
-	            this.txKeyDao.insert(keys);
+	            this.txKeyDao.insert(new ArrayList<>(keys));
             }
         }
         catch (Exception ex) {
+        	LOGGER.error(String.format("%s> unique constraint violated, keys: %s", evt.tableName, evt.keys), ex);
             ex.printStackTrace();
         }
     }
@@ -341,6 +345,7 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
             this.execJobDao.update(this.execJob);
         }
         catch (Exception e) {
+        	LOGGER.info("");
         	LOGGER.error("SyncCmd> ", e);
         }
     }

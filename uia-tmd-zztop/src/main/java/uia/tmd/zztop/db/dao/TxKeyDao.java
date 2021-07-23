@@ -2,28 +2,22 @@ package uia.tmd.zztop.db.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 import uia.dao.DaoException;
 import uia.dao.DaoMethod;
 import uia.dao.TableDao;
+import uia.dao.TableDaoHelper;
+import uia.dao.annotation.DaoInfo;
+import uia.dao.annotation.SelectInfo;
 import uia.tmd.zztop.db.TxKey;
-import uia.tmd.zztop.db.conf.TmdDB;
 
-public class TxKeyDao extends TableDao<TxKey> {
+@DaoInfo(type = TxKey.class)
+public abstract class TxKeyDao extends TableDao<TxKey> {
 
-    public TxKeyDao(Connection conn) {
-    	super(conn, TmdDB.forTable(TxKey.class));
-    }
-    
-    public int count() throws SQLException {
-        try (PreparedStatement ps = this.conn.prepareStatement("select count(*) from zzt_tx_key")) {
-        	ResultSet rs = ps.executeQuery();
-        	rs.next();
-        	return rs.getInt(1);
-        }
+    public TxKeyDao(Connection conn, TableDaoHelper<TxKey> tableHelper) {
+    	super(conn, tableHelper);
     }
 
     public int delete(List<String> keys) throws SQLException {
@@ -49,12 +43,6 @@ public class TxKeyDao extends TableDao<TxKey> {
         }
     }
 
-    public List<TxKey> selectByTable(String tableName) throws SQLException, DaoException {
-    	DaoMethod<TxKey> method = this.tableHelper.forSelect();
-        try (PreparedStatement ps = this.conn.prepareStatement(method.getSql() + "WHERE table_name=?")) {
-            ps.setString(1, tableName);
-            ResultSet rs = ps.executeQuery();
-            return method.toList(rs);
-        }
-    }
+    @SelectInfo(sql = "WHERE table_name=?")
+    public abstract List<TxKey> selectByTable(String tableName);
 }

@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>org.uia.solution</groupId>
 			<artifactId>uia-dao</artifactId>
-			<version>0.3.0</version>
+			<version>0.3.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -58,12 +58,14 @@
 	</dependencies>
 	<repositories>
 		<repository>
+			<id>my-github</id>
+			<url>https://maven.pkg.github.com/uia4j/repos</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 			<snapshots>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
 			</snapshots>
-			<id>uia4j</id>
-			<name>bintray-uia4j</name>
-			<url>https://dl.bintray.com/uia4j/maven</url>
 		</repository>
 	</repositories>
 	<build>

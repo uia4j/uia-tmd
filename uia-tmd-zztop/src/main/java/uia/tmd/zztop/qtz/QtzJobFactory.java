@@ -4,7 +4,6 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
@@ -22,9 +21,9 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+import uia.dao.DaoSession;
 import uia.tmd.zztop.db.QtzClock;
-import uia.tmd.zztop.db.conf.TmdDB;
-import uia.tmd.zztop.db.dao.QtzClockDao;
+import uia.tmd.zztop.db.conf.ZZTOP;
 
 public class QtzJobFactory {
 
@@ -55,10 +54,8 @@ public class QtzJobFactory {
         String group = "Tmd";
 
         List<QtzClock> qcs = null;
-        try (Connection conn = TmdDB.create()) {
-            QtzClockDao dao = new QtzClockDao(conn);
-            qcs = dao.selectAll();
-
+        try (DaoSession session = ZZTOP.env().createSession()) {
+        	qcs = session.all(QtzClock.class);
         }
         catch (Exception ex) {
             throw new SchedulerException(ex);

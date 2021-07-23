@@ -7,13 +7,23 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import uia.tmd.zztop.cmd.SOMSyncCmd;
 import uia.tmd.zztop.cmd.SimpleSyncCmd;
 import uia.tmd.zztop.cmd.TestResultCmd;
-import uia.tmd.zztop.cmd.SOMDeleteCmd;
+import uia.tmd.zztop.cmd.SODeleteDayCmd;
+import uia.tmd.zztop.cmd.SODeleteMonthCmd;
+import uia.tmd.zztop.cmd.SODeleteOneCmd;
+import uia.tmd.zztop.cmd.SOSyncMonthCmd;
+import uia.tmd.zztop.cmd.SOSyncDayCmd;
+import uia.tmd.zztop.cmd.SOSyncOneCmd;
 
 public class ZztopCLI {
+	
+	private static final String VER = "0.21.0723A";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZztopCLI.class);
 
     private static TreeMap<String, String> cmds;
 
@@ -22,29 +32,41 @@ public class ZztopCLI {
     static {
         cmds = new TreeMap<>();
         cmds.put("sync", SimpleSyncCmd.class.getName());
-        cmds.put("so_month_sync", SOMSyncCmd.class.getName());
-        cmds.put("so_month_delete", SOMDeleteCmd.class.getName());
+        cmds.put("so_sync_one", SOSyncOneCmd.class.getName());
+        cmds.put("so_sync_day", SOSyncDayCmd.class.getName());
+         cmds.put("so_sync_month", SOSyncMonthCmd.class.getName());
+        cmds.put("so_delete_one", SODeleteOneCmd.class.getName());
+        cmds.put("so_delete_day", SODeleteDayCmd.class.getName());
+        cmds.put("so_delete_month", SODeleteMonthCmd.class.getName());
         cmds.put("test_result", TestResultCmd.class.getName());
 
         cmdArgs = new TreeMap<>();
         cmdArgs.put("sync", SimpleSyncCmd.arguments());
-        cmdArgs.put("so_month_sync", SOMSyncCmd.arguments());
-        cmdArgs.put("so_month_delete", SOMDeleteCmd.arguments());
+        cmdArgs.put("so_sync_one", SOSyncOneCmd.arguments());
+        cmdArgs.put("so_sync_day", SOSyncDayCmd.arguments());
+        cmdArgs.put("so_sync_month", SOSyncMonthCmd.arguments());
+        cmdArgs.put("so_delete_one", SODeleteOneCmd.arguments());
+        cmdArgs.put("so_delete_day", SODeleteDayCmd.arguments());
+        cmdArgs.put("so_delete_month", SODeleteMonthCmd.arguments());
         cmdArgs.put("test_result", TestResultCmd.arguments());
         
     }
 
     public static void main(String[] args) throws Exception {
-    	// nohup java -jar tmd-zztop.jar so_month_delete -y 2019 -m 3 &
-    	// nohup java -jar tmd-zztop.jar so_month_sync -y 2019 -m 3 &
+    	// 
+    	// nohup java -XX:+UseG1GC -XX:MaxGCPauseMillis=600 -Xmx4096m -jar tmd-zztop.jar so_sync_day -d 2018/04/01 &
+    	// nohup java -XX:+UseG1GC -XX:MaxGCPauseMillis=600 -Xmx4096m -jar tmd-zztop.jar so_sync_one -o ShopOrderBO:1020,AAAAAA &
+    	// nohup java -XX:+UseG1GC -XX:MaxGCPauseMillis=600 -Xmx4096m -jar tmd-zztop.jar so_delete_day -d 2018/04/01 &
     	ZztopEnv.initial();
 
     	if(args.length == 0) {
-    		System.out.println("No command");
+    		System.out.println("Version: " + VER);
     		return;
     	}
 
+    	LOGGER.info("exec: " + String.join(" ", args));
     	String cmdName = args[0];
+    	
     	// 1. command
         String cls = cmds.get(cmdName);
         if (cls == null) {

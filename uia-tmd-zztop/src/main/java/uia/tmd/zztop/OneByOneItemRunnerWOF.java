@@ -49,11 +49,10 @@ public class OneByOneItemRunnerWOF implements ItemRunner, SourceSelectFilter {
 
     @Override
     public void run(JobRunner jobRunner, ItemType itemType, TaskType taskType, TaskRunner taskRunner, WhereType whereType) throws TmdException {
-    	LOGGER.info("itemRunner> orig where: " + whereType.sql);
         try {
         	// 1. select rows to migrate, but do nothing
             List<Map<String, Object>> rows = taskRunner.selectSource(taskType, "/", whereType.sql, this);
-        	LOGGER.info("itemRunner> count: " +rows.size());
+        	LOGGER.info("itemRunner> " + taskType.getName() + ", count=" + rows.size());
         	
         	// 2. one by one
             for(Map<String, Object> row : rows) {
@@ -64,7 +63,7 @@ public class OneByOneItemRunnerWOF implements ItemRunner, SourceSelectFilter {
             		where += (" AND " + this.pkColumns.get(k) + "='" +row.get(this.pkColumns.get(k).toUpperCase()) + "'");
             	}
 
-            	LOGGER.info("itemRunner> new  where: " + where);
+            	LOGGER.info("itemRunner> " + taskType.getName() + ", " + where);
             	jobRunner.setTxId(pk);
                 taskRunner.run(taskType, "/", where, this);
                 jobRunner.commit();

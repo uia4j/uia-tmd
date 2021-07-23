@@ -1,6 +1,5 @@
 package uia.tmd.zztop;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +8,7 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uia.dao.DaoSession;
 import uia.tmd.ItemRunner;
 import uia.tmd.JobRunner;
 import uia.tmd.SourceSelectFilter;
@@ -18,7 +18,7 @@ import uia.tmd.TmdUtils;
 import uia.tmd.model.xml.ItemType;
 import uia.tmd.model.xml.TaskType;
 import uia.tmd.zztop.db.TxKey;
-import uia.tmd.zztop.db.conf.TmdDB;
+import uia.tmd.zztop.db.conf.ZZTOP;
 import uia.tmd.zztop.db.dao.TxKeyDao;
 
 /**
@@ -54,8 +54,8 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
             throw new TmdException(ex);
         }
 
-        try (Connection conn = TmdDB.create()) {
-            TxKeyDao dao = new TxKeyDao(conn);
+        try (DaoSession session = ZZTOP.env().createSession()) {
+            TxKeyDao dao = session.tableDao(TxKeyDao.class);
             List<TxKey> keys = dao.selectByTable(this.tableName);
             keys.stream().forEach(k -> {
                 this.pkValues.add(k.getId());
@@ -71,11 +71,10 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
 
     @Override
     public void run(final JobRunner jobRunner, final ItemType itemType, final TaskType taskType, final TaskRunner taskRunner, final WhereType whereType) throws TmdException {
-    	LOGGER.info("itemRunner> orig where: " + whereType.sql);
         try {
         	// 1. select rows to migrate, but do nothing
             List<Map<String, Object>> rows = taskRunner.selectSource(taskType, "/", whereType.sql, this);
-        	LOGGER.info("itemRunner> count: " +rows.size());
+        	LOGGER.info("itemRunner> " + taskType.getName() + ", count=" + rows.size());
         	
         	// 2. one by one
             for(final Map<String, Object> row : rows) {
@@ -83,11 +82,11 @@ public class OneByOneItemRunner implements ItemRunner, SourceSelectFilter {
     	    	String pk = "" + row.get(this.pkColumns.get(0).toUpperCase());
             	String where = this.pkColumns.get(0) + "='" + row.get(this.pkColumns.get(0).toUpperCase()) + "'";
             	for(int k = 1; k < this.pkColumns.size(); k++) {
-            		where += (" AND " + this.pkColumns.get(k) + "='" +row.get(this.pkColumns.get(k).toUpperCase()) + "'");
+            		where += (" AND " + this.pkColumns.get(k) + "='" + row.get(this.pkColumns.get(k).toUpperCase()) + "'");
             	}
 
             	// re-select by PK
-            	LOGGER.info("itemRunner> new: " + where);
+            	LOGGER.info("itemRunner> " + taskType.getName() + ", " + where);
             	jobRunner.setTxId(pk);
                 taskRunner.run(taskType, "/", where, this);
                 jobRunner.commit();

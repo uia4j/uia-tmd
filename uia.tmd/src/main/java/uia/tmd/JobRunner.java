@@ -104,7 +104,7 @@ public final class JobRunner {
 	public void commit() throws SQLException {
     	this.txPool.commitInsert(this.targetAccess);
     	this.txPool.commitDelete(this.sourceAccess);
-    	this.txPool.clear();
+    	this.txPool.done(this.txId);
     	this.txId = "" + System.currentTimeMillis();
     }
 

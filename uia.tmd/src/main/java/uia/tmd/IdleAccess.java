@@ -2,6 +2,7 @@ package uia.tmd;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,11 +79,6 @@ public class IdleAccess implements DataAccess, Database {
 
     @Override
     public Connection getConnection() {
-        return null;
-    }
-
-    @Override
-    public Connection createConnection() throws SQLException {
         return null;
     }
 
@@ -214,7 +210,17 @@ public class IdleAccess implements DataAccess, Database {
     public void commit() {
     }
 
+	@Override
+	public Savepoint createSavePoint(String name) throws SQLException {
+		return null;
+	}
+
     @Override
     public void rollback() {
+    }
+    
+    @Override
+    public String toString() {
+    	return "Nowhere";
     }
 }

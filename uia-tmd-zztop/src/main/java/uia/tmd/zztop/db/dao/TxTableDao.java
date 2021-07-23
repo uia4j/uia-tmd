@@ -8,22 +8,16 @@ import java.sql.SQLException;
 import uia.dao.DaoException;
 import uia.dao.DaoMethod;
 import uia.dao.TableDao;
+import uia.dao.TableDaoHelper;
+import uia.dao.annotation.DaoInfo;
 import uia.tmd.zztop.db.TxTable;
-import uia.tmd.zztop.db.conf.TmdDB;
 
-public class TxTableDao extends TableDao<TxTable> {
+@DaoInfo(type = TxTable.class)
+public abstract class TxTableDao extends TableDao<TxTable> {
 
-    public TxTableDao(Connection conn) {
-    	super(conn, TmdDB.forTable(TxTable.class));
+    public TxTableDao(Connection conn, TableDaoHelper<TxTable> tableHelper) {
+    	super(conn, tableHelper);
     }        
-    
-    public int count() throws SQLException {
-        try (PreparedStatement ps = this.conn.prepareStatement("select count(*) from zzt_tx_table")) {
-        	ResultSet rs = ps.executeQuery();
-        	rs.next();
-        	return rs.getInt(1);
-        }
-    }
 
     public int deleteByJob(String execJobBo) throws SQLException, DaoException {
     	DaoMethod<TxTable> method = this.tableHelper.forDelete();

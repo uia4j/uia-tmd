@@ -7,6 +7,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import uia.tmd.zztop.db.conf.ZZTOP;
+
 public final class ZztopEnv {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZztopEnv.class);
@@ -27,9 +29,26 @@ public final class ZztopEnv {
         }
 
         String appConfig = System.getProperty("user.dir") + System.getProperty("file.separator") + "app.properties";
-        FileInputStream fis = new FileInputStream(appConfig);
-        Properties PROPS = System.getProperties();
-        PROPS.load(fis);
-        System.setProperties(PROPS);
+        
+        try (FileInputStream fis = new FileInputStream(appConfig)) {
+            Properties p = new Properties(System.getProperties());
+            p.load(fis);
+            System.setProperties(p);
+        }
+        
+        try {
+            Class.forName("com.sap.db.jdbc.Driver").newInstance();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ZZTOP.initial(
+                System.getProperty("tmd.zztop.db"),
+                true,
+                System.getProperty("tmd.zztop.db.conn"),
+                System.getProperty("tmd.zztop.db.user"),
+                System.getProperty("tmd.zztop.db.pwd"),
+                System.getProperty("tmd.zztop.db.schema"));
     }
 }

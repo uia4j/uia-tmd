@@ -6,7 +6,7 @@ import uia.dao.annotation.ColumnInfo;
 import uia.dao.annotation.TableInfo;
 
 @TableInfo(name = "zzt_tx_key")
-public class TxKey {
+public class TxKey implements Comparable<TxKey> {
 	
 	public static final String KEY = "zzt_tx_key";
 
@@ -23,6 +23,7 @@ public class TxKey {
     private String execJobBo;
 
     public TxKey() {
+    	this.id = "";
     }
 
     public TxKey(TxKey data) {
@@ -62,6 +63,26 @@ public class TxKey {
 
 	public void setExecJobBo(String execJobBo) {
 		this.execJobBo = execJobBo;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(o != null && o instanceof TxKey) {
+			return this.id.equals(((TxKey)o).getId());
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Override
+	public int compareTo(TxKey o) {
+		return o != null ? this.id.compareTo(o.getId()) : -1;
 	}
 
 	@Override

@@ -8,14 +8,14 @@ import org.apache.commons.cli.Options;
 
 import uia.tmd.zztop.ZztopCmd;
 
-public class SOMSyncCmd implements ZztopCmd {
+public class SODeleteMonthCmd implements ZztopCmd {
 
     public static Options arguments() {
         Option y = Option.builder("y")
                 .longOpt("year")
                 .desc("year.")
                 .required()
-                .hasArg()
+                .hasArg( )
                 .argName("year")
                 .build();
 
@@ -30,6 +30,7 @@ public class SOMSyncCmd implements ZztopCmd {
         Option job = Option.builder("j")
                 .longOpt("job")
                 .desc("job name.")
+                .required()
                 .hasArg()
                 .argName("job")
                 .build();
@@ -45,13 +46,7 @@ public class SOMSyncCmd implements ZztopCmd {
 		int y = Integer.parseInt(cl.getOptionValue("year"));
 		int m = Integer.parseInt(cl.getOptionValue("month"));
 		String job = cl.getOptionValue("job");
-		if(job == null || job.trim().isEmpty()) {
-			job = "SO_SYNC";
-		}
-		else {
-			job = job.toUpperCase();
-		}
-        
+
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, y);
 		cal.set(Calendar.MONTH, m - 1);

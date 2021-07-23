@@ -213,28 +213,43 @@ public final class TaskRunner {
         if (mapping == null) {
             // target == source
             for (Map<String, Object> sourceRow : sourceRows) {
+            	String targetPK = "";
             	HashMap<String, Object> targetRow = new HashMap<String, Object>();
                 for (ColumnType targetColumn : targetColumns) {
-                    String key = targetColumn.getColumnName().toUpperCase();
-                    targetRow.put(key, sourceRow.get(key));
+                    String colName = targetColumn.getColumnName().toUpperCase();
+                    Object value = sourceRow.get(colName);
+                    if(targetColumn.isPk()) {
+                    	targetPK += value.toString();
+                    }
+                    targetRow.put(colName, value);
                 }
-                targetRows.add(targetRow);
+                if (this.jobRunner.txPool.accept(targetTable.getTableName(), targetPK)) {
+                	targetRows.add(targetRow);
+                }
             }
         }
         else {
             // target != source
             for (Map<String, Object> sourceRow : sourceRows) {
+            	String targetPK = "";
             	HashMap<String, Object> targetRow = new HashMap<String, Object>();
                 for (ColumnType targetColumn : targetColumns) {
-                    String key = targetColumn.getColumnName().toUpperCase();
-                    String sourceName = mapping.get(key);
-                    targetRow.put(key, sourceRow.get(sourceName));
+                    String colName = targetColumn.getColumnName().toUpperCase();
+                    String sourceName = mapping.get(colName);
+                    Object value = sourceRow.get(sourceName);
+                    if(targetColumn.isPk()) {
+                    	targetPK += value.toString();
+                    }
+                    targetRow.put(colName, value);
                 }
-                targetRows.add(targetRow);
+                if (this.jobRunner.txPool.accept(targetTable.getTableName(), targetPK)) {
+                	targetRows.add(targetRow);
+                }
             }
         }
 
         this.jobRunner.txPool.insert(targetTable.getTableName(), targetRows);
+
         /**
         String sql = this.targetAccess.prepareTable(targetTable.getTableName()) != null
                 ? this.targetAccess.prepareTable(targetTable.getTableName()).generateInsertSQL()

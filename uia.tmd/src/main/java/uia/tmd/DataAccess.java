@@ -1,6 +1,7 @@
 package uia.tmd;
 
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.List;
 import java.util.Map;
 
@@ -87,6 +88,8 @@ public interface DataAccess {
     public void beginTx() throws SQLException;
 
     public void commit() throws SQLException;
+
+    public Savepoint createSavePoint(String name) throws SQLException;
 
     public void rollback() throws SQLException;
 

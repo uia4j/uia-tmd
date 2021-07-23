@@ -5,14 +5,12 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import uia.dao.Database;
 import uia.dao.hana.Hana;
 import uia.tmd.zztop.ZztopCmd;
 
@@ -39,7 +37,7 @@ public class TestResultCmd implements ZztopCmd {
 			
 			try(Hana hana = new Hana("10.160.2.23", "31015", "WIP_ARCHIVE", "WIP_ARCHIVE", "Sap12345")) {
 			// try(Hana hana = new Hana("10.160.2.23", "31047", "MES", "MES", "Sap12345")) {
-				Connection conn = hana.createConnection();
+				Connection conn = hana.getConnection();
 				Statement stat = conn.createStatement();
 				for(String sql : sqls) {
 					ResultSet rs = stat.executeQuery(sql);
