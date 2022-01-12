@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
 	<Appenders>
-		<Console name="STDOUT" target="SYSTEM_OUT">
-			<ThresholdFilter level="INFO" />
-			<PatternLayout pattern="%-45C{3} %4L - %m%n" />
-		</Console>
 		<RollingFile name="INFO"
 			filePattern="logs/zztop-cli-%d{yyyy-MM-dd_HH}.log">
 			<ThresholdFilter level="INFO" />

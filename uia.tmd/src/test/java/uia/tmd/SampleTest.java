@@ -5,15 +5,15 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 
-public class WIPTest implements TaskListener {
+public class SampleTest implements TaskListener {
 
     private int rc;
 
     @Test
-    public void testInitialTest() throws URISyntaxException, Exception {
-        TaskFactory factory = new TaskFactory(new File(WIPTest.class.getResource("/wip.xml").toURI()));
+    public void testCase1() throws URISyntaxException, Exception {
+        TaskFactory factory = new TaskFactory(new File("dbfile/Sample.xml"));
 
-        JobRunner runner = factory.createRunner("INITIAL_TEST");
+        JobRunner runner = factory.createRunner("Case1");
         runner.addTaskListener(this);
         System.out.println(String.format("Execute:%s(%s)", runner.run((String) null), this.rc));
     }

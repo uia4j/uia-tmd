@@ -142,8 +142,7 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
         	
 	        runner.addJobListener(this);
 	        runner.addTaskListener(this);
-	        runner.run(sqlWhere);
-	        return true;
+	        return runner.run(sqlWhere);
 	    }
         catch(Exception ex) {
         	LOGGER.error("sync> failed", ex);
@@ -206,8 +205,7 @@ public class SyncCmd implements ZztopCmd, JobListener, TaskListener {
 
 	        runner.addJobListener(this);
 	        runner.addTaskListener(this);
-	        runner.run(sqlWhere);
-	        return true;
+	        return runner.run(sqlWhere);
 	    }
         catch(Exception ex) {
         	LOGGER.error(String.format("sync> %s> %s failed",

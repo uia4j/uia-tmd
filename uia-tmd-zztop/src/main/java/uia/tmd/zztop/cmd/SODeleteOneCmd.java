@@ -42,7 +42,7 @@ public class SODeleteOneCmd implements ZztopCmd {
 					order, 
 					"HANDLE='" + order + "'");
     		
-    		new SyncCmd().run(syncCL);
+			return new SyncCmd().run(syncCL);
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();

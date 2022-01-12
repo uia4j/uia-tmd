@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmd xmlns="http://tmd.uia/model/xml"> 
 	<jobSpace>
-		<job name="Case1" source="HANA_DEV" target="IDLE">
-			<item taskName="Task1" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()>add_days(ACTUAL_COMP_DATE, 90)" />
-		</job>
-		<job name="Case2" source="HANA_DEV" target="PG">
-			<item taskName="Task2" where="SITE='1020' and ACTUAL_COMP_DATE is not null and now()&lt;add_days(ACTUAL_COMP_DATE, 90)" />
-		</job> 
-		<job name="Case3" source="HANA_DEV" target="PG">
+		<job name="Case1" source="PG1" target="PG2">
 			<item taskName="Task1" />
-			<item taskName="Task2" />
-			<item taskName="Task3" />
 		</job> 
 	</jobSpace>
 	<taskSpace>
@@ -51,15 +43,9 @@
 		</task>
 	</taskSpace>
 	<tableSpace>
-		<table name="PK1">
+		<table name="TABLE4">
 			<pk>
 				<column>ID</column>
-			</pk>
-		</table>
-		<table name="PK2">
-			<pk>
-				<column>ID1</column>
-				<column>ID2</column>
 			</pk>
 		</table>
 	</tableSpace>
@@ -74,19 +60,19 @@
 			<driverClass>uia.tmd.IdleAccess</driverClass>
 		</database>
 		<database>
-			<id>HANA_DEV</id>
-			<host>10.160.1.52</host>
-			<port>39015</port>
-			<dbName>WIP</dbName>
-			<user>WIP</user>
-			<password>Hdb12345</password>
-			<driverClass>uia.tmd.access.HanaAccess</driverClass>
-		</database>
-		<database>
-			<id>PG</id>
+			<id>PG1</id>
 			<host>localhost</host>
 			<port>5432</port>
-			<dbName>wip</dbName>
+			<dbName>test1</dbName>
+			<user>postgres</user>
+			<password>pgAdmin</password>
+			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>
+		</database>
+		<database>
+			<id>PG2</id>
+			<host>localhost</host>
+			<port>5432</port>
+			<dbName>test2</dbName>
 			<user>postgres</user>
 			<password>pgAdmin</password>
 			<driverClass>uia.tmd.access.PGSQLAccess</driverClass>

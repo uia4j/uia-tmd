@@ -42,7 +42,7 @@ public class SODeleteDayCmd implements ZztopCmd {
 					ymd, 
 					"TO_VARCHAR(ACTUAL_COMP_DATE,'YYYY/MM/DD')='" + ymd + "'");
     		
-    		new SyncCmd().run(syncCL);
+			return new SyncCmd().run(syncCL);
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();

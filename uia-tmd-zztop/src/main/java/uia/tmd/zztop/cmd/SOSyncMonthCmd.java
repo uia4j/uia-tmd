@@ -69,7 +69,9 @@ public class SOSyncMonthCmd implements ZztopCmd {
 						ymd, 
 						"TO_VARCHAR(ACTUAL_COMP_DATE,'YYYY/MM/DD')='" + ymd + "'");
 	    		
-	    		new SyncCmd().run(syncCL);
+	    		if(!new SyncCmd().run(syncCL)) {
+	    			return false;
+	    		}
 	    		Thread.sleep(1000);
 			}
 			catch(Exception ex) {

@@ -21,7 +21,7 @@ import uia.tmd.zztop.cmd.SOSyncOneCmd;
 
 public class ZztopCLI {
 	
-	private static final String VER = "0.21.0723A";
+	private static final String VER = "0.21.0817A";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZztopCLI.class);
 

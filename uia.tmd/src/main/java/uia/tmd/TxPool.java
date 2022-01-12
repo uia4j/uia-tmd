@@ -152,7 +152,7 @@ public class TxPool {
             LOGGER.info(String.format("tmd> %s> delete rows=%s, tables=%s to %s",
             		this.jobName,
             		total,
-            		this.insertTarget.size(),
+            		this.deleteSource.size(),
             		access));
         }
         catch (SQLException ex) {

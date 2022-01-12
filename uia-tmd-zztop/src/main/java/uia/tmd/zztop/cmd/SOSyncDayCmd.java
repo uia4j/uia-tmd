@@ -1,5 +1,9 @@
 package uia.tmd.zztop.cmd;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -12,9 +16,15 @@ public class SOSyncDayCmd implements ZztopCmd {
         Option d = Option.builder("d")
                 .longOpt("date")
                 .desc("date.")
-                .required()
                 .hasArg()
                 .argName("date")
+                .build();
+
+        Option offset = Option.builder("o")
+                .longOpt("offset")
+                .desc("offset of date")
+                .hasArg()
+                .argName("offset")
                 .build();
 
         Option job = Option.builder("j")
@@ -26,12 +36,27 @@ public class SOSyncDayCmd implements ZztopCmd {
 
         return new Options()
                 .addOption(d)
+                .addOption(offset)
                 .addOption(job);
     }
     
 	@Override
 	public boolean run(CommandLine cl) {
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+		
 		String ymd = cl.getOptionValue("date");
+		String offset = cl.getOptionValue("offset");
+		if(ymd == null) {
+			if(offset == null) {
+				offset = "600";
+			}
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(new Date());
+			cal.add(Calendar.DATE, -Integer.parseInt(offset));
+			ymd = fmt.format(cal.getTime());
+		}
+		
 		String job = cl.getOptionValue("job");
 		if(job == null || job.trim().isEmpty()) {
 			job = "SO_SYNC";
@@ -46,8 +71,7 @@ public class SOSyncDayCmd implements ZztopCmd {
 					job, 
 					ymd, 
 					"TO_VARCHAR(ACTUAL_COMP_DATE,'YYYY/MM/DD')='" + ymd + "'");
-    		
-    		new SyncCmd().run(syncCL);
+    		return new SyncCmd().run(syncCL);
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();

@@ -47,10 +47,27 @@ public class HtksTest {
 	}
 
 	@Test
-	public void testSOSyncDay() throws Exception {
+	public void testSOSyncDay1() throws Exception {
 		ZztopCLI.main(new String[] { 
 				"so_sync_day",
 				"-d", "2018/07/31"
+		});
+	}
+
+	@Test
+	public void testSOSyncDay2() throws Exception {
+		ZztopCLI.main(new String[] { 
+				"so_sync_day",
+				"-o", "2000"
+		});
+	}
+
+	@Test
+	public void testSOSyncDay3() throws Exception {
+		ZztopCLI.main(new String[] { 
+				"so_sync_day",
+				"-d", "2018/12/31",
+				"-j", "SO_SYNC_AND_DELETE"
 		});
 	}
 
@@ -62,7 +79,6 @@ public class HtksTest {
 		});
 	}
 
-	@Test
 	public void testSOSyncOne() throws Exception {
 		ZztopCLI.main(new String[] { 
 				"so_sync_one",
@@ -75,7 +91,7 @@ public class HtksTest {
 	public void testSODeleteOne() throws Exception {
 		ZztopCLI.main(new String[] { 
 				"so_delete_one",
-				"-o", "ShopOrderBO:1020,BSB-210525853",
+				"-o", "ShopOrderBO:1020,TEST-0722110702",
 				"-j", "SO_DELETE_TEST"
 		});
 	}

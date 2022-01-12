@@ -223,4 +223,9 @@ public class IdleAccess implements DataAccess, Database {
     public String toString() {
     	return "Nowhere";
     }
+
+	@Override
+	public List<Object[]> query(String sql) throws SQLException {
+		return new ArrayList<>();
+	}
 }
