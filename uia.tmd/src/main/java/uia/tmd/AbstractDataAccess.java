@@ -1,12 +1,20 @@
 package uia.tmd;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLType;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -20,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import uia.tmd.model.xml.AbstractTableType;
 import uia.tmd.model.xml.DatabaseType;
 import uia.dao.ColumnType;
+import uia.dao.ColumnType.DataType;
 import uia.dao.Database;
 import uia.dao.TableType;
 import uia.dao.where.Where;
@@ -53,22 +62,30 @@ public abstract class AbstractDataAccess implements DataAccess {
                 ? prepareTable(tableName).generateSelectSQL()
                 : prepareTable(tableName).generateSelectSQL() + " WHERE " + where;
         Connection conn = getDatabase().getConnection();
-        //try (Connection conn = getDatabase().createConnection()) {
-            try (Statement ps = conn.createStatement()) {
-                try (ResultSet rs = ps.executeQuery(sql)) {
-                    int cnt = rs.getMetaData().getColumnCount();
-                    while (rs.next()) {
-                        LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
-                        for (int i = 0; i < cnt; i++) {
-                            // TODO: BLOB
-                            row.put(rs.getMetaData().getColumnName(i + 1).toUpperCase(), rs.getObject(i + 1));
-                        }
-                        rows.add(row);
+        try (Statement ps = conn.createStatement()) {
+            try (ResultSet rs = ps.executeQuery(sql)) {
+                int cnt = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
+                    for (int i = 0; i < cnt; i++) {
+                    	String ctn = rs.getMetaData().getColumnTypeName(i + 1).toUpperCase();
+                    	String cn = rs.getMetaData().getColumnName(i + 1).toUpperCase();
+                    	if("CLOB".equals(ctn) || "NCLOB".equals(ctn)) {
+                            row.put(cn, rs.getString(i + 1));
+                    	}
+                    	else if("BLOB".equals(ctn)) {
+                    		Blob blob = rs.getBlob(i + 1);
+                            row.put(cn, bin(cn, blob.getBinaryStream()));
+                    	}
+                    	else {
+                            row.put(cn, rs.getObject(i + 1));
+                    	}
                     }
+                    rows.add(row);
                 }
             }
-        //}
-        catch (Exception ex) {
+        }
+    catch (Exception ex) {
             LOGGER.error("failed to run:" + sql);
             throw ex;
         }
@@ -89,33 +106,41 @@ public abstract class AbstractDataAccess implements DataAccess {
             useParams = true;
         }
 
-        //try (Connection conn = getDatabase().createConnection()) {
-            try (PreparedStatement ps = getDatabase().getConnection().prepareStatement(sql)) {
-                if (useParams) {
-                    for (int i = 0, c = paramValues.size(); i < c; i++) {
-                        Object pv = paramValues.get(i);
-                        if (pv instanceof Date) {
-                            ps.setTimestamp(i + 1, new Timestamp(((Date) pv).getTime()));
-                        }
-                        else {
-                            ps.setObject(i + 1, paramValues.get(i));
-                        }
+        try (PreparedStatement ps = getDatabase().getConnection().prepareStatement(sql)) {
+            if (useParams) {
+                for (int i = 0, c = paramValues.size(); i < c; i++) {
+                    Object pv = paramValues.get(i);
+                    if (pv instanceof Date) {
+                        ps.setTimestamp(i + 1, new Timestamp(((Date) pv).getTime()));
                     }
-                }
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    int cnt = rs.getMetaData().getColumnCount();
-                    while (rs.next()) {
-                        LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
-                        for (int i = 0; i < cnt; i++) {
-                            // TODO: BLOB
-                            row.put(rs.getMetaData().getColumnName(i + 1).toUpperCase(), rs.getObject(i + 1));
-                        }
-                        rows.add(row);
+                    else {
+                        ps.setObject(i + 1, paramValues.get(i));
                     }
                 }
             }
-        //}
+
+            try (ResultSet rs = ps.executeQuery()) {
+                int cnt = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
+                    for (int i = 0; i < cnt; i++) {
+                    	String ctn = rs.getMetaData().getColumnTypeName(i + 1).toUpperCase();
+                    	String cn = rs.getMetaData().getColumnName(i + 1).toUpperCase();
+                    	if("CLOB".equals(ctn) || "NCLOB".equals(ctn)) {
+                            row.put(cn, rs.getString(i + 1));
+                    	}
+                    	else if("BLOB".equals(ctn)) {
+                    		Blob blob = rs.getBlob(i + 1);
+                            row.put(cn, bin(cn, blob.getBinaryStream()));
+                    	}
+                    	else {
+                            row.put(cn, rs.getObject(i + 1));
+                    	}
+                    }
+                    rows.add(row);
+                }
+            }
+        }
         catch (Exception ex) {
             LOGGER.error("failed to run:" + Where.toString(sql, paramValues), ex);
             throw ex;
@@ -146,10 +171,27 @@ public abstract class AbstractDataAccess implements DataAccess {
             for (Map<String, Object> row : rows) {
                 int i = 1;
                 for (ColumnType ct : table.getColumns()) {
+                	boolean str = 
+                			ct.getDataType() == DataType.VARCHAR || 
+                			ct.getDataType() == DataType.NVARCHAR || 
+                			ct.getDataType() == DataType.VARCHAR2 || 
+                			ct.getDataType() == DataType.NVARCHAR2 || 
+                			ct.getDataType() == DataType.CLOB || 
+                			ct.getDataType() == DataType.NCLOB;
+                	boolean blob = ct.getDataType() == DataType.BLOB;
+                		
                     Object value = row.get(ct.getColumnName().toUpperCase());
-                    // important
-                    // CLOB, NCLOB, original
-                    ps.setObject(i, ct.read(getDatabase().getConnection(), value));
+                    if(value != null && str) {
+                        // important
+                        // CLOB, NCLOB, original
+                		ps.setString(i, ct.read(getDatabase().getConnection(), value).toString());
+                    }
+                    else if(value != null && blob) {
+                		ps.setBlob(i, (InputStream)value);
+                    }
+                    else {
+                        ps.setObject(i, ct.read(getDatabase().getConnection(), value));
+                    }
                     i++;
                 }
                 ps.addBatch();
@@ -251,30 +293,23 @@ public abstract class AbstractDataAccess implements DataAccess {
     			this.databaseType.getPort(),
     			this.databaseType.getDbName());
     }
-
+    
+    private static InputStream bin(String name, InputStream in) throws SQLException {
+    	int total = 0;
+    	try {
+	        byte[] buff = new byte[8000];
+	        int bytesRead = 0;
+	        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+	        while((bytesRead = in.read(buff)) != -1) {
+	           bao.write(buff, 0, bytesRead);
+	           total += bytesRead;
+	        }
+	        System.out.println(total);
+	        return new ByteArrayInputStream(bao.toByteArray());
+    	}
+    	catch(Exception ex) {
+    		throw new SQLException(name + " failed to convert to a ByteArrayInputStream.");
+    	}
+     }
     protected abstract Database getDatabase();
-
-    /**
-    private ClobData convert(Clob clob) throws SQLException {
-        StringBuffer sb = new StringBuffer((int) clob.length());
-        Reader r = clob.getCharacterStream();
-        char[] cbuf = new char[2048];
-        int n = 0;
-        try {
-            while ((n = r.read(cbuf, 0, cbuf.length)) != -1) {
-                if (n > 0) {
-                    sb.append(cbuf, 0, n);
-                }
-            }
-        }
-        catch (IOException e1) {
-            throw new SQLException(e1);
-        }
-    
-        ClobData data = new ClobData();
-        data.content = sb.toString();
-        return data;
-    
-    }
-    */
 }

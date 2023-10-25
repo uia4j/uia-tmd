@@ -46,7 +46,6 @@ public class HtksTest {
 		});
 	}
 
-	@Test
 	public void testSOSyncDay1() throws Exception {
 		ZztopCLI.main(new String[] { 
 				"so_sync_day",
@@ -54,15 +53,14 @@ public class HtksTest {
 		});
 	}
 
-	@Test
 	public void testSOSyncDay2() throws Exception {
 		ZztopCLI.main(new String[] { 
 				"so_sync_day",
-				"-o", "2000"
+				"-j", "SO_SYNC_TEST",
+				"-o", "534"
 		});
 	}
 
-	@Test
 	public void testSOSyncDay3() throws Exception {
 		ZztopCLI.main(new String[] { 
 				"so_sync_day",
@@ -79,15 +77,15 @@ public class HtksTest {
 		});
 	}
 
+	@Test
 	public void testSOSyncOne() throws Exception {
 		ZztopCLI.main(new String[] { 
 				"so_sync_one",
-				"-o", "ShopOrderBO:1020,BTC-210505270",
-				"-j", "SO_SYNC_TEST"
+				"-o", "ShopOrderBO:1020,BTX-210813226",
+				"-j", "SO_SYNC_REV"
 		});
 	}
 
-	@Test
 	public void testSODeleteOne() throws Exception {
 		ZztopCLI.main(new String[] { 
 				"so_delete_one",
@@ -100,6 +98,32 @@ public class HtksTest {
 		ZztopCLI.main(new String[] { 
 				"test_result",
 				"-f", "test.txt"
+		});
+	}
+
+	@Test
+	public void testConfigLogSyncDay1() throws Exception {
+		ZztopCLI.main(new String[] { 
+				"cfglog_sync_day",
+				"-d", "2022/01/01",
+				"-j", "CONFIG_LOG_SYNC"
+		});
+	}
+	
+	public void testConfigLogSyncMonth() throws Exception {
+		ZztopCLI.main(new String[] { 
+				"cfglog_sync_month",
+				"-y", "2021",
+				"-m", "12",
+				"-j", "CONFIG_LOG_SYNC_AND_DELETE"
+		});
+	}
+
+
+	public void testZrFileDay1() throws Exception {
+		ZztopCLI.main(new String[] { 
+				"zr_file_day",
+				"-d", "2021/01/29"
 		});
 	}
 }

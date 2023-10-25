@@ -226,6 +226,9 @@ public final class TaskRunner {
                 if (this.jobRunner.txPool.accept(targetTable.getTableName(), targetPK)) {
                 	targetRows.add(targetRow);
                 }
+                else {
+                	System.out.println("");
+                }
             }
         }
         else {
@@ -244,6 +247,9 @@ public final class TaskRunner {
                 }
                 if (this.jobRunner.txPool.accept(targetTable.getTableName(), targetPK)) {
                 	targetRows.add(targetRow);
+                }
+                else {
+                	System.out.println("");
                 }
             }
         }

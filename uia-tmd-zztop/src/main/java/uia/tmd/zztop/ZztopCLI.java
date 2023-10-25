@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import uia.tmd.zztop.cmd.SimpleSyncCmd;
 import uia.tmd.zztop.cmd.TestResultCmd;
+import uia.tmd.zztop.cmd.ZrFileDayCmd;
+import uia.tmd.zztop.cmd.ConfigLogSyncDayCmd;
+import uia.tmd.zztop.cmd.ConfigLogSyncMonthCmd;
 import uia.tmd.zztop.cmd.SODeleteDayCmd;
 import uia.tmd.zztop.cmd.SODeleteMonthCmd;
 import uia.tmd.zztop.cmd.SODeleteOneCmd;
@@ -32,22 +35,36 @@ public class ZztopCLI {
     static {
         cmds = new TreeMap<>();
         cmds.put("sync", SimpleSyncCmd.class.getName());
+        
         cmds.put("so_sync_one", SOSyncOneCmd.class.getName());
         cmds.put("so_sync_day", SOSyncDayCmd.class.getName());
-         cmds.put("so_sync_month", SOSyncMonthCmd.class.getName());
+        cmds.put("so_sync_month", SOSyncMonthCmd.class.getName());
         cmds.put("so_delete_one", SODeleteOneCmd.class.getName());
         cmds.put("so_delete_day", SODeleteDayCmd.class.getName());
         cmds.put("so_delete_month", SODeleteMonthCmd.class.getName());
+
+        cmds.put("cfglog_sync_day", ConfigLogSyncDayCmd.class.getName());
+        cmds.put("cfglog_sync_month", ConfigLogSyncMonthCmd.class.getName());
+        
+        cmds.put("zr_file_day", ZrFileDayCmd.class.getName()); 
+
         cmds.put("test_result", TestResultCmd.class.getName());
 
         cmdArgs = new TreeMap<>();
         cmdArgs.put("sync", SimpleSyncCmd.arguments());
+        
         cmdArgs.put("so_sync_one", SOSyncOneCmd.arguments());
         cmdArgs.put("so_sync_day", SOSyncDayCmd.arguments());
         cmdArgs.put("so_sync_month", SOSyncMonthCmd.arguments());
         cmdArgs.put("so_delete_one", SODeleteOneCmd.arguments());
         cmdArgs.put("so_delete_day", SODeleteDayCmd.arguments());
         cmdArgs.put("so_delete_month", SODeleteMonthCmd.arguments());
+
+        cmdArgs.put("cfglog_sync_day", ConfigLogSyncDayCmd.arguments());
+        cmdArgs.put("cfglog_sync_month", ConfigLogSyncMonthCmd.arguments());
+
+        cmdArgs.put("zr_file_day", ZrFileDayCmd.arguments());
+        
         cmdArgs.put("test_result", TestResultCmd.arguments());
         
     }
